@@ -1,0 +1,7 @@
+guake-indicator.desktop usr/share/applications
+guake-indicator.png usr/share/icons
+guake-indicator.png usr/share/icons/hicolor/48x48/apps/
+guake-indicator.png usr/share/pixmaps/guake
+guake-indicator.xpm usr/share/icons
+guake-indicator.xpm usr/share/icons/hicolor/48x48/apps/
+guake-indicator.xpm usr/share/pixmaps/guake

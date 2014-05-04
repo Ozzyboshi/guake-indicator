@@ -1,0 +1,3 @@
+version=3
+
+http://guake-indicator.ozzyboshi.com/sources/guake-indicator_(\d\S*)\.(?:zip|tgz|tbz|txz|(?:tar\.(?:gz|bz2|xz)))

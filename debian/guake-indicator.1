@@ -1,0 +1,53 @@
+.TH "guake-indicator" "1"
+.SH "NAME"
+.B guake-indicator
+\(em A simple Guake indicator that lets you ssh and telnet into your favourite hosts.
+.SH "SYNOPSIS"
+.PP
+\fBguake-indicator
+.SH "DESCRIPTION"
+.PP
+\fBguake-indicator\fR lets you manage your favorite ssh hosts establishing a new ssh or telnet connection with Guake dropdown terminal.
+.PP
+\fBguake-indicator\fR sticks to your "System Tray" and displays your favorites ssh hosts retrieved from the Guake indicator configuration file (see FILES section for more details)
+
+.SH FILES
+\fBguake-indicator\fR builds the menu according to
+.I ~/.guake.indicator/guake-indicator.json
+json file
+
+If this configuration file does not exist a default one will be created.
+.PP
+You can customize this file according to your needs with your favorite text editor, just use this schema as a base to add new entries.
+The fields are  self-explanatory, however, I'm going to give you a more in-depth description of each one:
+.TP
+.B protocol
+The protocol implementation used to open a new connection (can be only `telnet' or `ssh').
+If this field is missing, the `ssh' value is used by default.
+.TP
+.B hostname
+The host to connect (it can be his IP address or his DNS)
+.TP
+.B login
+The ssh user
+.TP
+.B menu_name
+The name that will show up in the indicator itself
+.TP
+.B tab_name
+The name of the guake terminal tab once it is opened
+.TP
+.B command_after_login
+Command to issue after the ssh login is successfully performed - this
+field is optional
+.TP
+.B  remote_command
+If set to yes, after that "command_after_login" is executed, the bash shell won't be invoked so an automatic exit is performed.
+
+.SH BUGS
+None known.
+
+.SH AUTHOR
+\fBguake-indicator\fP was written by Alessio Garzi <gun101@email.it>
+.PP
+This manual page was written by Alessio Garzi <gun101@email.it>.

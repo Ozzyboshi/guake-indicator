@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Guake Indicator
+Comment=Use it to launch guake-indicator and a new icon will show up to the upper right corner of the screen
+TryExec=guake-indicator
+Exec=guake-indicator
+Icon=guake-indicator
+Type=Application
+Categories=GNOME;GTK;System;Utility;TerminalEmulator;
+StartupNotify=true
+Keywords=guake;ssh;terminal;telnet;indicator;
