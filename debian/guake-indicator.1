@@ -21,12 +21,9 @@ If this configuration file does not exist a default one will be created.
 You can customize this file according to your needs with your favorite text editor, just use this schema as a base to add new entries.
 The fields are  self-explanatory, however, I'm going to give you a more in-depth description of each one:
 .TP
-.B protocol
-The protocol implementation used to open a new connection (can be only `telnet' or `ssh').
-If this field is missing, the `ssh' value is used by default.
-.TP
 .B hostname
-The host to connect (it can be his IP address or his DNS)
+The host to connect (it can be his IP address or his DNS),
+leave it blank to execute commands directly on localhost
 .TP
 .B login
 The ssh user

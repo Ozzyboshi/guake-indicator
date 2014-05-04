@@ -95,19 +95,6 @@ GArray* json_parse(json_object * jobj)
 		type = json_object_get_type(val);
 		switch (type)
 		{
-			/*case json_type_string:  
-						if (!strncmp(key,"label",strlen("label")))
-						{
-					        char* title=(char*)json_object_get_string(json_object_object_get(jobj, key));
-					        hostgroup = malloc(sizeof(HostGroup));
-					        bzero((void*)hostgroup,sizeof(HostGroup));
-					        sethostgroupcounterid(hostgroup);
-					        hostgroup->title=g_strdup((const gchar*)title);
-					        hostgroup->label=TRUE;
-					        g_array_append_val (hostgrouparray, hostgroup);
-						}
-						
-						break;*/
 			case json_type_array: 
 						hostgroup = malloc(sizeof(HostGroup));
 						bzero((void*)hostgroup,sizeof(HostGroup));
@@ -196,9 +183,7 @@ Host* create_host_linkedlist(struct json_object * data_jobj,int i)
 		return newhost;
 	}
 	
-	// regular host entry 										
-	struct json_object * new_obj_protocol;
-	json_object_object_get_ex(jvalue, "protocol",&new_obj_protocol);	
+	// regular host entry 											
 	struct json_object * new_obj_hostname;
 	json_object_object_get_ex(jvalue, "hostname",&new_obj_hostname);
 	struct json_object * new_obj_login;
@@ -230,11 +215,7 @@ Host* create_host_linkedlist(struct json_object * data_jobj,int i)
 	Host* newhost = malloc(sizeof(Host));
 	bzero((void*)newhost,sizeof(Host));
 	sethostcounterid(newhost);
-	const char* protocol = json_object_get_string(new_obj_protocol);
-	if (protocol == NULL || (strcmp(protocol,"ssh") && strcmp(protocol,"telnet")) )
-		newhost->protocol=g_strdup("ssh");
-	else
-		newhost->protocol=g_strdup(protocol);
+	newhost->protocol=g_strdup("ssh");
 	newhost->hostname=strdup((char*)json_object_get_string(new_obj_hostname));
 	newhost->login=strdup((char*)json_object_get_string(new_obj_login));
 	newhost->menu_name=strdup((char*)json_object_get_string(new_obj_menu_name));
@@ -333,18 +314,6 @@ int createdefaultfilecfg(const char* path)
 		"        }\n"
 		"    	]\n"
 		"	},\n"
-		"	\"Label 3\" : \"Telnet Hosts\",\n"
-		"	\"Telnet hosts\": {\n"
-		"    	\"data\": [\n"
-		"    	{\n"
-		"			\"protocol\": \"telnet\",\n"
-		"			\"hostname\": \"localhost\",\n"
-		"			\"login\": \"%s\",\n"
-		"			\"menu_name\": \"Telnet on localhost\",\n"
-		"			\"tab_name\": \"Telnet\"\n"
-		"    	}\n"
-		"    ]\n"
-		"    },\n"
 		"	\"Localhost tasks\":\n"
 		"	{\n"
 		"		\"label\" : \"MISC\",\n"

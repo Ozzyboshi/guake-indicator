@@ -7,4 +7,4 @@ Icon=guake-indicator
 Type=Application
 Categories=GNOME;GTK;System;Utility;TerminalEmulator;
 StartupNotify=true
-Keywords=guake;ssh;terminal;telnet;indicator;
+Keywords=guake;ssh;terminal;indicator;
