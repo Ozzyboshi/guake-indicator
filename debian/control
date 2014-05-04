@@ -20,7 +20,7 @@ Homepage: http://guake-indicator.ozzyboshi.com
 
 Package: guake-indicator
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}, guake
 Description: Guake terminal app indicator that lets you ssh into your favourite hosts
  Hosts must be manually edited in a json file under ~/.guake.indicator.
  .
