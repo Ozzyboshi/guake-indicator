@@ -1,4 +1,8 @@
 #!/usr/bin/make -f
 
 %:
-	dh $@ --with quilt,autoreconf,autotools-dev
+	dh $@ --with autoreconf,autotools-dev
+
+override_dh_clean:
+	rm -f src/*.o
+	dh_clean
