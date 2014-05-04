@@ -29,7 +29,3 @@ Description: Guake terminal app indicator that lets you ssh into your favourite 
  If guake-indicator.json does not exist, guake-indicator will create a default
  one with a single "localhost" entry.
  .
- Guake indicator depends on Guake dropdown terminal, gtk-3 and libappindicator
- to stick to the system tray,
- libjson in order to parse the configuration file,
- libdbus for showing/hiding Guake terminal.
