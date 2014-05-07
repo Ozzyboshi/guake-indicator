@@ -30,6 +30,7 @@ typedef struct Host {
 	gchar* tab_name;
 	gchar* command_after_login;
 	gchar* remote_command;
+	gchar* x_forwarded;
 	struct Host* next;
 	struct Host* group_head;
 } Host;

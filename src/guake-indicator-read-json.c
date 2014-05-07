@@ -196,6 +196,8 @@ Host* create_host_linkedlist(struct json_object * data_jobj,int i)
 	json_object_object_get_ex(jvalue, "command_after_login",&new_obj_cmd_name);
 	struct json_object * new_obj_remote_command;
 	json_object_object_get_ex(jvalue, "remote_command",&new_obj_remote_command);
+	struct json_object * new_obj_x_forwarded;
+	json_object_object_get_ex(jvalue, "x_forwarded",&new_obj_x_forwarded);
 								
 	/*printf("##%s##\n",json_object_get_string(new_obj_hostname));
 	printf("##%s##\n",json_object_get_string(new_obj_login));
@@ -224,6 +226,8 @@ Host* create_host_linkedlist(struct json_object * data_jobj,int i)
 		newhost->command_after_login=strdup((char*)json_object_get_string(new_obj_cmd_name));
 	if (new_obj_remote_command!=NULL)
 		newhost->remote_command=strdup((char*)json_object_get_string(new_obj_remote_command));
+	if (new_obj_x_forwarded!=NULL)
+		newhost->x_forwarded=strdup((char*)json_object_get_string(new_obj_x_forwarded));
 	return newhost;
 }
 
@@ -341,7 +345,7 @@ int createdefaultfilecfg(const char* path)
 		"		}]\n"
 		"	}\n"
 		"}\n"\
-		,user,user,user,user,user);
+		,user,user,user,user);
 		fclose(fd);
 		return(0);
 }

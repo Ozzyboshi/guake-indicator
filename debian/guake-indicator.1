@@ -1,13 +1,13 @@
 .TH "guake-indicator" "1"
 .SH "NAME"
 .B guake-indicator
-\(em A simple Guake indicator that lets you ssh and telnet into your favourite hosts.
+\(em A simple Guake indicator that lets you ssh into your favourite hosts.
 .SH "SYNOPSIS"
 .PP
 \fBguake-indicator
 .SH "DESCRIPTION"
 .PP
-\fBguake-indicator\fR lets you manage your favorite ssh hosts establishing a new ssh or telnet connection with Guake dropdown terminal.
+\fBguake-indicator\fR lets you manage your favorite ssh hosts establishing a new ssh connection with Guake dropdown terminal.
 .PP
 \fBguake-indicator\fR sticks to your "System Tray" and displays your favorites ssh hosts retrieved from the Guake indicator configuration file (see FILES section for more details)
 
@@ -40,9 +40,13 @@ field is optional
 .TP
 .B  remote_command
 If set to yes, after that "command_after_login" is executed, the bash shell won't be invoked so an automatic exit is performed.
+.TP
+.B  x_forwarded
+If set to yes it adds the X flag.
+This tells SSH to forward the X server calls to the client computer
 
 .SH BUGS
-None known.
+Please report any bug to Alessio Garzi <gun101@email.it>
 
 .SH AUTHOR
 \fBguake-indicator\fP was written by Alessio Garzi <gun101@email.it>

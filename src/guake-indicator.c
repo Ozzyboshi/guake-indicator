@@ -73,6 +73,13 @@ static void guake_open(GtkAction* action,gpointer user_data)
 {
 	Host host = *((Host*) user_data);
 	gchar* cmd = NULL;
+	
+	// set x_forwarded flag
+	gchar* x_forwarded_flag;
+	if (host.x_forwarded==NULL || g_strcmp0(host.x_forwarded,"yes"))
+		x_forwarded_flag=g_strdup("");
+	else
+		x_forwarded_flag=g_strdup(" -X ");
 		
 	// open a new Guake tab
 	guake_newtab();
@@ -88,13 +95,14 @@ static void guake_open(GtkAction* action,gpointer user_data)
 	else
 	{
 		if (host.remote_command==NULL || g_strcmp0(host.remote_command,"yes"))
-			cmd = g_strjoin(NULL,host.protocol," -t -l ",host.login," ",host.hostname," '",host.command_after_login,";/bin/bash'",NULL);
+			cmd = g_strjoin(NULL,host.protocol,x_forwarded_flag," -t -l ",host.login," ",host.hostname," '",host.command_after_login,";/bin/bash'",NULL);
 		else
-			cmd = g_strjoin(NULL,host.protocol," -t -l ",host.login," ",host.hostname," ",host.command_after_login,NULL);
+			cmd = g_strjoin(NULL,host.protocol,x_forwarded_flag," -t -l ",host.login," ",host.hostname," ",host.command_after_login,NULL);
 	}
 	//printf("%s",cmd);fflush(stdout);
 	guake_executecommand(cmd);
-		
+	
+	g_free(x_forwarded_flag);
 	g_free(cmd);
 }
 
@@ -202,7 +210,7 @@ static void about(GtkAction* action)
 	}
 		
 	gtk_about_dialog_set_name (GTK_ABOUT_DIALOG (dialog), "guake-indicator");
-	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (dialog), "0.1");
+	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (dialog), "0.2");
 	gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (dialog),"(C) 2013-2014 Alessio Garzi");
 	gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (dialog),"A simple guake indicator that lets you ssh into your favourite hosts");
 		

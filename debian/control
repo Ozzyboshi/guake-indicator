@@ -28,4 +28,3 @@ Description: Guake terminal app indicator that lets you ssh into your favourite 
  favorites ssh hosts retrieved from ~/.guake.indicator/guake-indicator.json.
  If guake-indicator.json does not exist, guake-indicator will create a default
  one with a single "localhost" entry.
- .

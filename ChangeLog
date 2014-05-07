@@ -1,0 +1,13 @@
+2014-05-06  Alessio Garzi  <gun101@email.it>
+
+	* src/Makefile.am : Ereased unnecessary libraries
+	
+	* src/guake-indicator-read-json.c : Removed extra parameter on
+	fprintf inside createdefaultfilecfg() function
+	
+	* src/guake-indicator.h : Added x_forwarded in Host struct to
+	support X FORWARDING
+	
+	* src/guake-indicator-read-json.c : Added support for x_forwarding
+	
+	* src/guake-indicator.c : Added support for x_forwarding
