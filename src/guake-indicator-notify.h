@@ -23,6 +23,6 @@ Boston, MA 02111-1307, USA.
 #include <glib.h>
 
 #define LIBNOTIFY_SHARED_OBJECT "libnotify.so.4"
-#define GUAKE_ICON_PATH "/usr/share/pixmaps/guake/guake.png"
+#define GUAKE_ICON_PATH "/usr/share/pixmaps/guake/guake-indicator.png"
 
 int guake_notify(gchar*,gchar*);

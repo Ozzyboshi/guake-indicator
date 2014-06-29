@@ -71,14 +71,18 @@ GArray* read_json_cfg_file(char * customfilecfg)
 	numbytes=fread((void*)raw_data,1,s.st_size,fd);
 	if (numbytes<0)
 	{
-	        fclose(fd);
-	        return NULL;
+		free((void*)raw_data);
+		fclose(fd);
+		return NULL;
 	}
 	fclose(fd);
 	new_obj = json_tokener_parse(raw_data);
+	free((void*)raw_data);
 	if (new_obj==NULL)
 		return NULL;
-	return json_parse(new_obj);
+	GArray* returnarray=json_parse(new_obj);
+	json_object_put(new_obj);
+	return returnarray;
 }
 
 GArray* json_parse(json_object * jobj)
@@ -89,6 +93,8 @@ GArray* json_parse(json_object * jobj)
 	struct json_object * new_obj ,* inner_jobj,*data_jobj,*label_obj;
 	enum json_type type;
 	HostGroup* hostgroup;
+	sethostcounterid(NULL); // reset counter id for single hosts
+	sethostgroupcounterid(NULL); // reset counter id for host groups
 	hostgrouparray = g_array_new (TRUE, FALSE, sizeof (HostGroup*));
 	json_object_object_foreach(jobj, key, val)
 	{
@@ -118,6 +124,7 @@ GArray* json_parse(json_object * jobj)
 						hostgroup = malloc(sizeof(HostGroup));
 						bzero((void*)hostgroup,sizeof(HostGroup));
 						hostgroup->title=g_strdup(key);
+						sethostgroupcounterid(hostgroup);
 						json_object_object_get_ex(jobj, key,&inner_jobj);
 						head=NULL;
 						json_object_object_foreach(inner_jobj, key, val)
@@ -151,6 +158,7 @@ GArray* json_parse(json_object * jobj)
 								sethostcounterid(all_host);
 								all_host->menu_name=g_strdup((char*)"Open all");
 								all_host->group_head=head;
+								all_host->open_all=TRUE;
 								head=host_queue(head,all_host);
 							}
 						}
@@ -198,6 +206,8 @@ Host* create_host_linkedlist(struct json_object * data_jobj,int i)
 	json_object_object_get_ex(jvalue, "remote_command",&new_obj_remote_command);
 	struct json_object * new_obj_x_forwarded;
 	json_object_object_get_ex(jvalue, "x_forwarded",&new_obj_x_forwarded);
+	struct json_object * new_obj_dont_show_guake;
+	json_object_object_get_ex(jvalue, "dont_show_guake",&new_obj_dont_show_guake);
 								
 	/*printf("##%s##\n",json_object_get_string(new_obj_hostname));
 	printf("##%s##\n",json_object_get_string(new_obj_login));
@@ -217,7 +227,6 @@ Host* create_host_linkedlist(struct json_object * data_jobj,int i)
 	Host* newhost = malloc(sizeof(Host));
 	bzero((void*)newhost,sizeof(Host));
 	sethostcounterid(newhost);
-	newhost->protocol=g_strdup("ssh");
 	newhost->hostname=strdup((char*)json_object_get_string(new_obj_hostname));
 	newhost->login=strdup((char*)json_object_get_string(new_obj_login));
 	newhost->menu_name=strdup((char*)json_object_get_string(new_obj_menu_name));
@@ -228,6 +237,8 @@ Host* create_host_linkedlist(struct json_object * data_jobj,int i)
 		newhost->remote_command=strdup((char*)json_object_get_string(new_obj_remote_command));
 	if (new_obj_x_forwarded!=NULL)
 		newhost->x_forwarded=strdup((char*)json_object_get_string(new_obj_x_forwarded));
+	if (new_obj_dont_show_guake!=NULL)
+		newhost->dont_show_guake=strdup((char*)json_object_get_string(new_obj_dont_show_guake));
 	return newhost;
 }
 
@@ -272,90 +283,177 @@ char* checkandcreatedefaultdir()
 // Create a new default cfg file
 int createdefaultfilecfg(const char* path)
 {
-	FILE* fd;
 	char* user=getenv("LOGNAME");
-	fd=fopen(path,"w");
-	if (fd==NULL) return -1;
-	fprintf(fd,\
-		"{\n"
-		"	\"data\": [\n"
-		"	{\"label\" : \"SSH Hosts\"},\n"
-		"	{\n"
-		"		\"hostname\": \"localhost\",\n"
-		"		\"login\": \"%s\",\n"
-		"		\"menu_name\": \"SSH on localhost\",\n"
-		"		\"tab_name\": \"Localhost\"\n"
-		"    }\n"
-		"	],\n"
-		"	\"MYSQL\": {\n"
-		"	\"label\" : \"Mysql servers\",\n"
-		"    	\"data\": [\n"
-		"		{\"label\" : \"Local mysql servers\"},\n"
-		"		{\n"
-		"			\"hostname\": \"localhost\",\n"
-		"			\"login\": \"%s\",\n"
-		"			\"menu_name\": \"Mysql on localhost\",\n"
-		"			\"tab_name\": \"Mysql\",\n"
-		"			\"command_after_login\" : \"mysql -u root --pass --host localhost -A mysql\",\n"
-		"			\"remote_command\":\"yes\"\n"
-		"        },\n"
-		"    	{\n"
-		"			\"hostname\": \"127.0.0.1\",\n"
-		"			\"login\": \"%s\",\n"
-		"			\"menu_name\": \"Mysql on 127.0.0.1\",\n"
-		"			\"tab_name\": \"Mysql on 127.0.0.1\",\n"
-		"			\"command_after_login\" : \"mysql -u root --pass --host 127.0.0.1 -A mysql\",\n"
-		"			\"remote_command\":\"yes\"\n"
-		"        },\n"
-		"		{\"label\" : \"Remote mysql servers\"},\n"
-		"		{\n"
-		"			\"hostname\": \"192.168.1.1\",\n"
-		"			\"login\": \"%s\",\n"
-		"			\"menu_name\": \"Mysql on 192.168.1.1\",\n"
-		"			\"tab_name\": \"Mysql\",\n"
-		"			\"command_after_login\" : \"mysql -u root --pass --host 192.168.1.1 -A mysql\",\n"
-		"			\"remote_command\":\"yes\"\n"
-		"        }\n"
-		"    	]\n"
-		"	},\n"
-		"	\"Localhost tasks\":\n"
-		"	{\n"
-		"		\"label\" : \"MISC\",\n"
-		"		\"data\" : [\n"
-		"		{\n"
-		"			\"hostname\": \"\",\n"
-		"			\"login\": \"\",\n"
-		"			\"menu_name\": \"tmp folder\",\n"
-		"			\"tab_name\": \"tmp folder\",\n"
-		"			\"command_after_login\" : \"cd /tmp\"\n"
-		"		},\n"
-		"		{\n"
-		"			\"hostname\": \"\",\n"
-		"			\"login\": \"\",\n"
-		"			\"menu_name\": \"top\",\n"
-		"			\"tab_name\": \"top\",\n"
-		"			\"command_after_login\" : \"top\"\n"
-		"		},\n"
-		"		{\n"
-		"			\"hostname\": \"\",\n"
-		"			\"login\": \"\",\n"
-		"			\"menu_name\": \"ping www.google.com\",\n"
-		"			\"tab_name\": \"ping google\",\n"
-		"			\"command_after_login\" : \"ping www.google.com\"\n"
-		"		}]\n"
-		"	}\n"
-		"}\n"\
-		,user,user,user,user);
-		fclose(fd);
-		return(0);
+	Host* head;
+	HostGroup* hostgroup;
+	GArray* hostgrouparray;
+	
+	// Start root section
+	hostgrouparray = g_array_new (TRUE, FALSE, sizeof (HostGroup*));
+	hostgroup = malloc(sizeof(HostGroup));
+	bzero((void*)hostgroup,sizeof(HostGroup));
+	sethostgroupcounterid(hostgroup);
+	
+	Host* newhost = malloc(sizeof(Host));
+	bzero((void*)newhost,sizeof(Host));
+	sethostcounterid(newhost);
+	newhost->label=TRUE;
+	newhost->menu_name=g_strdup("SSH Hosts");
+	head=host_queue(head,newhost);
+	
+	newhost = malloc(sizeof(Host));
+	bzero((void*)newhost,sizeof(Host));
+	sethostcounterid(newhost);
+	newhost->hostname=g_strdup("localhost");
+	newhost->login=g_strdup(user!=NULL?user:"");
+	newhost->menu_name=g_strdup("SSH on localhost");
+	newhost->tab_name=g_strdup("LocalHost");
+	head=host_queue(head,newhost);
+	
+	hostgroup->hostarray=head;
+	g_array_append_val (hostgrouparray, hostgroup);
+	//End root section
+	
+	// Start mysql server section
+	head=NULL;
+	hostgroup = malloc(sizeof(HostGroup));
+	bzero((void*)hostgroup,sizeof(HostGroup));
+	sethostgroupcounterid(hostgroup);
+	hostgroup->title=g_strdup("Mysql Servers");
+	hostgroup->label=TRUE;
+	g_array_append_val (hostgrouparray, hostgroup);
+	
+	hostgroup = malloc(sizeof(HostGroup));
+	bzero((void*)hostgroup,sizeof(HostGroup));
+	sethostgroupcounterid(hostgroup);
+	hostgroup->title=g_strdup("MYSQL");
+	
+	newhost = malloc(sizeof(Host));
+	bzero((void*)newhost,sizeof(Host));
+	sethostcounterid(newhost);
+	newhost->label=TRUE;
+	newhost->hostname=g_strdup("");
+	newhost->login=g_strdup("");
+	newhost->tab_name=g_strdup("");
+	newhost->menu_name=g_strdup("Local Mysql Servers");
+	head=host_queue(head,newhost);
+	
+	newhost = malloc(sizeof(Host));
+	bzero((void*)newhost,sizeof(Host));
+	sethostcounterid(newhost);
+	newhost->hostname=g_strdup("localhost");
+	newhost->login=g_strdup(user!=NULL?user:"");
+	newhost->menu_name=g_strdup("Mysql on localhost");
+	newhost->tab_name=g_strdup("Mysql");
+	newhost->command_after_login=g_strdup("mysql -u root --pass --host localhost -A mysql");
+	newhost->remote_command=g_strdup("yes");
+	head=host_queue(head,newhost);
+	
+	newhost = malloc(sizeof(Host));
+	bzero((void*)newhost,sizeof(Host));
+	sethostcounterid(newhost);
+	newhost->hostname=g_strdup("127.0.0.1");
+	newhost->login=g_strdup(user!=NULL?user:"");
+	newhost->menu_name=g_strdup("Mysql on 127.0.0.1");
+	newhost->tab_name=g_strdup("Mysql on 127.0.0.1");
+	newhost->command_after_login=g_strdup("mysql -u root --pass --host 127.0.0.1 -A mysql");
+	newhost->remote_command=g_strdup("yes");
+	head=host_queue(head,newhost);
+	
+	newhost = malloc(sizeof(Host));
+	bzero((void*)newhost,sizeof(Host));
+	sethostcounterid(newhost);
+	newhost->label=TRUE;
+	newhost->hostname=g_strdup("");
+	newhost->login=g_strdup("");
+	newhost->tab_name=g_strdup("");
+	newhost->menu_name=g_strdup("Remote Mysql Servers");
+	head=host_queue(head,newhost);
+	
+	newhost = malloc(sizeof(Host));
+	bzero((void*)newhost,sizeof(Host));
+	sethostcounterid(newhost);
+	newhost->hostname=g_strdup("192.168.1.1");
+	newhost->login=g_strdup(user!=NULL?user:"");
+	newhost->menu_name=g_strdup("Mysql on 192.168.1.1");
+	newhost->tab_name=g_strdup("Mysql on 192.168.1.1");
+	newhost->command_after_login=g_strdup("mysql -u root --pass --host 192.168.1.1 -A mysql");
+	newhost->remote_command=g_strdup("yes");
+	head=host_queue(head,newhost);
+	
+	hostgroup->hostarray=head;
+	g_array_append_val (hostgrouparray, hostgroup);
+	// End of mysql server section
+	
+	//Start of localhost tasks
+	head=NULL;
+	hostgroup = malloc(sizeof(HostGroup));
+	bzero((void*)hostgroup,sizeof(HostGroup));
+	sethostgroupcounterid(hostgroup);
+	hostgroup->title=g_strdup("Localhost tasks");
+	hostgroup->label=TRUE;
+	g_array_append_val (hostgrouparray, hostgroup);
+	
+	hostgroup = malloc(sizeof(HostGroup));
+	bzero((void*)hostgroup,sizeof(HostGroup));
+	sethostgroupcounterid(hostgroup);
+	hostgroup->title=g_strdup("MISC");
+	
+	newhost = malloc(sizeof(Host));
+	bzero((void*)newhost,sizeof(Host));
+	sethostcounterid(newhost);
+	newhost->hostname=g_strdup("");
+	newhost->login=g_strdup("");
+	newhost->menu_name=g_strdup("tmp folder");
+	newhost->tab_name=g_strdup("tmp folder");
+	newhost->command_after_login=g_strdup("cd /tmp");
+	head=host_queue(head,newhost);
+	
+	newhost = malloc(sizeof(Host));
+	bzero((void*)newhost,sizeof(Host));
+	sethostcounterid(newhost);
+	newhost->hostname=g_strdup("");
+	newhost->login=g_strdup("");
+	newhost->menu_name=g_strdup("top");
+	newhost->tab_name=g_strdup("top");
+	newhost->command_after_login=g_strdup("top");
+	head=host_queue(head,newhost);
+	
+	newhost = malloc(sizeof(Host));
+	bzero((void*)newhost,sizeof(Host));
+	sethostcounterid(newhost);
+	newhost->hostname=g_strdup("");
+	newhost->login=g_strdup("");
+	newhost->menu_name=g_strdup("ping www.google.com");
+	newhost->tab_name=g_strdup("Ping google");
+	newhost->command_after_login=g_strdup("ping www.google.com");
+	head=host_queue(head,newhost);
+	
+	hostgroup->hostarray=head;
+	g_array_append_val (hostgrouparray, hostgroup);
+	// End of localhost tasks
+	
+	return write_cfg_file(hostgrouparray);
+	
+	return 0;
 }
 void sethostcounterid(Host* host)
 {
 	static int counter=0;
+	if (host==NULL)
+	{
+		counter=0;
+		return ;
+	}
 	host->id = g_strdup_printf("host%d", counter++);
 }
 void sethostgroupcounterid(HostGroup* hostgroup)
 {
 	static int counter=0;
+	if (hostgroup==NULL)
+	{
+		counter=0;
+		return;
+	}
 	hostgroup->id = g_strdup_printf("hostgroup%d", counter++);
 }

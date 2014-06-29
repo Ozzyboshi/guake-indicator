@@ -23,7 +23,6 @@ Boston, MA 02111-1307, USA.
 typedef struct Host {
 	gchar* id;
 	gboolean label;
-	gchar* protocol;
 	gchar* hostname;
 	gchar* login;
 	gchar* menu_name;
@@ -31,6 +30,9 @@ typedef struct Host {
 	gchar* command_after_login;
 	gchar* remote_command;
 	gchar* x_forwarded;
+	gchar* dont_show_guake;
+	
+	gboolean open_all;
 	struct Host* next;
 	struct Host* group_head;
 } Host;
@@ -47,15 +49,19 @@ typedef struct GtkInfo {
 	GtkUIManager * uim;
 } GtkInfo;
 
-static void reload_action(GtkAction*,gpointer);
+void reload(GtkAction*,gpointer);
 static void activate_action (GtkAction* );
 static void guake_open(GtkAction*,gpointer);
 static void guake_open_with_show(GtkAction*,gpointer);
 static void group_guake_open(GtkAction*,gpointer);
 static void about(GtkAction*);
+static void edit2(GtkAction*,gpointer);
+static void update_json(gpointer);
 
 gchar* add_host_to_menu(Host*,GtkActionGroup *);
 gchar* add_lable_to_menu(HostGroup*,GtkActionGroup *);
 void create_default_actions(GtkActionGroup*,GtkInfo*);
 gchar* create_actionlists(GArray*,GtkUIManager*,GtkActionGroup*);
 int findguakepid();
+
+void error_modal_box (const char*);

@@ -94,7 +94,11 @@ am_guake_indicator_OBJECTS =  \
 	guake_indicator-guake-indicator.$(OBJEXT) \
 	guake_indicator-guake-indicator-read-json.$(OBJEXT) \
 	guake_indicator-guake-indicator-notify.$(OBJEXT) \
-	guake_indicator-guake-indicator-dbus.$(OBJEXT)
+	guake_indicator-guake-indicator-dbus.$(OBJEXT) \
+	guake_indicator-guake-indicator-write-json.$(OBJEXT) \
+	guake_indicator-guake-indicator-new-entry.$(OBJEXT) \
+	guake_indicator-guake-indicator-new-group.$(OBJEXT) \
+	guake_indicator-guake-indicator-delete-entry-group.$(OBJEXT)
 guake_indicator_OBJECTS = $(am_guake_indicator_OBJECTS)
 guake_indicator_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
@@ -186,7 +190,7 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
-LIBS = `pkg-config --libs gtk+-2.0` `pkg-config --libs appindicator-0.1` `pkg-config --libs json-c` `pkg-config --libs glib-2.0` -ldl -ldbus-1 -ldbus-glib-1
+LIBS = -lappindicator -lgtk-x11-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 `pkg-config --libs json-c` -lglib-2.0 -ldl -ldbus-glib-1
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
@@ -245,8 +249,15 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-guake_indicator_SOURCES = guake-indicator.c guake-indicator.h guake-indicator-read-json.c guake-indicator-read-json.h guake-indicator-notify.c guake-indicator-notify.h guake-indicator-dbus.c guake-indicator-dbus.h
-#guake_LIBRARIES = `pkg-config --cflags gtk+-2.0`
+guake_indicator_SOURCES = \
+	guake-indicator.c guake-indicator.h \
+	guake-indicator-read-json.c guake-indicator-read-json.h \
+	guake-indicator-notify.c guake-indicator-notify.h \
+	guake-indicator-dbus.c guake-indicator-dbus.h \
+	guake-indicator-write-json.c guake-indicator-read-json.h \
+	guake-indicator-new-entry.c guake-indicator-new-group.c guake-indicator-new-group.h \
+	guake-indicator-delete-entry-group.c guake-indicator-delete-entry-group.h
+
 guake_indicator_CPPFLAGS = `pkg-config --cflags gtk+-2.0` `pkg-config --cflags appindicator-0.1` `pkg-config --cflags json-c` -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include 
 all: all-am
 
@@ -336,8 +347,12 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/guake_indicator-guake-indicator-dbus.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/guake_indicator-guake-indicator-delete-entry-group.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/guake_indicator-guake-indicator-new-entry.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/guake_indicator-guake-indicator-new-group.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/guake_indicator-guake-indicator-notify.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/guake_indicator-guake-indicator-read-json.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/guake_indicator-guake-indicator-write-json.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/guake_indicator-guake-indicator.Po@am__quote@
 
 .c.o:
@@ -409,6 +424,62 @@ guake_indicator-guake-indicator-dbus.obj: guake-indicator-dbus.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='guake-indicator-dbus.c' object='guake_indicator-guake-indicator-dbus.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o guake_indicator-guake-indicator-dbus.obj `if test -f 'guake-indicator-dbus.c'; then $(CYGPATH_W) 'guake-indicator-dbus.c'; else $(CYGPATH_W) '$(srcdir)/guake-indicator-dbus.c'; fi`
+
+guake_indicator-guake-indicator-write-json.o: guake-indicator-write-json.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT guake_indicator-guake-indicator-write-json.o -MD -MP -MF $(DEPDIR)/guake_indicator-guake-indicator-write-json.Tpo -c -o guake_indicator-guake-indicator-write-json.o `test -f 'guake-indicator-write-json.c' || echo '$(srcdir)/'`guake-indicator-write-json.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/guake_indicator-guake-indicator-write-json.Tpo $(DEPDIR)/guake_indicator-guake-indicator-write-json.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='guake-indicator-write-json.c' object='guake_indicator-guake-indicator-write-json.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o guake_indicator-guake-indicator-write-json.o `test -f 'guake-indicator-write-json.c' || echo '$(srcdir)/'`guake-indicator-write-json.c
+
+guake_indicator-guake-indicator-write-json.obj: guake-indicator-write-json.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT guake_indicator-guake-indicator-write-json.obj -MD -MP -MF $(DEPDIR)/guake_indicator-guake-indicator-write-json.Tpo -c -o guake_indicator-guake-indicator-write-json.obj `if test -f 'guake-indicator-write-json.c'; then $(CYGPATH_W) 'guake-indicator-write-json.c'; else $(CYGPATH_W) '$(srcdir)/guake-indicator-write-json.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/guake_indicator-guake-indicator-write-json.Tpo $(DEPDIR)/guake_indicator-guake-indicator-write-json.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='guake-indicator-write-json.c' object='guake_indicator-guake-indicator-write-json.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o guake_indicator-guake-indicator-write-json.obj `if test -f 'guake-indicator-write-json.c'; then $(CYGPATH_W) 'guake-indicator-write-json.c'; else $(CYGPATH_W) '$(srcdir)/guake-indicator-write-json.c'; fi`
+
+guake_indicator-guake-indicator-new-entry.o: guake-indicator-new-entry.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT guake_indicator-guake-indicator-new-entry.o -MD -MP -MF $(DEPDIR)/guake_indicator-guake-indicator-new-entry.Tpo -c -o guake_indicator-guake-indicator-new-entry.o `test -f 'guake-indicator-new-entry.c' || echo '$(srcdir)/'`guake-indicator-new-entry.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/guake_indicator-guake-indicator-new-entry.Tpo $(DEPDIR)/guake_indicator-guake-indicator-new-entry.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='guake-indicator-new-entry.c' object='guake_indicator-guake-indicator-new-entry.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o guake_indicator-guake-indicator-new-entry.o `test -f 'guake-indicator-new-entry.c' || echo '$(srcdir)/'`guake-indicator-new-entry.c
+
+guake_indicator-guake-indicator-new-entry.obj: guake-indicator-new-entry.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT guake_indicator-guake-indicator-new-entry.obj -MD -MP -MF $(DEPDIR)/guake_indicator-guake-indicator-new-entry.Tpo -c -o guake_indicator-guake-indicator-new-entry.obj `if test -f 'guake-indicator-new-entry.c'; then $(CYGPATH_W) 'guake-indicator-new-entry.c'; else $(CYGPATH_W) '$(srcdir)/guake-indicator-new-entry.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/guake_indicator-guake-indicator-new-entry.Tpo $(DEPDIR)/guake_indicator-guake-indicator-new-entry.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='guake-indicator-new-entry.c' object='guake_indicator-guake-indicator-new-entry.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o guake_indicator-guake-indicator-new-entry.obj `if test -f 'guake-indicator-new-entry.c'; then $(CYGPATH_W) 'guake-indicator-new-entry.c'; else $(CYGPATH_W) '$(srcdir)/guake-indicator-new-entry.c'; fi`
+
+guake_indicator-guake-indicator-new-group.o: guake-indicator-new-group.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT guake_indicator-guake-indicator-new-group.o -MD -MP -MF $(DEPDIR)/guake_indicator-guake-indicator-new-group.Tpo -c -o guake_indicator-guake-indicator-new-group.o `test -f 'guake-indicator-new-group.c' || echo '$(srcdir)/'`guake-indicator-new-group.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/guake_indicator-guake-indicator-new-group.Tpo $(DEPDIR)/guake_indicator-guake-indicator-new-group.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='guake-indicator-new-group.c' object='guake_indicator-guake-indicator-new-group.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o guake_indicator-guake-indicator-new-group.o `test -f 'guake-indicator-new-group.c' || echo '$(srcdir)/'`guake-indicator-new-group.c
+
+guake_indicator-guake-indicator-new-group.obj: guake-indicator-new-group.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT guake_indicator-guake-indicator-new-group.obj -MD -MP -MF $(DEPDIR)/guake_indicator-guake-indicator-new-group.Tpo -c -o guake_indicator-guake-indicator-new-group.obj `if test -f 'guake-indicator-new-group.c'; then $(CYGPATH_W) 'guake-indicator-new-group.c'; else $(CYGPATH_W) '$(srcdir)/guake-indicator-new-group.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/guake_indicator-guake-indicator-new-group.Tpo $(DEPDIR)/guake_indicator-guake-indicator-new-group.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='guake-indicator-new-group.c' object='guake_indicator-guake-indicator-new-group.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o guake_indicator-guake-indicator-new-group.obj `if test -f 'guake-indicator-new-group.c'; then $(CYGPATH_W) 'guake-indicator-new-group.c'; else $(CYGPATH_W) '$(srcdir)/guake-indicator-new-group.c'; fi`
+
+guake_indicator-guake-indicator-delete-entry-group.o: guake-indicator-delete-entry-group.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT guake_indicator-guake-indicator-delete-entry-group.o -MD -MP -MF $(DEPDIR)/guake_indicator-guake-indicator-delete-entry-group.Tpo -c -o guake_indicator-guake-indicator-delete-entry-group.o `test -f 'guake-indicator-delete-entry-group.c' || echo '$(srcdir)/'`guake-indicator-delete-entry-group.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/guake_indicator-guake-indicator-delete-entry-group.Tpo $(DEPDIR)/guake_indicator-guake-indicator-delete-entry-group.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='guake-indicator-delete-entry-group.c' object='guake_indicator-guake-indicator-delete-entry-group.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o guake_indicator-guake-indicator-delete-entry-group.o `test -f 'guake-indicator-delete-entry-group.c' || echo '$(srcdir)/'`guake-indicator-delete-entry-group.c
+
+guake_indicator-guake-indicator-delete-entry-group.obj: guake-indicator-delete-entry-group.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT guake_indicator-guake-indicator-delete-entry-group.obj -MD -MP -MF $(DEPDIR)/guake_indicator-guake-indicator-delete-entry-group.Tpo -c -o guake_indicator-guake-indicator-delete-entry-group.obj `if test -f 'guake-indicator-delete-entry-group.c'; then $(CYGPATH_W) 'guake-indicator-delete-entry-group.c'; else $(CYGPATH_W) '$(srcdir)/guake-indicator-delete-entry-group.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/guake_indicator-guake-indicator-delete-entry-group.Tpo $(DEPDIR)/guake_indicator-guake-indicator-delete-entry-group.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='guake-indicator-delete-entry-group.c' object='guake_indicator-guake-indicator-delete-entry-group.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(guake_indicator_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o guake_indicator-guake-indicator-delete-entry-group.obj `if test -f 'guake-indicator-delete-entry-group.c'; then $(CYGPATH_W) 'guake-indicator-delete-entry-group.c'; else $(CYGPATH_W) '$(srcdir)/guake-indicator-delete-entry-group.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -614,9 +685,6 @@ uninstall-am: uninstall-binPROGRAMS
 	ps ps-am tags tags-am uninstall uninstall-am \
 	uninstall-binPROGRAMS
 
-#guake_indicator_LDADD =""
-#AM_LDFLAGS           =  `pkg-config --libs gtk+-2.0` `pkg-config --libs appindicator-0.1` `pkg-config --libs json-c`
-#guake_indicator_LDADD = `pkg-config --libs gtk+-2.0` `pkg-config --libs appindicator-0.1` `pkg-config --libs json-c` `pkg-config --libs glib-2.0`
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,4 +1,4 @@
-guake-indicator (0.2-1) unstable; urgency=low
+guake-indicator (0.4-1) unstable; urgency=low
 
   * Initial release (Closes: #745087)
 

@@ -1,4 +1,4 @@
-AC_INIT([guake-indicator], [0.2], [gun101@email.it])
+AC_INIT([guake-indicator], [0.4], [gun101@email.it])
 
 # safety check , make sure that config is not run from outer space
 AC_CONFIG_SRCDIR([src/guake-indicator.c])

@@ -1,3 +1,45 @@
+2014-06-15 Alessio Garzi  <gun101@email.it>
+
+	* src/COPYING : Changed with correct license
+
+2014-06-15 Alessio Garzi  <gun101@email.it>
+
+	* src/guake-indicator-notify.h : Changed notification icon
+	
+	* src/guake-indicator.c : Check if fopen() fails while opening /proc/#pid#/comm
+	
+	* src/guake-indicator-read-json.c : Fixed memory leaks within read_json_cfg_file() function
+	
+	* src/guake-indicator-write-json.c : Added write json configuration file capabilities
+	
+	* src/guake-indicator-write-json.h : Added write json configuration file capabilities
+	
+	* src/Makefile.am : Added guake-indicator-write-json.c and guake-indicator-write-json.h to guake_indicator_CPPFLAGS
+	
+	* src/guake-indicator-read-json.c : Added dont_show_guake option
+	
+	* src/guake-indicator.h : Added dont_show_guake option
+	
+	* src/guake-indicator.c : Added dont_show_guake option
+	
+	* src/guake-indicator.c : Do now write bin/bash if command_after_login is empty
+	
+	* src/guake-indicator-new-entry.c : New file for configuration file management
+	
+	* src/guake-indicator-new-entry.h : New file for configuration file management
+	
+	* src/guake-indicator-new-group.c : New file for configuration file management
+	
+	* src/guake-indicator-new-group.h : New file for configuration file management
+	
+	* src/guake-indicator-delete-entry.group.c : New file for configuration file management
+	
+	* src/guake-indicator-delete-entry-group.h : New file for configuration file management
+	
+	* src/guake-indicator.h : Added error_modal_box() prototype
+	
+	* src/guake-indicator.h : Added reload prototype (it was mispelled)
+
 2014-05-06  Alessio Garzi  <gun101@email.it>
 
 	* src/Makefile.am : Ereased unnecessary libraries

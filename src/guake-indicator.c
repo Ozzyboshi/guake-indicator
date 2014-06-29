@@ -23,14 +23,21 @@ Boston, MA 02111-1307, USA.
 #include <libappindicator/app-indicator.h>
 #include "guake-indicator.h"
 #include "guake-indicator-read-json.h"
-
+#include "guake-indicator-write-json.h"
+#include "guake-indicator-new-entry.h"
+#include "guake-indicator-new-group.h"
+#include "guake-indicator-delete-entry-group.h"
 
 static const gchar* ui_start = "<ui>";
 static const gchar* ui_end = "</ui>";
 static const gchar* popup_start = "<popup name='IndicatorPopup'>";
 static const gchar* popup_end = "</popup>";
 static const gchar* separator = "<separator/>";
-static const gchar* default_menuitems = "<menuitem action='Reload' />"
+static const gchar* default_menuitems = "<menuitem action='Add Entry' />"
+										"<menuitem action='New Group' />"
+										"<menuitem action='Delete Entry/Group'/>"
+										"<separator/>"
+										"<menuitem action='Reload' />"
                                         "<menuitem action='Quit' />"
                                         "<menuitem action='About' />";
 
@@ -90,14 +97,14 @@ static void guake_open(GtkAction* action,gpointer user_data)
 	// execute a command
 	if (!strlen((char*)host.hostname))
 		cmd = g_strjoin(NULL,host.command_after_login!=NULL?host.command_after_login:"",NULL);
-	else if (host.command_after_login==NULL)
-		cmd = g_strjoin(NULL,host.protocol," -l ",host.login," ",host.hostname,NULL);
+	else if (host.command_after_login==NULL || !strlen((char*)host.command_after_login))
+		cmd = g_strjoin(NULL,"ssh"," -l ",host.login," ",host.hostname,NULL);
 	else
 	{
 		if (host.remote_command==NULL || g_strcmp0(host.remote_command,"yes"))
-			cmd = g_strjoin(NULL,host.protocol,x_forwarded_flag," -t -l ",host.login," ",host.hostname," '",host.command_after_login,";/bin/bash'",NULL);
+			cmd = g_strjoin(NULL,"ssh",x_forwarded_flag," -t -l ",host.login," ",host.hostname," '",host.command_after_login,";/bin/bash'",NULL);
 		else
-			cmd = g_strjoin(NULL,host.protocol,x_forwarded_flag," -t -l ",host.login," ",host.hostname," ",host.command_after_login,NULL);
+			cmd = g_strjoin(NULL,"ssh",x_forwarded_flag," -t -l ",host.login," ",host.hostname," ",host.command_after_login,NULL);
 	}
 	//printf("%s",cmd);fflush(stdout);
 	guake_executecommand(cmd);
@@ -107,7 +114,7 @@ static void guake_open(GtkAction* action,gpointer user_data)
 }
 
 // Reload hosts reading them from the configuration file
-static void reload(GtkAction* action,gpointer user_data)
+void reload(GtkAction* action,gpointer user_data)
 {
 	GtkActionGroup* action_group= ((GtkInfo*)user_data)->action_group;
 	GtkActionGroup* new_action_group;
@@ -184,12 +191,12 @@ static void about(GtkAction* action)
 					"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.";
 	
 	const gchar *authors[] = {
-		"Alessio Garzi",
+		"Alessio Garzi <gun101@email.it>",
 		NULL
 	};
 		
 	const gchar *documenters[] = {
-		"Alessio Garzi",
+		"Alessio Garzi <gun101@email.it>",
 		NULL
 	};
 	
@@ -210,7 +217,7 @@ static void about(GtkAction* action)
 	}
 		
 	gtk_about_dialog_set_name (GTK_ABOUT_DIALOG (dialog), "guake-indicator");
-	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (dialog), "0.2");
+	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (dialog), "0.4");
 	gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (dialog),"(C) 2013-2014 Alessio Garzi");
 	gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (dialog),"A simple guake indicator that lets you ssh into your favourite hosts");
 		
@@ -220,7 +227,7 @@ static void about(GtkAction* action)
 		
 	gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (dialog), authors);
 	gtk_about_dialog_set_documenters (GTK_ABOUT_DIALOG (dialog), documenters);
-	gtk_about_dialog_set_translator_credits (GTK_ABOUT_DIALOG (dialog),"Alessio Garzi");
+	gtk_about_dialog_set_translator_credits (GTK_ABOUT_DIALOG (dialog),"Alessio Garzi <gun101@email.it>");
 		
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
@@ -246,8 +253,7 @@ activate_action (GtkAction* action)
         gtk_widget_show (dialog);
 }*/
 
-static void
-error_modal_box (const char* alerttext)
+void error_modal_box (const char* alerttext)
 {
         GtkWidget *dialog;
 
@@ -296,15 +302,24 @@ gchar* add_host_to_menu(Host* head,GtkActionGroup *action_group)
 			action = gtk_action_new(ptr->id, ptr->menu_name, NULL, NULL);
 			g_signal_connect(G_OBJECT(action), "activate", G_CALLBACK(group_guake_open), (gpointer)ptr);
 		}
+		
+		// Draw a inner label
 		else if (ptr->label==TRUE)
 		{
 			action = gtk_action_new(ptr->id, ptr->menu_name, NULL, NULL);
 			gtk_action_set_sensitive(action,FALSE);
 		}
+		
+		// Regular row is clicked
 		else
 		{
+			void (*funct_ptr)(GtkAction*,gpointer);
+			if (ptr->dont_show_guake==NULL || g_strcmp0(ptr->dont_show_guake,"yes"))
+				funct_ptr=guake_open_with_show;
+			else
+				funct_ptr=guake_open;
 			action = gtk_action_new(ptr->id, ptr->menu_name, NULL, NULL);
-			g_signal_connect(G_OBJECT(action), "activate", G_CALLBACK(guake_open_with_show), (gpointer)ptr);	
+			g_signal_connect(G_OBJECT(action), "activate", G_CALLBACK(funct_ptr), (gpointer)ptr);	
 		}
 			
 		gtk_action_group_add_action(action_group, action);
@@ -435,6 +450,21 @@ int main (int argc, char **argv)
 
 void create_default_actions(GtkActionGroup* action_group,GtkInfo* gtkinfo)
 {
+	
+	// Add new_entry action
+	GtkAction* new_entry_action = gtk_action_new("Add Entry", "Add Entry", NULL, NULL);
+	g_signal_connect(G_OBJECT(new_entry_action), "activate", G_CALLBACK(print_new_entry_form), (gpointer) gtkinfo);
+	gtk_action_group_add_action(action_group, new_entry_action);
+	
+	// Add new_group action
+	GtkAction* new_group_action = gtk_action_new("New Group", "New Group", NULL, NULL);
+	g_signal_connect(G_OBJECT(new_group_action), "activate", G_CALLBACK(print_new_group_form), (gpointer) gtkinfo);
+	gtk_action_group_add_action(action_group, new_group_action);
+	
+	// Add new_group action
+	GtkAction* new_delete_action = gtk_action_new("Delete Entry/Group", "Delete Entry/Group", NULL, NULL);
+	g_signal_connect(G_OBJECT(new_delete_action), "activate", G_CALLBACK(print_new_delete_form), (gpointer) gtkinfo);
+	gtk_action_group_add_action(action_group, new_delete_action);
 
 	// Add reload_action
 	GtkAction* reload_action = gtk_action_new("Reload", "Reload", NULL, NULL);
@@ -467,7 +497,7 @@ int findguakepid()
 		while ((de = readdir(dir)) != 0)
 		{
 			if (strcmp(de->d_name, ".") == 0 || strcmp(de->d_name, "..") == 0)
-            continue;
+				continue;
 
 			int pid = -1;
 			int res = sscanf(de->d_name, "%d", &pid);
@@ -479,6 +509,7 @@ int findguakepid()
 				sprintf(cmdline_file, "%s/%d/comm", directory, pid);
 
 				FILE* cmdline = fopen(cmdline_file, "r");
+				if (cmdline==NULL) continue;
 
 				if (getline(&taskName, &taskNameSize, cmdline) > 0)
 				{
