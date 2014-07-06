@@ -2,4 +2,5 @@ guake-indicator (0.4-1) unstable; urgency=low
 
   * Initial release (Closes: #745087)
 
- -- Alessio Garzi <gun101@email.it>  Tue, 22 Apr 2014 10:29:25 +0100
+ -- Alessio Garzi <gun101@email.it>  Sun, 06 Jul 2014 19:44:01 +0200
+
