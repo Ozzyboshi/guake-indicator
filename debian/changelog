@@ -1,6 +1,12 @@
+guake-indicator (1.0-1) unstable; urgency=low
+
+  * New upstream release
+  
+ -- Alessio Garzi <gun101@email.it>  Wed, 24 Dec 2014 16:31:00 +0100
+
+
 guake-indicator (0.4-1) unstable; urgency=low
 
   * Initial release (Closes: #745087)
 
- -- Alessio Garzi <gun101@email.it>  Sun, 06 Jul 2014 19:44:01 +0200
-
+ -- Alessio Garzi <gun101@email.it>  Tue, 22 Apr 2014 10:29:25 +0100

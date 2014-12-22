@@ -1,5 +1,6 @@
 /*
-Copyright (C) 2013-2014 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2015 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2015 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -19,29 +20,78 @@ Boston, MA 02111-1307, USA.
 
 #include "guake-indicator-dbus.h"
 
-gboolean guake_dbus_send(const gchar* functname,const gchar* param)
+DBusGProxy* guake_dbus_init()
 {
 	DBusGConnection* bus;
 	GError* error = NULL;
 	DBusGProxy* remoteValue;
-	gboolean returnValue;
 	
 	bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
-	
 	if (error != NULL)
 	{
 		g_printf("Couldn't connect to the Session bus %s", error->message);
-		return FALSE;
+		g_error_free (error);
+		return NULL;
 	}
 		
-	remoteValue =
-    dbus_g_proxy_new_for_name(bus,GUAKE_URI,GUAKE_PATH,GUAKE_IFACE);
-                              
-    if (remoteValue == NULL) {
+	remoteValue =dbus_g_proxy_new_for_name(bus,GUAKE_URI,GUAKE_PATH,GUAKE_IFACE);
+	if (remoteValue == NULL) {
 		g_printf("Couldn't create the proxy object");
+		return NULL;
+	}
+	return remoteValue;
+}
+
+// Send a integer to the dbus system and get a string in return
+gboolean guake_dbus_send_intparam_with_string_return(const gchar* functname,gint32 param,gchar** ret)
+{
+	GError* error = NULL;
+	gchar* strret;
+	
+	DBusGProxy* remoteValue = guake_dbus_init();
+	if (remoteValue==NULL)
+		return FALSE;
+	
+	if (!dbus_g_proxy_call (remoteValue, functname,&error,G_TYPE_INT, param,G_TYPE_INVALID,G_TYPE_STRING,&strret,G_TYPE_INVALID))
+	{
+		g_printerr ("Error: %s\n", error->message);
+		g_error_free (error);
 		return FALSE;
 	}
+	*ret=strret;
+	return TRUE;
+}
+
+// Get an integer from the dbus system
+gboolean guake_dbus_send_noparams_with_integer_return(const gchar* functname,gint32* ret)
+{
+	GError* error = NULL;
+	gboolean returnValue;
 	
+	DBusGProxy* remoteValue = guake_dbus_init();
+	if (remoteValue==NULL)
+		return FALSE;
+	
+	*ret=-1;
+	
+	returnValue = dbus_g_proxy_call (remoteValue, functname,&error,G_TYPE_INVALID,G_TYPE_INT, ret,G_TYPE_INVALID);
+	if (!returnValue)
+	{
+		//g_printerr ("Error: %s\n", error->message);
+		g_error_free (error);
+		return FALSE;
+	}
+	return TRUE;
+}
+
+gboolean guake_dbus_send(const gchar* functname,const gchar* param)
+{
+	GError* error = NULL;
+	gboolean returnValue;
+	DBusGProxy* remoteValue = guake_dbus_init();
+	if (remoteValue==NULL)
+		return FALSE;
+
 	if (param==NULL)
 		returnValue = dbus_g_proxy_call (remoteValue, functname,&error,G_TYPE_INVALID,G_TYPE_INVALID);
 	else
@@ -49,7 +99,7 @@ gboolean guake_dbus_send(const gchar* functname,const gchar* param)
 	
 	if (!returnValue)
 	{
-		g_printf("function call failed : '%s'",error->message);
+		g_error_free (error);
 		return FALSE;
 	}
 	return TRUE;
@@ -73,6 +123,24 @@ gboolean guake_show()
 gboolean guake_newtab()
 {
 	return guake_dbus_send_noparam("add_tab");
+}
+
+// It opens the nth Guake tab
+gboolean guake_selecttab(const gchar* param)
+{
+	return guake_dbus_send("select_tab",param);
+}
+
+// Get number of Guake tabs
+gboolean guake_gettabcount(gint32* numtabs)
+{
+	return guake_dbus_send_noparams_with_integer_return("get_tab_count",numtabs);
+}
+
+// Get number of the nth Guake tab
+gboolean guake_getgtktabname(guint tabindex,gchar** name)
+{
+	return guake_dbus_send_intparam_with_string_return("get_gtktab_name",tabindex,name);
 }
 
 // It renames the current Guake tab

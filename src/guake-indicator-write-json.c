@@ -1,5 +1,6 @@
 /*
-Copyright (C) 2013-2014 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2015 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2015 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -89,7 +90,9 @@ const char* write_json_cfg_file_to_str(GArray* grouphostlist)
 			json_object_object_add(j_outerobj, "data",data_array);
 		}
 	}
-	return json_object_to_json_string_ext(j_outerobj, JSON_C_TO_STRING_PRETTY);
+	const char* retvalue = strdup(json_object_to_json_string_ext(j_outerobj, JSON_C_TO_STRING_PRETTY));
+	json_object_put(j_outerobj);
+	return retvalue;
 }
 
 json_object * build_json_label_obj(Host* hostPtr)
@@ -102,10 +105,10 @@ json_object * build_json_label_obj(Host* hostPtr)
 json_object * build_json_data_obj(Host* hostPtr)
 {
 	json_object * data_obj = json_object_new_object();
-	json_object_object_add(data_obj,"hostname",json_object_new_string(hostPtr->hostname));
-	json_object_object_add(data_obj,"login",json_object_new_string(hostPtr->login));
+	if (hostPtr->hostname) json_object_object_add(data_obj,"hostname",json_object_new_string(hostPtr->hostname));
+	if (hostPtr->login) json_object_object_add(data_obj,"login",json_object_new_string(hostPtr->login));
 	json_object_object_add(data_obj,"menu_name",json_object_new_string(hostPtr->menu_name));
-	json_object_object_add(data_obj,"tab_name",json_object_new_string(hostPtr->tab_name));
+	if (hostPtr->tab_name) json_object_object_add(data_obj,"tab_name",json_object_new_string(hostPtr->tab_name));
 	if (hostPtr->command_after_login!=NULL)
 		json_object_object_add(data_obj,"command_after_login",json_object_new_string(hostPtr->command_after_login));
 		
@@ -137,5 +140,6 @@ int write_cfg_file(GArray* grouphostlist)
 	fwrite((const void*)data,strlen(data),1,fd);
 	fclose(fd);
 	free((void*)filecfg);
+	free((void*)data);
 	return 0;
 }

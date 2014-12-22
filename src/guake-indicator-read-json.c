@@ -1,5 +1,6 @@
 /*
-Copyright (C) 2013-2014 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2015 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2015 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -29,6 +30,7 @@ Boston, MA 02111-1307, USA.
 
 #include "guake-indicator.h"
 #include "guake-indicator-read-json.h"
+#include "guake-indicator-xml.h"
 
 // This function reads the json cfg file and returns a linked list of host
 GArray* read_json_cfg_file(char * customfilecfg)
@@ -55,7 +57,8 @@ GArray* read_json_cfg_file(char * customfilecfg)
 	{
 			if (createdefaultfilecfg(filecfg))
 				return NULL;
-			err = stat(filecfg, &s);
+			//err = stat(filecfg, &s);
+			return read_xml_cfg_file();
 	}
 	
 	if(!S_ISREG(s.st_mode) && !S_ISLNK(s.st_mode))
@@ -90,7 +93,7 @@ GArray* json_parse(json_object * jobj)
 	GArray * hostgrouparray;
 	Host* head=NULL;
 	int i;
-	struct json_object * new_obj ,* inner_jobj,*data_jobj,*label_obj;
+	struct json_object * inner_jobj,*data_jobj;
 	enum json_type type;
 	HostGroup* hostgroup;
 	sethostcounterid(NULL); // reset counter id for single hosts
@@ -113,7 +116,10 @@ GArray* json_parse(json_object * jobj)
 						{			
 							Host* newhost = create_host_linkedlist(data_jobj,i);
 							if (newhost!=NULL)
+							{
+								newhost->parent=hostgroup;
 								head=host_queue(head,newhost);
+							}
 						}
 						hostgroup->hostarray=head;
 						g_array_append_val (hostgrouparray, hostgroup);
@@ -149,7 +155,10 @@ GArray* json_parse(json_object * jobj)
 								{
 									Host* new_host = create_host_linkedlist(data_jobj,i);
 									if (new_host!=NULL)
+									{
+										new_host->parent=hostgroup;
 										head=host_queue(head,new_host);
+									}
 								}
 								
 								// Set the open all row
@@ -209,28 +218,18 @@ Host* create_host_linkedlist(struct json_object * data_jobj,int i)
 	struct json_object * new_obj_dont_show_guake;
 	json_object_object_get_ex(jvalue, "dont_show_guake",&new_obj_dont_show_guake);
 								
-	/*printf("##%s##\n",json_object_get_string(new_obj_hostname));
-	printf("##%s##\n",json_object_get_string(new_obj_login));
-	printf("##%s##\n",json_object_get_string(new_obj_menu_name));
-	printf("##%s##\n",json_object_get_string(new_obj_tab_name));*/
-	//printf("caaa%s\n",json_object_get_string(new_obj));
-	// These are all mandatory fields
-								
-	if  (
-		(char*)json_object_get_string(new_obj_hostname)==NULL 	  || 
-		(char*)json_object_get_string(new_obj_login)	==NULL	  ||
-		(char*)json_object_get_string(new_obj_menu_name)==NULL	  ||
-		(char*)json_object_get_string(new_obj_tab_name)==NULL
-	)
+	if ((char*)json_object_get_string(new_obj_menu_name)==NULL)
+	{
 		return NULL;
+	}
 															
 	Host* newhost = malloc(sizeof(Host));
 	bzero((void*)newhost,sizeof(Host));
 	sethostcounterid(newhost);
-	newhost->hostname=strdup((char*)json_object_get_string(new_obj_hostname));
-	newhost->login=strdup((char*)json_object_get_string(new_obj_login));
+	if (new_obj_hostname) newhost->hostname=strdup((char*)json_object_get_string(new_obj_hostname));
+	if (new_obj_login) newhost->login=strdup((char*)json_object_get_string(new_obj_login));
 	newhost->menu_name=strdup((char*)json_object_get_string(new_obj_menu_name));
-	newhost->tab_name=strdup((char*)json_object_get_string(new_obj_tab_name));
+	if (new_obj_tab_name) newhost->tab_name=strdup((char*)json_object_get_string(new_obj_tab_name));
 	if ((char*)json_object_get_string(new_obj_cmd_name))
 		newhost->command_after_login=strdup((char*)json_object_get_string(new_obj_cmd_name));
 	if (new_obj_remote_command!=NULL)
@@ -239,6 +238,7 @@ Host* create_host_linkedlist(struct json_object * data_jobj,int i)
 		newhost->x_forwarded=strdup((char*)json_object_get_string(new_obj_x_forwarded));
 	if (new_obj_dont_show_guake!=NULL)
 		newhost->dont_show_guake=strdup((char*)json_object_get_string(new_obj_dont_show_guake));
+
 	return newhost;
 }
 
@@ -253,6 +253,7 @@ Host* host_queue(Host* head,Host* newhost)
 	while (ptr->next)
 		ptr=ptr->next;
 	ptr->next=newhost;
+	newhost->previous=ptr;
 	return head;
 }
 
@@ -260,7 +261,8 @@ Host* host_queue(Host* head,Host* newhost)
 char* checkandcreatedefaultdir()
 {
 	char* fulldirpath;
-	struct stat s;
+	struct stat s,s1;
+	char* pluginpath;
 		
 	asprintf(&fulldirpath,"%s/%s",getenv("HOME"),GUAKE_INDICATOR_DEFAULT_DIR);
 	int err = stat(fulldirpath, &s);
@@ -277,6 +279,22 @@ char* checkandcreatedefaultdir()
 				fprintf(stderr,"Can't create %s (%d - %s)",GUAKE_INDICATOR_DEFAULT_DIR,errno,strerror(errno));
 		}
 	}
+	asprintf(&pluginpath,"%s/%s",fulldirpath,GUAKE_INDICATOR_PLUGIN_DIR);
+	err = stat(pluginpath, &s1);
+	if(ENOENT == err)
+	{
+		if (mkdir(pluginpath,0744)==-1)
+			fprintf(stderr,"Can't create %s (%d - %s)",GUAKE_INDICATOR_PLUGIN_DIR,errno,strerror(errno));
+	}
+	else
+	{
+		if(!S_ISDIR(s1.st_mode))
+		{
+			if (mkdir(pluginpath,0744))
+				fprintf(stderr,"Can't create %s (%d - %s)",GUAKE_INDICATOR_PLUGIN_DIR,errno,strerror(errno));
+		}
+	}
+	free(pluginpath);
 	return fulldirpath;
 }
 
@@ -432,10 +450,8 @@ int createdefaultfilecfg(const char* path)
 	hostgroup->hostarray=head;
 	g_array_append_val (hostgrouparray, hostgroup);
 	// End of localhost tasks
-	
-	return write_cfg_file(hostgrouparray);
-	
-	return 0;
+
+	return write_xml_cfg_file(hostgrouparray);
 }
 void sethostcounterid(Host* host)
 {

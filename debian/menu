@@ -2,5 +2,5 @@
    needs="X11" \
    section="Applications/System/Administration" \
    title="Guake indicator" \
-   icon="/usr/share/pixmaps/guake/guake-indicator.xpm" \
+   icon="/usr/share/pixmaps/guake-indicator/guake-indicator.xpm" \
    command="/usr/bin/guake-indicator"

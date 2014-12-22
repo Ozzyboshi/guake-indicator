@@ -1,5 +1,6 @@
 /*
-Copyright (C) 2013-2014 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2015 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2015 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -20,6 +21,11 @@ Boston, MA 02111-1307, USA.
 #include <glib.h>
 #include <gtk/gtk.h>
 
+#define GUAKE_INDICATOR_DEFAULT_DIR ".guake-indicator"
+#define GUAKE_INDICATOR_PLUGIN_DIR "plugins"
+#define GUAKE_INDICATOR_ICON_DIR "icons/hicolor/256x256/apps/"
+#define GUAKE_INDICATOR_GCONF_SCHEMA_ROOT "/apps/guake-indicator/"
+
 typedef struct Host {
 	gchar* id;
 	gboolean label;
@@ -31,10 +37,16 @@ typedef struct Host {
 	gchar* remote_command;
 	gchar* x_forwarded;
 	gchar* dont_show_guake;
+	gchar* open_in_tab;
+	gboolean open_in_tab_named;
+	gchar* lfcr;
+	gchar* guakeindicatorscript;
 	
 	gboolean open_all;
 	struct Host* next;
+	struct Host* previous;
 	struct Host* group_head;
+	struct HostGroup* parent;
 } Host;
 
 typedef struct HostGroup {
@@ -47,6 +59,7 @@ typedef struct HostGroup {
 typedef struct GtkInfo {
 	GtkActionGroup* action_group;
 	GtkUIManager * uim;
+	GArray* grouphostlist;
 } GtkInfo;
 
 void reload(GtkAction*,gpointer);
@@ -55,13 +68,16 @@ static void guake_open(GtkAction*,gpointer);
 static void guake_open_with_show(GtkAction*,gpointer);
 static void group_guake_open(GtkAction*,gpointer);
 static void about(GtkAction*);
-static void edit2(GtkAction*,gpointer);
+static void close_guake ( GtkWidget *, gpointer);
 static void update_json(gpointer);
 
 gchar* add_host_to_menu(Host*,GtkActionGroup *);
 gchar* add_lable_to_menu(HostGroup*,GtkActionGroup *);
 void create_default_actions(GtkActionGroup*,GtkInfo*);
 gchar* create_actionlists(GArray*,GtkUIManager*,GtkActionGroup*);
+void grouphostlist_free(GArray*);
+void host_free(Host*);
+void hostgroup_free(HostGroup*);
 int findguakepid();
 
 void error_modal_box (const char*);

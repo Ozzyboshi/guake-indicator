@@ -1,3 +1,22 @@
+2014-12-24 Alessio Garzi <gun101@email.it> and Francesco Minà <mina.francesco@gmail.com>
+
+	1.0 release with the following features :
+	
+	- switch to xml based configuration file
+	
+	- new gui for configuration file builder
+	
+	- suppressed ssh strongly related commands
+	
+	- command passed to guake now is fully customizable
+	
+	- added plugins managment
+
+2014-07-15 Alessio Garzi <gun101@email.it>
+
+	* src/Changelog : Start of glade based gui development
+
+
 2014-06-15 Alessio Garzi  <gun101@email.it>
 
 	* src/COPYING : Changed with correct license

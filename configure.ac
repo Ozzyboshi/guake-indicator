@@ -1,4 +1,4 @@
-AC_INIT([guake-indicator], [0.4], [gun101@email.it])
+AC_INIT([guake-indicator], [1.0], [gun101@email.it])
 
 # safety check , make sure that config is not run from outer space
 AC_CONFIG_SRCDIR([src/guake-indicator.c])
@@ -8,6 +8,8 @@ AM_INIT_AUTOMAKE([-Wall -Werror])
 # Checks for programs.
 AC_PROG_CC
 AM_PROG_CC_C_O
+AM_PATH_PYTHON(2.5.0)
+
 #AC_CHECK_PROGS([GUAKE], [guake guake-prefs], [:])
 #if test "$GUAKE" = :; then
 #AC_MSG_ERROR([This package needs guake.])
@@ -30,12 +32,46 @@ AC_CHECK_HEADER([libappindicator/app-indicator.h])
 AC_CHECK_HEADER([json-c/json.h])
 AC_CHECK_HEADER([glib.h])
 AC_CHECK_HEADER([dbus/dbus-glib.h])
+AC_CHECK_HEADER([gconf/gconf-client.h])
+
+# python checks
+AC_MSG_CHECKING([for the python-urllib package])
+ac_urllib2_result=`$PYTHON -c 'try:
+    import urllib2
+except Exception, e:
+    print str(e)' 2> /dev/null`
+
+if test -z "$ac_urllib2_result"; then
+    AC_MSG_RESULT([yes])
+else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([cannot import Python module "urllib2".
+    Please check if you have python-urllib2 installed. The error was:
+    $ac_urllib2_results])
+fi
+
+AC_MSG_CHECKING([for the python-BeautifulSoup package])
+ac_BeautifulSoup_result=`$PYTHON -c 'try:
+    import BeautifulSoup
+except Exception, e:
+    print str(e)' 2> /dev/null`
+
+if test -z "$ac_BeautifulSoup_result"; then
+    AC_MSG_RESULT([yes])
+else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([cannot import Python module "BeautifulSoup".
+    Please check if you have python-beautifulsoup installed. The error was:
+    $ac_BeautifulSoup_result])
+fi
+
+AC_MSG_CHECKING([for the python-BeautifulSoup package])
 
 # Checks for typedefs, structures, and compiler characteristics.
 # Checks for library functions.
 # Output files.
 
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile data/Makefile plugins/Makefile data/icons/Makefile])
 
 AC_OUTPUT
