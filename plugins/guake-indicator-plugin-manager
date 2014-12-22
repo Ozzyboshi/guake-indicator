@@ -1,0 +1,224 @@
+# -*- coding: utf-8 -*-
+#
+#  guake-indicator-plugin-manager.py
+#  
+#  Copyright (C) 2013-2015 Alessio Garzi <gun101@email.it>
+#  Copyright (C) 2013-2015 Francesco Minà <mina.francesco@gmail.com>
+#  
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#  
+
+"""
+
+Guake indicator Plugin
+
+"""
+
+import sys
+import pygtk
+import gtk
+import gtk.glade
+import os
+import urllib2
+from BeautifulSoup import BeautifulSoup
+from os.path import expanduser
+import subprocess as sub
+
+draw_xml = [
+    "12 12 3 1",
+    "  c #232323",
+    ". c #ffff04",
+    "X c #b2c0dc",
+    "X        XXX",
+    "X        XXX",
+    "X ..    .. X",
+    "X ..    .. X",
+    "X  ..  ..  X",
+    "X   ....   X",
+    "X   ....   X",
+    "X  ..  ..  X",
+    "X ..    .. X",
+    "X ..    .. X",
+    "X          X",
+    "X          X"
+    ]
+ 
+draw_glade = [
+    "12 12 3 1",
+    "  c #232323",
+    ". c #ababab",
+    "X c #b2c0dc",
+    "X        XXX",
+    "X ...... XXX",
+    "X ......   X",
+    "X ..       X",
+    "X ..       X",
+    "X ..  .... X",
+    "X ..  .... X",
+    "X ..    .. X",
+    "X ........ X",
+    "X ........ X",
+    "X          X",
+    "X          X"
+    ]
+ 
+
+class GIPluginDialog:
+
+  pixmap_xml = gtk.gdk.pixbuf_new_from_xpm_data(draw_xml)
+  pixmap_glade = gtk.gdk.pixbuf_new_from_xpm_data(draw_glade)
+
+  def on_tree_selection_changed(self,selection):
+    model, treeiter = selection.get_selected()
+    if treeiter != None:
+        self.selected_file = model[treeiter][1]
+
+  def load_plugins(self):
+    response=None
+    try:
+        response = urllib2.urlopen('http://guake-indicator.ozzyboshi.com/plugins/plugin.xml')
+    except urllib2.HTTPError as e:
+        if  e.code==407:
+            p = os.popen("gsettings get org.gnome.system.proxy.http host | awk -F \\' '{print $2}'","r")
+            output=p.readline()
+            p = os.popen('gsettings get org.gnome.system.proxy.http port',"r")
+            port=":"+p.readline()
+            output=output[:-1]
+            output+=port            
+            proxy = urllib2.ProxyHandler({'http': output})
+            opener = urllib2.build_opener(proxy)
+            urllib2.install_opener(opener)
+            try:
+                response = urllib2.urlopen('http://guake-indicator.ozzyboshi.com/plugins/plugin.xml') 
+            except urllib2.HTTPError as e:
+                print e.code
+                return
+    html = response.read()
+    y = BeautifulSoup(html)
+    self.rooturl=y.findAll("description")[0]["url"]
+
+    for feature in y.findAll("feature"):
+        fileName, fileExtension = os.path.splitext(feature['url'])
+        pm = 'pixmap' + fileExtension.replace('.','_')
+        self.tree_store.append(None, [getattr(self,pm),feature["url"],feature["description"]])
+
+  def download(self, widget, event, data=None):
+        
+        if (self.selected_file == ''):
+          print 'selecet file first.'
+          return
+          
+        url = self.rooturl + self.selected_file
+        #print url
+        file_name = url.split('/')[-1]
+        u = urllib2.urlopen(url)
+        f = open(expanduser("~")+"/.guake-indicator/plugins/"+file_name, 'wb')
+        meta = u.info()
+        file_size = int(meta.getheaders("Content-Length")[0])
+        #print "Downloading: %s Bytes: %s" % (file_name, file_size)
+        file_size_dl = 0
+        block_sz = 8192
+        while True:
+            buffer = u.read(block_sz)
+            if not buffer:
+                break
+            file_size_dl += len(buffer)
+            f.write(buffer)
+            status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
+            status = status + chr(8)*(len(status)+1)
+            #print status,
+        f.close()
+        message = gtk.MessageDialog(type=gtk.MESSAGE_INFO, buttons=gtk.BUTTONS_CLOSE)
+        message.set_markup("Plugin downloaded into ~/.guake-indicator/plugins directory")
+        message.run()
+        message.destroy()
+        #gtk.main_quit()
+        
+  def __init__(self,gladepath):
+  
+    self.rooturl = ''
+    self.selected_file = ''
+    self.url = 'http://guake-indicator.ozzyboshi.com/plugins/'
+    #Set the Glade file
+    if (len(gladepath)>0) :
+        self.gladefile=gladepath+"/gi_plugin_dialog.glade"
+    else :
+        self.gladefile = "/usr/local/share/guake-indicator/gi_plugin_dialog.glade"
+    self.builder = gtk.Builder()
+    self.builder.add_from_file(self.gladefile)
+    #Get the Main Window, and connect the "destroy" event
+    self.window = self.builder.get_object("gi_plugin_window")
+    self.tree_view = self.builder.get_object("plugin_treeview")
+    
+    self.btn_download = self.builder.get_object("btn_download")
+    self.btn_cancel = self.builder.get_object("btn_cancel")
+    
+    self.btn_download.connect("clicked",self.download,None)
+    self.btn_cancel.connect("clicked",gtk.main_quit)
+    
+    self.tree_store = gtk.TreeStore(gtk.gdk.Pixbuf,str,str)
+    
+    self.tree_view.set_model(self.tree_store)
+    
+    # create column that contains pixbuf and text
+    self.col = gtk.TreeViewColumn("Name")
+    self.tree_view.append_column(self.col)
+    
+    # create a description columns
+    self.desccol = gtk.TreeViewColumn("Description")
+    self.tree_view.append_column(self.desccol)
+    
+    # create cell: pixbuf and text
+    self.cell = gtk.CellRendererText()
+    self.cellpix = gtk.CellRendererPixbuf()
+    self.desccell = gtk.CellRendererText()
+
+    # add cell to column pixbuf and text in the same column
+    self.col.pack_start(self.cellpix, expand=False)
+    self.col.pack_start(self.cell,True)
+    self.desccol.pack_start(self.desccell,True)
+    
+    
+    #self.cell.set_property('cell-background', 'yellow')
+    # add cell to column
+    self.col.add_attribute(self.cellpix,'pixbuf',0)
+    self.col.add_attribute(self.cell,'text',1)
+    self.desccol.add_attribute(self.desccell,'text',2)
+
+    self.select = self.tree_view.get_selection()
+    self.select.connect("changed", self.on_tree_selection_changed)
+
+    self.window.show_all()
+    
+    if (self.window):
+      self.window.connect("destroy", gtk.main_quit)
+
+    self.builder.connect_signals(self)
+    self.load_plugins()
+   
+    def quit(self, button):
+      # close the window
+      gtk.main_quit()
+
+if __name__ == "__main__":
+  hwg = GIPluginDialog(sys.argv[1])
+  gtk.main()
+
+
+
+
+
+
