@@ -1,7 +1,7 @@
 guake-indicator (1.0-1) unstable; urgency=low
 
   * New upstream release
-  * guake indicator commands are now fully customizable (LP: #1337277 and LP: #1340917)
+  * commands are now fully customizable (LP: #1337277 and LP: #1340917)
   * switched to xml based configuration file (it was a json)
   * added plugin support
   * added scripting support
