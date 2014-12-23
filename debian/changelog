@@ -1,6 +1,13 @@
 guake-indicator (1.0-1) unstable; urgency=low
 
   * New upstream release
+  * guake indicator commands are now fully customizable (LP: #1337277 and LP: #1340917)
+  * switched to xml based configuration file (it was a json)
+  * added plugin support
+  * added scripting support
+  * new GUI interface for entries and groups management
+  * added tab selection based on index and tab name
+  * various memory leak fixes
   
  -- Alessio Garzi <gun101@email.it>  Wed, 24 Dec 2014 16:31:00 +0100
 
