@@ -1,4 +1,4 @@
-AC_INIT([guake-indicator], [1.0], [gun101@email.it])
+AC_INIT([guake-indicator], [1.1], [gun101@email.it])
 
 # safety check , make sure that config is not run from outer space
 AC_CONFIG_SRCDIR([src/guake-indicator.c])
@@ -29,7 +29,7 @@ AC_SUBST([GTKLIB])
 # Checks for header files.
 AC_CHECK_HEADER([gtk/gtk.h])
 AC_CHECK_HEADER([libappindicator/app-indicator.h])
-AC_CHECK_HEADER([json-c/json.h])
+AC_CHECK_HEADER([json-c/json.h],[],[AC_MSG_ERROR([libjson-c-dev not installed)])])
 AC_CHECK_HEADER([glib.h])
 AC_CHECK_HEADER([dbus/dbus-glib.h])
 AC_CHECK_HEADER([gconf/gconf-client.h])

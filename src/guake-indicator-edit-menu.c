@@ -54,6 +54,7 @@ void print_edit_menu_form(GtkAction* action, gpointer user_data)
 	widgets.entry_tab_name = GTK_WIDGET (gtk_builder_get_object (builder, "entry_tab_name"));
 	widgets.entry_command = GTK_WIDGET (gtk_builder_get_object (builder, "entry_command"));
 	widgets.cb_show_guake = GTK_WIDGET (gtk_builder_get_object (builder, "cb_show_guake"));
+	widgets.current_guake_tab = GTK_WIDGET (gtk_builder_get_object (builder, "current_guake_tab"));
 	widgets.new_guake_tab = GTK_WIDGET (gtk_builder_get_object (builder, "new_guake_tab"));
 	widgets.existing_guake_tab = GTK_WIDGET (gtk_builder_get_object (builder, "existing_guake_tab"));
 	widgets.nth_guake_tab = GTK_WIDGET (gtk_builder_get_object (builder, "nth_guake_tab"));
@@ -505,7 +506,16 @@ gboolean selection_func (GtkTreeSelection *selection, GtkTreeModel *model, GtkTr
 					gboolean named=((Host*)host)->open_in_tab_named;
 					if (open_in_tab==NULL || (atol((char*)open_in_tab)<0 && named==FALSE))
 					{
-						gtk_toggle_button_set_active( (GtkToggleButton *)widgets->new_guake_tab,1);
+						if (open_in_tab && atol((char*)open_in_tab)==-1)
+						{
+							gtk_toggle_button_set_active( (GtkToggleButton *)widgets->new_guake_tab,0);
+							gtk_toggle_button_set_active( (GtkToggleButton *)widgets->current_guake_tab,1);
+						}
+						else
+						{
+							gtk_toggle_button_set_active( (GtkToggleButton *)widgets->new_guake_tab,1);
+							gtk_toggle_button_set_active( (GtkToggleButton *)widgets->current_guake_tab,0);
+						}
 						gtk_toggle_button_set_active( (GtkToggleButton *)widgets->existing_guake_tab,0);
 						gtk_entry_set_text(GTK_ENTRY(widgets->nth_guake_tab),"0");
 						gtk_entry_set_text(GTK_ENTRY(widgets->named_guake_tab),"");
@@ -880,6 +890,10 @@ static void save_edit_menu ( GtkWidget *widget, gpointer user_data)
 					UPDATE_ENTRY(dialog->selected_host->open_in_tab,gtk_entry_get_text(GET_ENTRY_NAMEDGUAKETAB(dialog)))
 					dialog->selected_host->open_in_tab_named=TRUE;
 				}
+				else if (gtk_toggle_button_get_active((GtkToggleButton*)GET_ENTRY_EXISTINGGUAKETABCURRENT(dialog)))
+				{
+					UPDATE_ENTRY(dialog->selected_host->open_in_tab,"-1")
+				}
 				else
 				{
 					dialog->selected_host->open_in_tab_named=FALSE;
@@ -993,6 +1007,10 @@ static void save_edit_menu ( GtkWidget *widget, gpointer user_data)
 					newhost->open_in_tab_named=TRUE;
 					newhost->open_in_tab=strdup(gtk_entry_get_text(GET_ENTRY_NAMEDGUAKETAB(dialog)));
 				}
+				else if (gtk_toggle_button_get_active((GtkToggleButton*)GET_ENTRY_EXISTINGGUAKETABCURRENT(dialog)))
+				{
+					newhost->open_in_tab=strdup("-1");
+				}
 				if (gtk_toggle_button_get_active((GtkToggleButton*)GET_ENTRY_LFCR(dialog)))
 					newhost->lfcr=strdup("yes");
 				if (gtk_toggle_button_get_active((GtkToggleButton*)GET_ENTRY_GUAKEINDICATORSCRIPT(dialog)))
@@ -1054,6 +1072,7 @@ static void set_form_widget_sensitivity(EditMenuDialog* dialog,gboolean flag)
 	gtk_widget_set_sensitive(dialog->entry_command,flag);
 	gtk_widget_set_sensitive(dialog->btn_build_cmd,flag);
 	gtk_widget_set_sensitive(dialog->cb_show_guake,flag);
+	gtk_widget_set_sensitive(dialog->current_guake_tab,flag);
 	gtk_widget_set_sensitive(dialog->new_guake_tab,flag);
 	gtk_widget_set_sensitive(dialog->existing_guake_tab,flag);
 	gtk_widget_set_sensitive(dialog->nth_guake_tab,flag);

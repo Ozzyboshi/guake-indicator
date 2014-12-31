@@ -79,9 +79,14 @@ static void guake_open(GtkAction* action,gpointer user_data)
 	gchar* cmd = NULL;
 	gint32 numtabs;
 	
+	
 	// open a new Guake tab
 	if (guake_gettabcount(&numtabs)==FALSE)
 		guake_newtab();
+	// if current guake tab is selected i skip this part
+	else if (host.open_in_tab && atol((char*)host.open_in_tab)==-1)
+	{
+	}
 	else if (host.open_in_tab==NULL || !strlen(host.open_in_tab) || ((long)numtabs<=atol((char*)host.open_in_tab) && host.open_in_tab_named==FALSE))
 		guake_newtab();
 	else
@@ -322,7 +327,7 @@ static void about (GtkAction* action)
 							"comments", "A simple indicator that lets you send custom commands to Guake.",
 							"copyright", "(C) 2013-2015 Alessio Garzi\n(C) 2013-2015 Francesco Mina\n\nDedicated to my daughters\n Ludovica and newborn Mariavittoria",
 							"logo", logo,
-							"version", "1.0", 
+							"version", "1.1", 
 							"website", "http://guake-indicator.ozzyboshi.com",
 							"license",license,
 							NULL);
@@ -395,7 +400,11 @@ gchar* add_host_to_menu(Host* head,GtkActionGroup *action_group)
 				action = gtk_action_new(ptr->id, ptr->menu_name, NULL, NULL);
 			else
 			{
-				gchar* menu_desc=g_strjoin(NULL,ptr->menu_name," (Tab ",ptr->open_in_tab,")",NULL);
+				gchar* menu_desc;
+				if (atol((char*)ptr->open_in_tab)==-1)
+					menu_desc=g_strjoin(NULL,ptr->menu_name," (Current Tab)",NULL);
+				else
+					menu_desc=g_strjoin(NULL,ptr->menu_name," (Tab ",ptr->open_in_tab,")",NULL);
 				action = gtk_action_new(ptr->id, menu_desc, NULL, NULL);
 				g_free(menu_desc);
 			}

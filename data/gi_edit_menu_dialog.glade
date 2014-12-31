@@ -3,7 +3,7 @@
   <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="edit_menu_window">
-    <property name="width_request">900</property>
+    <property name="width_request">1000</property>
     <property name="height_request">768</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Guake Indicator Menu Editor</property>
@@ -862,7 +862,7 @@ If not checked it sends only a LF</property>
               <object class="GtkHBox" id="hbox21">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="spacing">34</property>
+                <property name="spacing">14</property>
                 <child>
                   <object class="GtkLabel" id="label6">
                     <property name="visible">True</property>
@@ -894,6 +894,22 @@ If not checked it sends only a LF</property>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
                     <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="current_guake_tab">
+                    <property name="label" translatable="yes">current Guake tab</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="draw_indicator">True</property>
+                    <property name="group">radiobutton3</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
                 <child>
@@ -941,7 +957,7 @@ If not checked it sends only a LF</property>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
                 <child>
@@ -990,7 +1006,7 @@ If not checked it sends only a LF</property>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="position">3</property>
+                    <property name="position">4</property>
                   </packing>
                 </child>
               </object>

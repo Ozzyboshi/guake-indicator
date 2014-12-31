@@ -71,6 +71,7 @@ enum
 #define GET_ENTRY_SHOWGUAKE(var) (GtkToggleButton*)var->cb_show_guake
 #define GET_ENTRY_EXISTINGGUAKETAB(var) (GtkToggleButton*)var->existing_guake_tab
 #define GET_ENTRY_EXISTINGGUAKETABNAMED(var) (GtkToggleButton*)var->existing_guake_tab_named
+#define GET_ENTRY_EXISTINGGUAKETABCURRENT(var) (GtkToggleButton*)var->current_guake_tab
 #define GET_ENTRY_NTHGUAKETAB(var) (GtkEntry*)var->nth_guake_tab
 #define GET_ENTRY_NAMEDGUAKETAB(var) (GtkEntry*)var->named_guake_tab
 #define GET_ENTRY_LFCR(var)	(GtkToggleButton*)var->lfcr
@@ -98,6 +99,7 @@ typedef struct edit_menu_dialog_type
 
 	// checkboxes and radiobox
 	GtkWidget *cb_show_guake;
+	GtkWidget *current_guake_tab;
 	GtkWidget *new_guake_tab;
 	GtkWidget *existing_guake_tab;
 	GtkWidget *nth_guake_tab;
