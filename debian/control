@@ -18,7 +18,7 @@ Build-Depends: autotools-dev,
                libxml2-dev,
                libgconf2-dev,
                python-beautifulsoup
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Homepage: http://guake-indicator.ozzyboshi.com
 
 Package: guake-indicator
