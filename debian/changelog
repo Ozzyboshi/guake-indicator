@@ -1,17 +1,9 @@
 guake-indicator (1.1-1) unstable; urgency=low
 
   * new upstream release
-
- -- Alessio Garzi <gun101@email.it>  Wed, 31 Dec 2014 14:43:00 +0100
-
-
-guake-indicator (1.0-1) unstable; urgency=low
-
-  * New upstream release
     - commands are now fully customizable (LP: #1337277 and LP: #1340917)
 
- -- Alessio Garzi <gun101@email.it>  Wed, 24 Dec 2014 16:31:00 +0100
-
+ -- Alessio Garzi <gun101@email.it>  Wed, 31 Dec 2014 14:43:00 +0100
 
 guake-indicator (0.4-1) unstable; urgency=low
 
