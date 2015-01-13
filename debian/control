@@ -25,8 +25,7 @@ Package: guake-indicator
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, guake , python-beautifulsoup
 Description: Guake terminal app indicator
- Guake indicator lets you send
- custom commands through the D-Bus System.
+ Guake indicator lets you send custom commands through the D-Bus System.
  Commands can be manually edited in a XML file under ~/.guake.indicator
  or generated through guake-indicator edit-menu system GUI.
  .
