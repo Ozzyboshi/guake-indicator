@@ -1,9 +1,3 @@
-guake-indicator (1.1-2) unstable; urgency=low
-
-  * Fixed bug in debian/control description (Closes: #774813)
-
- -- Alessio Garzi <gun101@email.it>  Tue, 13 Jan 2015 19:49:00 +0100
-
 guake-indicator (1.1-1) unstable; urgency=low
 
   * new upstream release
