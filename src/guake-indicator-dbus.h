@@ -28,15 +28,17 @@ Boston, MA 02111-1307, USA.
 
 DBusGProxy* guake_dbus_init();
 gboolean guake_dbus_send(const gchar*,const gchar*);
+gboolean guake_dbus_send_2strings(const gchar*,const gchar*,const gchar*);
 gboolean guake_dbus_send_intparam_with_string_return(const gchar*,gint32,gchar**);
 gboolean guake_dbus_send_noparams_with_integer_return(const gchar*,gint32*);
 gboolean guake_dbus_send_noparam(const gchar*);
 
 gboolean guake_show();
-gboolean guake_newtab();
+gboolean guake_newtab(gchar**);
 gboolean guake_gettabcount(gint32*);
 gboolean guake_getgtktabname(guint,gchar**);
 gboolean guake_selecttab(const gchar*);
 gboolean guake_renamecurrenttab(const gchar*);
 gboolean guake_executecommand(const char*);
+
 

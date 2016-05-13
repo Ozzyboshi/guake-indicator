@@ -78,7 +78,7 @@ static void guake_open(GtkAction* action,gpointer user_data)
 	Host host = *((Host*) user_data);
 	gchar* cmd = NULL;
 	gint32 numtabs;
-	
+	gchar* uuid = NULL;
 	
 	// open a new Guake tab
 	if (guake_gettabcount(&numtabs)==FALSE)
@@ -88,7 +88,12 @@ static void guake_open(GtkAction* action,gpointer user_data)
 	{
 	}
 	else if (host.open_in_tab==NULL || !strlen(host.open_in_tab) || ((long)numtabs<=atol((char*)host.open_in_tab) && host.open_in_tab_named==FALSE))
-		guake_newtab();
+	{
+		if (guake_newtab(&uuid)==FALSE) uuid=NULL;
+		printf("ci passo");
+		if (uuid) printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa %s\n",uuid);
+		else printf("No uuid");
+	}
 	else
 	{
 		if (host.open_in_tab_named==FALSE)
@@ -199,13 +204,20 @@ static void guake_open(GtkAction* action,gpointer user_data)
 		{
 			// Add a cr to the end line will be lfcr
 			if (host.lfcr && !g_strcmp0(host.lfcr,"yes")) g_string_append_c (newstring,13);
-			guake_executecommand(newstring->str);
+			if (uuid) guake_executecommand_by_uuid(uuid,newstring->str);
+			else guake_executecommand(newstring->str);
 			g_string_free (newstring,TRUE);
 			newstring = g_string_new (NULL);
 		}
 	}
-	if (newstring->len>0) guake_executecommand(newstring->str);
+	if (newstring->len>0)
+	{
+		printf("cjicdcd");
+		if (uuid) guake_executecommand_by_uuid(uuid,newstring->str);
+		else guake_executecommand(newstring->str);
+	}
 	g_string_free (newstring,TRUE);
+	if (uuid) g_free(uuid);
 	
 	g_free(x_forwarded_flag);
 	g_free(cmd);
