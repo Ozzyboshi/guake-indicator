@@ -35,6 +35,7 @@ gboolean guake_dbus_send_noparam(const gchar*);
 
 gboolean guake_show();
 gboolean guake_newtab(gchar**);
+gboolean guake_getcurrenttab_uuid(gchar**);
 gboolean guake_gettabcount(gint32*);
 gboolean guake_getgtktabname(guint,gchar**);
 gboolean guake_selecttab(const gchar*);

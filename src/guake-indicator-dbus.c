@@ -197,6 +197,11 @@ gboolean guake_executecommand(const char* command)
 // Execute a command on a Guake shell by uuid
 gboolean guake_executecommand_by_uuid(gchar* uuid,const char* command)
 {
-	printf("faccio chiamata dbus per comando %s uuid %s",command,uuid);
 	return guake_dbus_send_2strings("execute_command_by_uuid",uuid,command);
+}
+
+//Get current tab uuid
+gboolean guake_getcurrenttab_uuid(gchar** uuid)
+{
+	return guake_dbus_send_noparams_with_string_return("get_selected_uuidtab",uuid);
 }

@@ -86,13 +86,12 @@ static void guake_open(GtkAction* action,gpointer user_data)
 	// if current guake tab is selected i skip this part
 	else if (host.open_in_tab && atol((char*)host.open_in_tab)==-1)
 	{
+		printf("eseguo nella current tab");
+		if (guake_getcurrenttab_uuid(&uuid)==FALSE) uuid=NULL;
 	}
 	else if (host.open_in_tab==NULL || !strlen(host.open_in_tab) || ((long)numtabs<=atol((char*)host.open_in_tab) && host.open_in_tab_named==FALSE))
 	{
 		if (guake_newtab(&uuid)==FALSE) uuid=NULL;
-		printf("ci passo");
-		if (uuid) printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa %s\n",uuid);
-		else printf("No uuid");
 	}
 	else
 	{
@@ -212,7 +211,6 @@ static void guake_open(GtkAction* action,gpointer user_data)
 	}
 	if (newstring->len>0)
 	{
-		printf("cjicdcd");
 		if (uuid) guake_executecommand_by_uuid(uuid,newstring->str);
 		else guake_executecommand(newstring->str);
 	}
