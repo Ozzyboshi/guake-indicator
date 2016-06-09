@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2013-2015 Alessio Garzi <gun101@email.it>
-Copyright (C) 2013-2015 Francesco Minà <mina.francesco@gmail.com>
+Copyright (C) 2013-2017 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2017 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -25,6 +25,7 @@ Boston, MA 02111-1307, USA.
 #define GUAKE_INDICATOR_PLUGIN_DIR "plugins"
 #define GUAKE_INDICATOR_ICON_DIR "icons/hicolor/256x256/apps/"
 #define GUAKE_INDICATOR_GCONF_SCHEMA_ROOT "/apps/guake-indicator/"
+#define GUAKE_INDICATOR_VERSION "1.2"
 
 typedef struct Host {
 	gchar* id;

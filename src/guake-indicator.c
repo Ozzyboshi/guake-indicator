@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2013-2015 Alessio Garzi <gun101@email.it>
-Copyright (C) 2013-2015 Francesco Minà <mina.francesco@gmail.com>
+Copyright (C) 2013-2017 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2017 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -305,7 +305,7 @@ static void about (GtkAction* action)
 		"Francesco Minà <mina.francesco@gmail.com>",
 		NULL
 	};
-	const gchar* license ="guake-indicator is free software; you can redistribute it and/or\n"
+	const gchar* license ="Guake indicator is free software; you can redistribute it and/or\n"
 					" modify it under the terms of the GNU General Public License\n"
 					" as published by the Free Software Foundation; either version 2\n"
 					" of the License, or (at your option) any later version.\n\n"
@@ -332,12 +332,12 @@ static void about (GtkAction* action)
 	}
 
 	gtk_show_about_dialog(NULL,
-							"program-name", "guake-indicator",
+							"program-name", "Guake indicator",
 							"authors", authors,
 							"comments", "A simple indicator that lets you send custom commands to Guake.",
-							"copyright", "(C) 2013-2015 Alessio Garzi\n(C) 2013-2015 Francesco Mina\n\nDedicated to my daughters\n Ludovica and newborn Mariavittoria",
+							"copyright", "(C) 2013-2017 Alessio Garzi\n(C) 2013-2017 Francesco Mina\n\nDedicated to my daughters\n Ludovica and newborn Mariavittoria",
 							"logo", logo,
-							"version", "1.1", 
+							"version", GUAKE_INDICATOR_VERSION, 
 							"website", "http://guake-indicator.ozzyboshi.com",
 							"license",license,
 							NULL);
