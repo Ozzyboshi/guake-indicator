@@ -546,7 +546,10 @@ int main (int argc, char **argv)
 	gtk_init (&argc, &argv);
 		
 	GArray* grouphostlist;
-	if (check_xml_cfg_file_presence())
+
+	if (argc>1 && strlen(argv[1])>0)
+		grouphostlist=read_xml_cfg_file_from_file(argv[1]);
+	else if (check_xml_cfg_file_presence())
 		grouphostlist = read_xml_cfg_file();
 	else
 		grouphostlist = read_json_cfg_file(NULL);
