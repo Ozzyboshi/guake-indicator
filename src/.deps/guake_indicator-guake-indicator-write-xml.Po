@@ -4,9 +4,9 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/glib-2.0/glib/gtypes.h \
  /usr/lib/x86_64-linux-gnu/glib-2.0/include/glibconfig.h \
  /usr/include/glib-2.0/glib/gmacros.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stddef.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed/limits.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed/syslimits.h \
+ /usr/lib/gcc/x86_64-linux-gnu/6/include/stddef.h \
+ /usr/lib/gcc/x86_64-linux-gnu/6/include-fixed/limits.h \
+ /usr/lib/gcc/x86_64-linux-gnu/6/include-fixed/syslimits.h \
  /usr/include/limits.h /usr/include/features.h \
  /usr/include/x86_64-linux-gnu/sys/cdefs.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
@@ -16,17 +16,20 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/x86_64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
  /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/float.h \
+ /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+ /usr/lib/gcc/x86_64-linux-gnu/6/include/float.h \
  /usr/include/glib-2.0/glib/gversionmacros.h /usr/include/time.h \
  /usr/include/x86_64-linux-gnu/bits/time.h \
  /usr/include/x86_64-linux-gnu/bits/types.h \
- /usr/include/x86_64-linux-gnu/bits/typesizes.h /usr/include/xlocale.h \
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h \
+ /usr/include/x86_64-linux-gnu/bits/timex.h /usr/include/xlocale.h \
  /usr/include/glib-2.0/glib/garray.h \
  /usr/include/glib-2.0/glib/gasyncqueue.h \
  /usr/include/glib-2.0/glib/gthread.h \
  /usr/include/glib-2.0/glib/gatomic.h /usr/include/glib-2.0/glib/gerror.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stdarg.h \
- /usr/include/glib-2.0/glib/gquark.h \
+ /usr/lib/gcc/x86_64-linux-gnu/6/include/stdarg.h \
+ /usr/include/glib-2.0/glib/gquark.h /usr/include/glib-2.0/glib/gutils.h \
  /usr/include/glib-2.0/glib/gbacktrace.h /usr/include/signal.h \
  /usr/include/x86_64-linux-gnu/bits/sigset.h \
  /usr/include/x86_64-linux-gnu/bits/signum.h \
@@ -60,11 +63,12 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/glib-2.0/glib/gmain.h /usr/include/glib-2.0/glib/gpoll.h \
  /usr/include/glib-2.0/glib/gslist.h /usr/include/glib-2.0/glib/gstring.h \
  /usr/include/glib-2.0/glib/gunicode.h \
- /usr/include/glib-2.0/glib/gutils.h \
  /usr/include/glib-2.0/glib/gkeyfile.h \
  /usr/include/glib-2.0/glib/gmappedfile.h \
  /usr/include/glib-2.0/glib/gmarkup.h \
  /usr/include/glib-2.0/glib/gmessages.h \
+ /usr/include/glib-2.0/glib/gvariant.h \
+ /usr/include/glib-2.0/glib/gvarianttype.h \
  /usr/include/glib-2.0/glib/goption.h \
  /usr/include/glib-2.0/glib/gpattern.h \
  /usr/include/glib-2.0/glib/gprimes.h /usr/include/glib-2.0/glib/gqsort.h \
@@ -82,8 +86,6 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/glib-2.0/glib/gtrashstack.h \
  /usr/include/glib-2.0/glib/gtree.h \
  /usr/include/glib-2.0/glib/gurifuncs.h \
- /usr/include/glib-2.0/glib/gvarianttype.h \
- /usr/include/glib-2.0/glib/gvariant.h \
  /usr/include/glib-2.0/glib/gversion.h \
  /usr/include/glib-2.0/glib/deprecated/gallocator.h \
  /usr/include/glib-2.0/glib/deprecated/gcache.h \
@@ -97,10 +99,10 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/x86_64-linux-gnu/bits/byteswap-16.h \
  /usr/include/x86_64-linux-gnu/sys/select.h \
  /usr/include/x86_64-linux-gnu/bits/select.h \
- /usr/include/x86_64-linux-gnu/bits/select2.h \
  /usr/include/x86_64-linux-gnu/sys/sysmacros.h /usr/include/pthread.h \
  /usr/include/sched.h /usr/include/x86_64-linux-gnu/bits/sched.h \
  /usr/include/x86_64-linux-gnu/bits/setjmp.h \
+ /usr/include/glib-2.0/glib/glib-autocleanups.h \
  /usr/include/gtk-2.0/gtk/gtk.h /usr/include/gtk-2.0/gdk/gdk.h \
  /usr/include/gtk-2.0/gdk/gdkapplaunchcontext.h \
  /usr/include/glib-2.0/gio/gio.h /usr/include/glib-2.0/gio/giotypes.h \
@@ -122,6 +124,7 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/glib-2.0/gobject/gtypeplugin.h \
  /usr/include/glib-2.0/gobject/gvaluearray.h \
  /usr/include/glib-2.0/gobject/gvaluetypes.h \
+ /usr/include/glib-2.0/gobject/gobject-autocleanups.h \
  /usr/include/glib-2.0/gio/gaction.h \
  /usr/include/glib-2.0/gio/gactiongroup.h \
  /usr/include/glib-2.0/gio/gactiongroupexporter.h \
@@ -149,7 +152,7 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
  /usr/include/x86_64-linux-gnu/bits/environments.h \
  /usr/include/x86_64-linux-gnu/bits/confname.h /usr/include/getopt.h \
- /usr/include/x86_64-linux-gnu/bits/unistd.h \
+ /usr/include/glib-2.0/gio/gdatagrambased.h \
  /usr/include/glib-2.0/gio/gdatainputstream.h \
  /usr/include/glib-2.0/gio/gdataoutputstream.h \
  /usr/include/glib-2.0/gio/gdbusaddress.h \
@@ -165,6 +168,9 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/glib-2.0/gio/gdbusserver.h \
  /usr/include/glib-2.0/gio/gdbusutils.h \
  /usr/include/glib-2.0/gio/gdrive.h \
+ /usr/include/glib-2.0/gio/gdtlsclientconnection.h \
+ /usr/include/glib-2.0/gio/gdtlsconnection.h \
+ /usr/include/glib-2.0/gio/gdtlsserverconnection.h \
  /usr/include/glib-2.0/gio/gemblemedicon.h \
  /usr/include/glib-2.0/gio/gicon.h /usr/include/glib-2.0/gio/gemblem.h \
  /usr/include/glib-2.0/gio/gfileattribute.h \
@@ -215,6 +221,7 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/glib-2.0/gio/gactiongroup.h \
  /usr/include/glib-2.0/gio/gactionmap.h \
  /usr/include/glib-2.0/gio/gsimpleasyncresult.h \
+ /usr/include/glib-2.0/gio/gsimpleiostream.h \
  /usr/include/glib-2.0/gio/gsimplepermission.h \
  /usr/include/glib-2.0/gio/gsocketclient.h \
  /usr/include/glib-2.0/gio/gsocketconnectable.h \
@@ -260,6 +267,9 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/glib-2.0/gio/gmenuexporter.h \
  /usr/include/glib-2.0/gio/gdbusmenumodel.h \
  /usr/include/glib-2.0/gio/gnotification.h \
+ /usr/include/glib-2.0/gio/glistmodel.h \
+ /usr/include/glib-2.0/gio/gliststore.h \
+ /usr/include/glib-2.0/gio/gio-autocleanups.h \
  /usr/include/gtk-2.0/gdk/gdkscreen.h /usr/include/cairo/cairo.h \
  /usr/include/cairo/cairo-version.h /usr/include/cairo/cairo-features.h \
  /usr/include/cairo/cairo-deprecated.h \
@@ -267,6 +277,8 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/pango-1.0/pango/pango-attributes.h \
  /usr/include/pango-1.0/pango/pango-font.h \
  /usr/include/pango-1.0/pango/pango-coverage.h \
+ /usr/include/pango-1.0/pango/pango-version-macros.h \
+ /usr/include/pango-1.0/pango/pango-features.h \
  /usr/include/pango-1.0/pango/pango-types.h \
  /usr/include/pango-1.0/pango/pango-gravity.h \
  /usr/include/pango-1.0/pango/pango-matrix.h \
@@ -281,17 +293,14 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/pango-1.0/pango/pango-engine.h \
  /usr/include/pango-1.0/pango/pango-glyph.h \
  /usr/include/pango-1.0/pango/pango-enum-types.h \
- /usr/include/pango-1.0/pango/pango-features.h \
  /usr/include/pango-1.0/pango/pango-glyph-item.h \
  /usr/include/pango-1.0/pango/pango-layout.h \
  /usr/include/pango-1.0/pango/pango-tabs.h \
  /usr/include/pango-1.0/pango/pango-renderer.h \
  /usr/include/pango-1.0/pango/pango-utils.h /usr/include/stdio.h \
  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
- /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/sys_errlist.h \
  /usr/include/x86_64-linux-gnu/bits/stdio.h \
- /usr/include/x86_64-linux-gnu/bits/stdio2.h \
  /usr/lib/x86_64-linux-gnu/gtk-2.0/include/gdkconfig.h \
  /usr/include/gtk-2.0/gdk/gdkdisplay.h \
  /usr/include/gtk-2.0/gdk/gdkevents.h /usr/include/gtk-2.0/gdk/gdkcolor.h \
@@ -299,6 +308,7 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/gtk-2.0/gdk/gdkcairo.h /usr/include/gtk-2.0/gdk/gdkpixbuf.h \
  /usr/include/gtk-2.0/gdk/gdkrgb.h \
  /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf.h \
+ /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-macros.h \
  /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-features.h \
  /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-core.h \
  /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-transform.h \
@@ -307,6 +317,7 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-io.h \
  /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-loader.h \
  /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-enum-types.h \
+ /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-autocleanups.h \
  /usr/include/pango-1.0/pango/pangocairo.h \
  /usr/include/gtk-2.0/gdk/gdkcursor.h \
  /usr/include/gtk-2.0/gdk/gdkdisplaymanager.h \
@@ -337,6 +348,7 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/gtk-2.0/gtk/gtkstyle.h \
  /usr/include/gtk-2.0/gtk/gtksettings.h /usr/include/gtk-2.0/gtk/gtkrc.h \
  /usr/include/atk-1.0/atk/atk.h /usr/include/atk-1.0/atk/atkobject.h \
+ /usr/include/atk-1.0/atk/atkversion.h \
  /usr/include/atk-1.0/atk/atkstate.h \
  /usr/include/atk-1.0/atk/atkrelationtype.h \
  /usr/include/atk-1.0/atk/atkaction.h \
@@ -345,6 +357,7 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/atk-1.0/atk/atkdocument.h \
  /usr/include/atk-1.0/atk/atkeditabletext.h \
  /usr/include/atk-1.0/atk/atktext.h \
+ /usr/include/atk-1.0/atk/atk-enum-types.h \
  /usr/include/atk-1.0/atk/atkgobjectaccessible.h \
  /usr/include/atk-1.0/atk/atkhyperlink.h \
  /usr/include/atk-1.0/atk/atkhyperlinkimpl.h \
@@ -353,7 +366,7 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/atk-1.0/atk/atknoopobject.h \
  /usr/include/atk-1.0/atk/atknoopobjectfactory.h \
  /usr/include/atk-1.0/atk/atkobjectfactory.h \
- /usr/include/atk-1.0/atk/atkplug.h \
+ /usr/include/atk-1.0/atk/atkplug.h /usr/include/atk-1.0/atk/atkrange.h \
  /usr/include/atk-1.0/atk/atkregistry.h \
  /usr/include/atk-1.0/atk/atkobjectfactory.h \
  /usr/include/atk-1.0/atk/atkrelation.h \
@@ -362,9 +375,9 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/atk-1.0/atk/atksocket.h \
  /usr/include/atk-1.0/atk/atkstateset.h \
  /usr/include/atk-1.0/atk/atkstreamablecontent.h \
- /usr/include/atk-1.0/atk/atktable.h /usr/include/atk-1.0/atk/atkmisc.h \
- /usr/include/atk-1.0/atk/atkvalue.h \
- /usr/include/atk-1.0/atk/atkversion.h \
+ /usr/include/atk-1.0/atk/atktable.h \
+ /usr/include/atk-1.0/atk/atktablecell.h \
+ /usr/include/atk-1.0/atk/atkmisc.h /usr/include/atk-1.0/atk/atkvalue.h \
  /usr/include/atk-1.0/atk/atkwindow.h \
  /usr/include/gtk-2.0/gtk/gtkaccellabel.h \
  /usr/include/gtk-2.0/gtk/gtklabel.h /usr/include/gtk-2.0/gtk/gtkmisc.h \
@@ -551,12 +564,10 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h /usr/include/alloca.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
- /usr/include/x86_64-linux-gnu/bits/stdlib.h \
  /usr/include/json-c/linkhash.h /usr/include/json-c/json_object.h \
  /usr/include/json-c/json_inttypes.h /usr/include/json-c/json_config.h \
- /usr/include/inttypes.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stdint.h /usr/include/stdint.h \
- /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/inttypes.h /usr/lib/gcc/x86_64-linux-gnu/6/include/stdint.h \
+ /usr/include/stdint.h /usr/include/x86_64-linux-gnu/bits/wchar.h \
  /usr/include/json-c/arraylist.h /usr/include/json-c/json_util.h \
  /usr/include/json-c/json_tokener.h \
  /usr/include/json-c/json_object_iterator.h \
@@ -574,6 +585,14 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  /usr/include/libxml2/libxml/xmlautomata.h \
  /usr/include/libxml2/libxml/entities.h \
  /usr/include/libxml2/libxml/encoding.h /usr/include/iconv.h \
+ /usr/include/unicode/ucnv.h /usr/include/unicode/ucnv_err.h \
+ /usr/include/unicode/utypes.h /usr/include/unicode/umachine.h \
+ /usr/include/unicode/ptypes.h /usr/include/unicode/platform.h \
+ /usr/include/unicode/uconfig.h /usr/include/unicode/uvernum.h \
+ /usr/include/unicode/urename.h /usr/include/unicode/uversion.h \
+ /usr/include/unicode/utf.h /usr/include/unicode/utf8.h \
+ /usr/include/unicode/utf16.h /usr/include/unicode/utf_old.h \
+ /usr/include/unicode/uenum.h /usr/include/unicode/localpointer.h \
  /usr/include/libxml2/libxml/xmlIO.h \
  /usr/include/libxml2/libxml/globals.h /usr/include/libxml2/libxml/SAX.h \
  /usr/include/libxml2/libxml/xlink.h /usr/include/libxml2/libxml/SAX2.h \
@@ -583,8 +602,7 @@ guake_indicator-guake-indicator-write-xml.o: guake-indicator-write-xml.c \
  guake-indicator-edit-menu.h /usr/include/gtk-2.0/gdk/gdkkeysyms.h \
  /usr/include/gtk-2.0/gdk/gdkkeysyms-compat.h /usr/include/string.h \
  /usr/include/x86_64-linux-gnu/bits/string.h \
- /usr/include/x86_64-linux-gnu/bits/string2.h \
- /usr/include/x86_64-linux-gnu/bits/string3.h
+ /usr/include/x86_64-linux-gnu/bits/string2.h
 
 /usr/include/stdc-predef.h:
 
@@ -600,11 +618,11 @@ guake-indicator.h:
 
 /usr/include/glib-2.0/glib/gmacros.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/4.8/include/stddef.h:
+/usr/lib/gcc/x86_64-linux-gnu/6/include/stddef.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed/limits.h:
+/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed/limits.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed/syslimits.h:
+/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed/syslimits.h:
 
 /usr/include/limits.h:
 
@@ -626,7 +644,11 @@ guake-indicator.h:
 
 /usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/4.8/include/float.h:
+/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/6/include/float.h:
 
 /usr/include/glib-2.0/glib/gversionmacros.h:
 
@@ -637,6 +659,8 @@ guake-indicator.h:
 /usr/include/x86_64-linux-gnu/bits/types.h:
 
 /usr/include/x86_64-linux-gnu/bits/typesizes.h:
+
+/usr/include/x86_64-linux-gnu/bits/timex.h:
 
 /usr/include/xlocale.h:
 
@@ -650,9 +674,11 @@ guake-indicator.h:
 
 /usr/include/glib-2.0/glib/gerror.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/4.8/include/stdarg.h:
+/usr/lib/gcc/x86_64-linux-gnu/6/include/stdarg.h:
 
 /usr/include/glib-2.0/glib/gquark.h:
+
+/usr/include/glib-2.0/glib/gutils.h:
 
 /usr/include/glib-2.0/glib/gbacktrace.h:
 
@@ -738,8 +764,6 @@ guake-indicator.h:
 
 /usr/include/glib-2.0/glib/gunicode.h:
 
-/usr/include/glib-2.0/glib/gutils.h:
-
 /usr/include/glib-2.0/glib/gkeyfile.h:
 
 /usr/include/glib-2.0/glib/gmappedfile.h:
@@ -747,6 +771,10 @@ guake-indicator.h:
 /usr/include/glib-2.0/glib/gmarkup.h:
 
 /usr/include/glib-2.0/glib/gmessages.h:
+
+/usr/include/glib-2.0/glib/gvariant.h:
+
+/usr/include/glib-2.0/glib/gvarianttype.h:
 
 /usr/include/glib-2.0/glib/goption.h:
 
@@ -788,10 +816,6 @@ guake-indicator.h:
 
 /usr/include/glib-2.0/glib/gurifuncs.h:
 
-/usr/include/glib-2.0/glib/gvarianttype.h:
-
-/usr/include/glib-2.0/glib/gvariant.h:
-
 /usr/include/glib-2.0/glib/gversion.h:
 
 /usr/include/glib-2.0/glib/deprecated/gallocator.h:
@@ -820,8 +844,6 @@ guake-indicator.h:
 
 /usr/include/x86_64-linux-gnu/bits/select.h:
 
-/usr/include/x86_64-linux-gnu/bits/select2.h:
-
 /usr/include/x86_64-linux-gnu/sys/sysmacros.h:
 
 /usr/include/pthread.h:
@@ -831,6 +853,8 @@ guake-indicator.h:
 /usr/include/x86_64-linux-gnu/bits/sched.h:
 
 /usr/include/x86_64-linux-gnu/bits/setjmp.h:
+
+/usr/include/glib-2.0/glib/glib-autocleanups.h:
 
 /usr/include/gtk-2.0/gtk/gtk.h:
 
@@ -879,6 +903,8 @@ guake-indicator.h:
 /usr/include/glib-2.0/gobject/gvaluearray.h:
 
 /usr/include/glib-2.0/gobject/gvaluetypes.h:
+
+/usr/include/glib-2.0/gobject/gobject-autocleanups.h:
 
 /usr/include/glib-2.0/gio/gaction.h:
 
@@ -938,7 +964,7 @@ guake-indicator.h:
 
 /usr/include/getopt.h:
 
-/usr/include/x86_64-linux-gnu/bits/unistd.h:
+/usr/include/glib-2.0/gio/gdatagrambased.h:
 
 /usr/include/glib-2.0/gio/gdatainputstream.h:
 
@@ -969,6 +995,12 @@ guake-indicator.h:
 /usr/include/glib-2.0/gio/gdbusutils.h:
 
 /usr/include/glib-2.0/gio/gdrive.h:
+
+/usr/include/glib-2.0/gio/gdtlsclientconnection.h:
+
+/usr/include/glib-2.0/gio/gdtlsconnection.h:
+
+/usr/include/glib-2.0/gio/gdtlsserverconnection.h:
 
 /usr/include/glib-2.0/gio/gemblemedicon.h:
 
@@ -1076,6 +1108,8 @@ guake-indicator.h:
 
 /usr/include/glib-2.0/gio/gsimpleasyncresult.h:
 
+/usr/include/glib-2.0/gio/gsimpleiostream.h:
+
 /usr/include/glib-2.0/gio/gsimplepermission.h:
 
 /usr/include/glib-2.0/gio/gsocketclient.h:
@@ -1170,6 +1204,12 @@ guake-indicator.h:
 
 /usr/include/glib-2.0/gio/gnotification.h:
 
+/usr/include/glib-2.0/gio/glistmodel.h:
+
+/usr/include/glib-2.0/gio/gliststore.h:
+
+/usr/include/glib-2.0/gio/gio-autocleanups.h:
+
 /usr/include/gtk-2.0/gdk/gdkscreen.h:
 
 /usr/include/cairo/cairo.h:
@@ -1189,6 +1229,10 @@ guake-indicator.h:
 /usr/include/pango-1.0/pango/pango-font.h:
 
 /usr/include/pango-1.0/pango/pango-coverage.h:
+
+/usr/include/pango-1.0/pango/pango-version-macros.h:
+
+/usr/include/pango-1.0/pango/pango-features.h:
 
 /usr/include/pango-1.0/pango/pango-types.h:
 
@@ -1218,8 +1262,6 @@ guake-indicator.h:
 
 /usr/include/pango-1.0/pango/pango-enum-types.h:
 
-/usr/include/pango-1.0/pango/pango-features.h:
-
 /usr/include/pango-1.0/pango/pango-glyph-item.h:
 
 /usr/include/pango-1.0/pango/pango-layout.h:
@@ -1238,13 +1280,9 @@ guake-indicator.h:
 
 /usr/include/wchar.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
-
 /usr/include/x86_64-linux-gnu/bits/sys_errlist.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdio.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdio2.h:
 
 /usr/lib/x86_64-linux-gnu/gtk-2.0/include/gdkconfig.h:
 
@@ -1266,6 +1304,8 @@ guake-indicator.h:
 
 /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf.h:
 
+/usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-macros.h:
+
 /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-features.h:
 
 /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-core.h:
@@ -1281,6 +1321,8 @@ guake-indicator.h:
 /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-loader.h:
 
 /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-enum-types.h:
+
+/usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-autocleanups.h:
 
 /usr/include/pango-1.0/pango/pangocairo.h:
 
@@ -1354,6 +1396,8 @@ guake-indicator.h:
 
 /usr/include/atk-1.0/atk/atkobject.h:
 
+/usr/include/atk-1.0/atk/atkversion.h:
+
 /usr/include/atk-1.0/atk/atkstate.h:
 
 /usr/include/atk-1.0/atk/atkrelationtype.h:
@@ -1369,6 +1413,8 @@ guake-indicator.h:
 /usr/include/atk-1.0/atk/atkeditabletext.h:
 
 /usr/include/atk-1.0/atk/atktext.h:
+
+/usr/include/atk-1.0/atk/atk-enum-types.h:
 
 /usr/include/atk-1.0/atk/atkgobjectaccessible.h:
 
@@ -1388,6 +1434,8 @@ guake-indicator.h:
 
 /usr/include/atk-1.0/atk/atkplug.h:
 
+/usr/include/atk-1.0/atk/atkrange.h:
+
 /usr/include/atk-1.0/atk/atkregistry.h:
 
 /usr/include/atk-1.0/atk/atkobjectfactory.h:
@@ -1406,11 +1454,11 @@ guake-indicator.h:
 
 /usr/include/atk-1.0/atk/atktable.h:
 
+/usr/include/atk-1.0/atk/atktablecell.h:
+
 /usr/include/atk-1.0/atk/atkmisc.h:
 
 /usr/include/atk-1.0/atk/atkvalue.h:
-
-/usr/include/atk-1.0/atk/atkversion.h:
 
 /usr/include/atk-1.0/atk/atkwindow.h:
 
@@ -1822,8 +1870,6 @@ guake-indicator-read-json.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdlib.h:
-
 /usr/include/json-c/linkhash.h:
 
 /usr/include/json-c/json_object.h:
@@ -1834,7 +1880,7 @@ guake-indicator-read-json.h:
 
 /usr/include/inttypes.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/4.8/include/stdint.h:
+/usr/lib/gcc/x86_64-linux-gnu/6/include/stdint.h:
 
 /usr/include/stdint.h:
 
@@ -1882,6 +1928,38 @@ guake-indicator-xml.h:
 
 /usr/include/iconv.h:
 
+/usr/include/unicode/ucnv.h:
+
+/usr/include/unicode/ucnv_err.h:
+
+/usr/include/unicode/utypes.h:
+
+/usr/include/unicode/umachine.h:
+
+/usr/include/unicode/ptypes.h:
+
+/usr/include/unicode/platform.h:
+
+/usr/include/unicode/uconfig.h:
+
+/usr/include/unicode/uvernum.h:
+
+/usr/include/unicode/urename.h:
+
+/usr/include/unicode/uversion.h:
+
+/usr/include/unicode/utf.h:
+
+/usr/include/unicode/utf8.h:
+
+/usr/include/unicode/utf16.h:
+
+/usr/include/unicode/utf_old.h:
+
+/usr/include/unicode/uenum.h:
+
+/usr/include/unicode/localpointer.h:
+
 /usr/include/libxml2/libxml/xmlIO.h:
 
 /usr/include/libxml2/libxml/globals.h:
@@ -1911,5 +1989,3 @@ guake-indicator-edit-menu.h:
 /usr/include/x86_64-linux-gnu/bits/string.h:
 
 /usr/include/x86_64-linux-gnu/bits/string2.h:
-
-/usr/include/x86_64-linux-gnu/bits/string3.h:

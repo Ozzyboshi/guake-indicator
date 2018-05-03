@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2013-2015 Alessio Garzi <gun101@email.it>
-Copyright (C) 2013-2015 Francesco Minà <mina.francesco@gmail.com>
+Copyright (C) 2013-2018 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2018 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -28,3 +28,4 @@ Host* host_queue(Host* ,Host* );
 Host* create_host_linkedlist(struct json_object*,int);
 void sethostcounterid(Host*);
 void sethostgroupcounterid(HostGroup*);
+int createdefaultfilecfg(const char*);

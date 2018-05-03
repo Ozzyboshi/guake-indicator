@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2013-2015 Alessio Garzi <gun101@email.it>
-Copyright (C) 2013-2015 Francesco Minà <mina.francesco@gmail.com>
+Copyright (C) 2013-2018 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2018 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -20,11 +20,16 @@ Boston, MA 02111-1307, USA.
 
 #include <glib.h>
 #include <dbus/dbus-glib.h>
-
+#include <glib/gprintf.h>
+#include "guake3.h"
 
 #define GUAKE_URI "org.guake.RemoteControl"
 #define GUAKE_PATH "/org/guake/RemoteControl"
 #define GUAKE_IFACE "org.guake.RemoteControl"
+
+#define GUAKE3_URI "org.guake3.RemoteControl"
+#define GUAKE3_PATH "/org/guake3/RemoteControl"
+#define GUAKE3_IFACE "org.guake3.RemoteControl"
 
 DBusGProxy* guake_dbus_init();
 gboolean guake_dbus_send(const gchar*,const gchar*);
@@ -41,5 +46,6 @@ gboolean guake_getgtktabname(guint,gchar**);
 gboolean guake_selecttab(const gchar*);
 gboolean guake_renamecurrenttab(const gchar*);
 gboolean guake_executecommand(const char*);
+gboolean guake_executecommand_by_uuid(gchar*,const char*);
 
 

@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2013-2017 Alessio Garzi <gun101@email.it>
-Copyright (C) 2013-2017 Francesco Minà <mina.francesco@gmail.com>
+Copyright (C) 2013-2018 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2018 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -27,6 +27,9 @@ Boston, MA 02111-1307, USA.
 #include "guake-indicator-write-json.h"
 #include "guake-indicator-edit-menu.h"
 #include "guake-indicator-xml.h"
+#include "guake-indicator-dbus.h"
+#include "guake-indicator-notify.h"
+// #include "guake3.h"
 
 static const gchar* ui_start = "<ui>";
 static const gchar* ui_end = "</ui>";
@@ -41,6 +44,7 @@ static const gchar* default_menuitems = "<separator/>"
 
 AppIndicator *indicator;
 guint merge_id=0;
+int GUAKE3;
 
 // Open a group of tabs
 static void group_guake_open(GtkAction* action,gpointer user_data)
@@ -82,7 +86,7 @@ static void guake_open(GtkAction* action,gpointer user_data)
 	
 	// open a new Guake tab
 	if (guake_gettabcount(&numtabs)==FALSE)
-		guake_newtab();
+		guake_newtab(NULL);
 	// if current guake tab is selected i skip this part
 	else if (host.open_in_tab && atol((char*)host.open_in_tab)==-1)
 	{
@@ -334,8 +338,8 @@ static void about (GtkAction* action)
 	gtk_show_about_dialog(NULL,
 							"program-name", "Guake indicator",
 							"authors", authors,
-							"comments", "A simple indicator that lets you send custom commands to Guake.",
-							"copyright", "(C) 2013-2017 Alessio Garzi\n(C) 2013-2017 Francesco Mina\n\nDedicated to my daughters\n Ludovica and newborn Mariavittoria",
+							"comments", "A simple indicator that lets you send custom commands to Guake/Guake3.",
+							"copyright", "(C) 2013-2018 Alessio Garzi\n(C) 2013-2018 Francesco Mina\n\nDedicated to my daughters\n Ludovica and Mariavittoria",
 							"logo", logo,
 							"version", GUAKE_INDICATOR_VERSION, 
 							"website", "http://guake-indicator.ozzyboshi.com",
@@ -538,16 +542,35 @@ int main (int argc, char **argv)
 	GtkActionGroup *action_group;
 	GtkUIManager *uim;
 	GError *error = NULL;
+	GUAKE3=0;
 	
-	if (!findguakepid()) 
-		if (system("guake &")==-1)
-			return -1;
+	if (argc>1 && strlen(argv[1])>0 && !strcasecmp(argv[1],"-guake3"))
+	{
+		// To be implemented, here guake3 should start
+	}
+	else
+	{
+		if (!findguakepid()) 
+			if (system("guake &")==-1)
+				return -1;
+	}
 			
 	gtk_init (&argc, &argv);
 		
 	GArray* grouphostlist;
 
-	if (argc>1 && strlen(argv[1])>0)
+	if (argc>1 && strlen(argv[1])>0 && !strcasecmp(argv[1],"-guake3"))
+	{
+		GUAKE3=1;
+		if (argc>2)
+			grouphostlist=read_xml_cfg_file_from_file(argv[2]);
+		else
+			if (check_xml_cfg_file_presence())
+				grouphostlist = read_xml_cfg_file();
+			else
+				grouphostlist = read_json_cfg_file(NULL);			
+	}
+	else if (argc>1 && strlen(argv[1])>0)
 		grouphostlist=read_xml_cfg_file_from_file(argv[1]);
 	else if (check_xml_cfg_file_presence())
 		grouphostlist = read_xml_cfg_file();

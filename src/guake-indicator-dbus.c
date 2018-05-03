@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2013-2015 Alessio Garzi <gun101@email.it>
-Copyright (C) 2013-2015 Francesco Minà <mina.francesco@gmail.com>
+Copyright (C) 2013-2018 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2018 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -34,7 +34,7 @@ DBusGProxy* guake_dbus_init()
 		return NULL;
 	}
 		
-	remoteValue =dbus_g_proxy_new_for_name(bus,GUAKE_URI,GUAKE_PATH,GUAKE_IFACE);
+	remoteValue =dbus_g_proxy_new_for_name(bus,GUAKE3?GUAKE3_URI:GUAKE_URI,GUAKE3?GUAKE3_PATH:GUAKE_PATH,GUAKE3?GUAKE3_IFACE:GUAKE_IFACE);
 	if (remoteValue == NULL) {
 		g_printf("Couldn't create the proxy object");
 		return NULL;

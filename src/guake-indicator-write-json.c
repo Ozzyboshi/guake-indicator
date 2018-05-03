@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2013-2015 Alessio Garzi <gun101@email.it>
-Copyright (C) 2013-2015 Francesco Minà <mina.francesco@gmail.com>
+Copyright (C) 2013-2018 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2018 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -18,6 +18,7 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 */
 
+#define _GNU_SOURCE 
 #include "guake-indicator.h"
 #include "guake-indicator-read-json.h"
 #include "guake-indicator-write-json.h"
