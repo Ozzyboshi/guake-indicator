@@ -39,9 +39,16 @@ GArray* read_xml_cfg_file_from_file(char* filecfginput)
 	
 	filedir=checkandcreatedefaultdir();
 	if (filecfginput==NULL)
-		asprintf(&filecfg,"%s/%s",filedir,GUAKE_INDICATOR_DEFAULT_FILEXML);
+	{
+		if (asprintf(&filecfg,"%s/%s",filedir,GUAKE_INDICATOR_DEFAULT_FILEXML)==-1)
+			return NULL;
+	}	
 	else
-		filecfg=strdup(filecfginput);
+	{	
+		if (asprintf(&filecfg,"%s",filecfginput)==-1)
+			return NULL;
+	}
+
 	free((void*)filedir);
 	xmlNode *cur_node = NULL;
 	
@@ -159,7 +166,8 @@ gboolean check_xml_cfg_file_presence()
 	char* filedir,*filecfg;
 	gboolean ret;
 	filedir=checkandcreatedefaultdir();
-	asprintf(&filecfg,"%s/%s",filedir,GUAKE_INDICATOR_DEFAULT_FILEXML);
+	if (asprintf(&filecfg,"%s/%s",filedir,GUAKE_INDICATOR_DEFAULT_FILEXML)==-1)
+		return FALSE;
 	if( access( filecfg, F_OK ) != -1 )
 		ret=TRUE;
 	else

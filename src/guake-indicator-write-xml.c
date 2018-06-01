@@ -36,7 +36,8 @@ int write_xml_cfg_file_from_file(GArray* grouphostlist,char* file)
 	if (file==NULL)
 	{
 		filedir=checkandcreatedefaultdir();
-		asprintf(&filecfg,"%s/%s",filedir,GUAKE_INDICATOR_DEFAULT_FILEXML);
+		if (asprintf(&filecfg,"%s/%s",filedir,GUAKE_INDICATOR_DEFAULT_FILEXML)==-1)
+			return -1;
 		free((void*)filedir);
 		FILE * fd=fopen(filecfg,"w");
 		if (fd==NULL)

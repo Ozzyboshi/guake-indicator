@@ -49,7 +49,8 @@ GArray* read_json_cfg_file(char * customfilecfg)
 	else
 	{
 			filedir=checkandcreatedefaultdir();
-			asprintf(&filecfg,"%s/%s",filedir,GUAKE_INDICATOR_DEFAULT_FILEJSON);
+			if (asprintf(&filecfg,"%s/%s",filedir,GUAKE_INDICATOR_DEFAULT_FILEJSON)==-1)
+				return NULL;
 			free((void*)filedir);
 	}
 	
@@ -265,7 +266,8 @@ char* checkandcreatedefaultdir()
 	struct stat s,s1;
 	char* pluginpath;
 		
-	asprintf(&fulldirpath,"%s/%s",getenv("HOME"),GUAKE_INDICATOR_DEFAULT_DIR);
+	if (asprintf(&fulldirpath,"%s/%s",getenv("HOME"),GUAKE_INDICATOR_DEFAULT_DIR)==-1)
+		return NULL;
 	int err = stat(fulldirpath, &s);
 	if(ENOENT == err)
 	{
@@ -280,7 +282,8 @@ char* checkandcreatedefaultdir()
 				fprintf(stderr,"Can't create %s (%d - %s)",GUAKE_INDICATOR_DEFAULT_DIR,errno,strerror(errno));
 		}
 	}
-	asprintf(&pluginpath,"%s/%s",fulldirpath,GUAKE_INDICATOR_PLUGIN_DIR);
+	if (asprintf(&pluginpath,"%s/%s",fulldirpath,GUAKE_INDICATOR_PLUGIN_DIR)==-1)
+		return NULL;
 	err = stat(pluginpath, &s1);
 	if(ENOENT == err)
 	{

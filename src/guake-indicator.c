@@ -542,18 +542,13 @@ int main (int argc, char **argv)
 	GtkActionGroup *action_group;
 	GtkUIManager *uim;
 	GError *error = NULL;
-	GUAKE3=0;
+	GUAKE3=1;
 	
-	if (argc>1 && strlen(argv[1])>0 && !strcasecmp(argv[1],"-guake3"))
-	{
-		// To be implemented, here guake3 should start
-	}
-	else
-	{
-		if (!findguakepid()) 
-			if (system("guake &")==-1)
-				return -1;
-	}
+	// Start guake/guake3 if not running
+	if (!findguakepid()) 
+		if (system("guake &")==-1)
+			return -1;
+
 			
 	gtk_init (&argc, &argv);
 		
@@ -562,6 +557,17 @@ int main (int argc, char **argv)
 	if (argc>1 && strlen(argv[1])>0 && !strcasecmp(argv[1],"-guake3"))
 	{
 		GUAKE3=1;
+		if (argc>2)
+			grouphostlist=read_xml_cfg_file_from_file(argv[2]);
+		else
+			if (check_xml_cfg_file_presence())
+				grouphostlist = read_xml_cfg_file();
+			else
+				grouphostlist = read_json_cfg_file(NULL);			
+	}
+	else if (argc>1 && strlen(argv[1])>0 && !strcasecmp(argv[1],"-guake0"))
+	{
+		GUAKE3=0;
 		if (argc>2)
 			grouphostlist=read_xml_cfg_file_from_file(argv[2]);
 		else

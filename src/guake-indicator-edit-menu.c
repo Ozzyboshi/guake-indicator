@@ -839,9 +839,11 @@ static void export ( GtkWidget *widget, gpointer user_data)
 		g_array_append_val (exportarrray, hostgroup);
 		write_xml_cfg_file_from_file(exportarrray,filename);
 		char* msg;
-		asprintf(&msg,"Export to file %s complete",filename);
-		guake_notify("Guake indicator",msg);
-		free(msg);
+		if (asprintf(&msg,"Export to file %s complete",filename)==-1)
+		{
+			guake_notify("Guake indicator",msg);
+			free(msg);
+		}
 		g_free (filename);
        }
      
@@ -1448,7 +1450,8 @@ GArray* get_custom_glade_files()
 	char* pluginpath;
 	GArray* res=g_array_new (TRUE, FALSE, sizeof (char*));
 	plugindir=checkandcreatedefaultdir();
-	asprintf(&pluginpath,"%s/%s",plugindir,GUAKE_INDICATOR_PLUGIN_DIR);
+	if (asprintf(&pluginpath,"%s/%s",plugindir,GUAKE_INDICATOR_PLUGIN_DIR)==-1)
+		return NULL;
 	DIR* dir = opendir(pluginpath);
 	free(pluginpath);
 	free(plugindir);
@@ -1505,7 +1508,8 @@ static void call_print_custom_form ( GtkWidget *widget, gpointer user_data)
 	else if (!strcmp(rindex((char*)dialog->selected_glade_file,'.'),".xml"))
 	{
 		char* fulldirpath;
-		asprintf(&fulldirpath,"%s/%s/%s/%s",getenv("HOME"),GUAKE_INDICATOR_DEFAULT_DIR,GUAKE_INDICATOR_PLUGIN_DIR,(char*)dialog->selected_glade_file);
+		if (asprintf(&fulldirpath,"%s/%s/%s/%s",getenv("HOME"),GUAKE_INDICATOR_DEFAULT_DIR,GUAKE_INDICATOR_PLUGIN_DIR,(char*)dialog->selected_glade_file)==-1)
+			return;
 		GArray* imported_hostlist = read_xml_cfg_file_from_file(fulldirpath);
 		free(fulldirpath);
 		Host* imported_host=((HostGroup*)g_array_index(imported_hostlist,HostGroup*,0))->hostarray;

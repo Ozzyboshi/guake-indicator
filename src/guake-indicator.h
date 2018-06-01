@@ -25,7 +25,7 @@ Boston, MA 02111-1307, USA.
 #define GUAKE_INDICATOR_PLUGIN_DIR "plugins"
 #define GUAKE_INDICATOR_ICON_DIR "icons/hicolor/256x256/apps/"
 #define GUAKE_INDICATOR_GCONF_SCHEMA_ROOT "/apps/guake-indicator/"
-#define GUAKE_INDICATOR_VERSION "1.3"
+#define GUAKE_INDICATOR_VERSION "1.3.2"
 
 typedef struct Host {
 	gchar* id;

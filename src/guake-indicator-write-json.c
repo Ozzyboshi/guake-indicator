@@ -129,7 +129,8 @@ int write_cfg_file(GArray* grouphostlist)
 {
 	char* filedir,*filecfg;
 	filedir=checkandcreatedefaultdir();
-	asprintf(&filecfg,"%s/%s",filedir,GUAKE_INDICATOR_DEFAULT_FILEJSON);
+	if (asprintf(&filecfg,"%s/%s",filedir,GUAKE_INDICATOR_DEFAULT_FILEJSON)==-1)
+		return -1;
 	free((void*)filedir);
 	FILE * fd=fopen(filecfg,"w");
 	if (fd==NULL)
