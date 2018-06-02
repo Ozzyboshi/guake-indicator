@@ -28,16 +28,16 @@ If this field contains the value '-1', Guake indicator will execute the command 
 
 ### Requirements for Guake indicator
 For proper compilation and functionality of Guake indicator, the following packages are REQUIRED:
-libappindicator-dev
-libcairo2-dev (>= 1.10)
-libdbus-1-dev
-libdbus-glib-1-dev
-libglib2.0-dev (>=2.35.4)
-libgtk-3-dev (>=3.1.4)
-libjson-c-dev (for backward compatibility)
-libxml2-dev
-python-beautifulsoup
-libgconf2-dev
+- libappindicator-dev
+- libcairo2-dev (>= 1.10)
+- libdbus-1-dev
+- libdbus-glib-1-dev
+- libglib2.0-dev (>=2.35.4)
+- libgtk-3-dev (>=3.1.4)
+- libjson-c-dev (for backward compatibility)
+- libxml2-dev
+- python-beautifulsoup
+- libgconf2-dev
 
 ### Credits
 Guake indicator was conceived and initially created by Alessio Garzi <gun101@email.it>
