@@ -21,7 +21,6 @@ Boston, MA 02111-1307, USA.
 #include <string.h>
 #include <gtk/gtk.h>
 #include <libappindicator/app-indicator.h>
-#include <gconf/gconf-client.h>
 #include "guake-indicator.h"
 #include "guake-indicator-read-json.h"
 #include "guake-indicator-write-json.h"
@@ -90,7 +89,6 @@ static void guake_open(GtkAction* action,gpointer user_data)
 	// if current guake tab is selected i skip this part
 	else if (host.open_in_tab && atol((char*)host.open_in_tab)==-1)
 	{
-		printf("eseguo nella current tab");
 		if (guake_getcurrenttab_uuid(&uuid)==FALSE) uuid=NULL;
 	}
 	else if (host.open_in_tab==NULL || !strlen(host.open_in_tab) || ((long)numtabs<=atol((char*)host.open_in_tab) && host.open_in_tab_named==FALSE))
@@ -187,10 +185,8 @@ static void guake_open(GtkAction* action,gpointer user_data)
 			if (end>start)
 			{
 				gchar* envstring = g_strndup(start,(end-start)*sizeof(gchar));
-				GConfClient *client = gconf_client_get_default ();
-				gchar* gschema = g_strjoin(NULL,GUAKE_INDICATOR_GCONF_SCHEMA_ROOT,envstring,NULL);
-				char* str = gconf_client_get_string (client, gschema, NULL);
-				g_free(gschema);
+				GSettings* editor_settings = g_settings_new (GUAKE_INDICATOR_DCONF_SCHEMA_ROOT);
+				gchar* str = g_settings_get_string (editor_settings, envstring);
 				if (str)
 				{
 					g_string_append (newstring,str);

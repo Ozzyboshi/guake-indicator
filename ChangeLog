@@ -1,3 +1,13 @@
+2018-06-02 Alessio Garzi <gun101@email.it>
+
+	1.3.3 - new release with the following features :
+
+	- Guake indicator now supports Guake3 as default shell
+
+	- Gconf2 replaced by gsettings (closes debian bug #892706)
+
+	- Optional configuration file as argument
+
 2014-12-31 Alessio Garzi <gun101@email.it>
 
 	1.1 release with "open in selected tab" option added

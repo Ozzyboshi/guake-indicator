@@ -16,9 +16,8 @@ Build-Depends: autotools-dev,
                libgtk-3-dev (>= 3.1.4),
                libjson-c-dev,
                libxml2-dev,
-               libgconf2-dev,
                python-beautifulsoup
-Standards-Version: 3.9.6
+Standards-Version: 3.9.8
 Homepage: http://guake-indicator.ozzyboshi.com
 
 Package: guake-indicator

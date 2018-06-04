@@ -1,4 +1,4 @@
-AC_INIT([guake-indicator], [1.3.2], [gun101@email.it])
+AC_INIT([guake-indicator], [1.3.3], [gun101@email.it])
 
 # safety check , make sure that config is not run from outer space
 AC_CONFIG_SRCDIR([src/guake-indicator.c])
@@ -32,7 +32,6 @@ AC_CHECK_HEADER([libappindicator/app-indicator.h])
 AC_CHECK_HEADER([json-c/json.h],[],[AC_MSG_ERROR([libjson-c-dev not installed)])])
 AC_CHECK_HEADER([glib.h])
 AC_CHECK_HEADER([dbus/dbus-glib.h])
-AC_CHECK_HEADER([gconf/gconf-client.h])
 
 # python checks
 AC_MSG_CHECKING([for the python-urllib package])
@@ -70,6 +69,9 @@ AC_MSG_CHECKING([for the python-BeautifulSoup package])
 # Checks for typedefs, structures, and compiler characteristics.
 # Checks for library functions.
 # Output files.
+
+# needed to install gconf schema
+GLIB_GSETTINGS
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile src/Makefile data/Makefile plugins/Makefile data/icons/Makefile])
