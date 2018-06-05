@@ -186,7 +186,9 @@ static void guake_open(GtkAction* action,gpointer user_data)
 			{
 				gchar* envstring = g_strndup(start,(end-start)*sizeof(gchar));
 				GSettings* editor_settings = g_settings_new (GUAKE_INDICATOR_DCONF_SCHEMA_ROOT);
-				gchar* str = g_settings_get_string (editor_settings, envstring);
+				gchar* str =NULL;
+				if ( !strcmp(envstring,"param0")||!strcmp(envstring,"param1")||!strcmp(envstring,"param2")||!strcmp(envstring,"param3")||!strcmp(envstring,"param4")||!strcmp(envstring,"param5")||!strcmp(envstring,"param6")||!strcmp(envstring,"param7")||!strcmp(envstring,"param8")||!strcmp(envstring,"param9") )
+					str = g_settings_get_string (editor_settings, envstring);
 				if (str)
 				{
 					g_string_append (newstring,str);
