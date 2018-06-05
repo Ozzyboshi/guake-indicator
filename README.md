@@ -9,7 +9,7 @@ Guake-indicator is free software, you can redistribute it and/or modify it under
 ### Description of the project
 Guake indicator is a compact and convenient Ubuntu Appindicator that lets you send commands and customized tasks to Guake terminal.
 
-Guake is a free, open source, top-down terminal written in Python by Max Ulidtko,Pierre-Yves Chibon, Aleksandar Krsteski, Lincoln de Sousa, Gabriel Falcão and it's part of the Debian and Ubuntu project.
+Guake is a free, open source, top-down terminal written in Python by Max Ulidtko,Pierre-Yves Chibon, Aleksandar Krsteski, Lincoln de Sousa, Gabriel Falcão, Gaetan Semet and it's part of the Debian and Ubuntu project.
 
 Although Guake indicator was meant for Ubuntu it should work on any Debian based Operating System using The Gnome Desktop Environment.
 
@@ -37,7 +37,6 @@ For proper compilation and functionality of Guake indicator, the following packa
 - libjson-c-dev (for backward compatibility)
 - libxml2-dev
 - python-beautifulsoup
-- libgconf2-dev
 
 ### Credits
 Guake indicator was conceived and initially created by Alessio Garzi <gun101@email.it>
