@@ -4,7 +4,7 @@ Guake indicator is a compact and convenient Ubuntu Appindicator that lets you se
 Guake-indicator is free software, you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation.
 
 ![guake indicator img](http://guake-indicator.ozzyboshi.com/images/out.gif)
-![guake indicator img](http://guake-indicator.ozzyboshi.com/images/guake-indicator-1.png)
+![guake indicator img](http://guake-indicator.ozzyboshi.com/images/ubuntu18.png)
 
 ### Description of the project
 Guake indicator is a compact and convenient Ubuntu Appindicator that lets you send commands and customized tasks to Guake terminal.
