@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2013-2018 Alessio Garzi <gun101@email.it>
-Copyright (C) 2013-2018 Francesco Minà <mina.francesco@gmail.com>
+Copyright (C) 2013-2019 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2019 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -62,8 +62,8 @@ void print_edit_menu_form(GtkAction* action, gpointer user_data)
 	widgets.new_guake_tab = GTK_WIDGET (gtk_builder_get_object (builder, "new_guake_tab"));
 	widgets.existing_guake_tab = GTK_WIDGET (gtk_builder_get_object (builder, "existing_guake_tab"));
 	widgets.nth_guake_tab = GTK_WIDGET (gtk_builder_get_object (builder, "nth_guake_tab"));
-	GtkObject * adj = gtk_adjustment_new( 0,0,99,1,1,0);
-	gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(widgets.nth_guake_tab),GTK_ADJUSTMENT(adj));
+	/*GtkObject * adj = gtk_adjustment_new( 0,0,99,1,1,0);
+	gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(widgets.nth_guake_tab),GTK_ADJUSTMENT(adj));*/
 	widgets.existing_guake_tab_named=GTK_WIDGET (gtk_builder_get_object (builder, "existing_guake_tab_named"));
 	widgets.named_guake_tab = GTK_WIDGET (gtk_builder_get_object (builder, "named_guake_tab"));
 	widgets.lfcr = GTK_WIDGET (gtk_builder_get_object (builder, "lfcr"));
@@ -549,10 +549,10 @@ gboolean selection_func (GtkTreeSelection *selection, GtkTreeModel *model, GtkTr
 					{
 						gtk_widget_set_sensitive(widgets->existing_guake_tab_named,FALSE);
 						gtk_widget_set_sensitive(widgets->named_guake_tab,FALSE);
-						GtkTooltips *tooltip;
+						/*GtkTooltips *tooltip;
 						tooltip = gtk_tooltips_new ();
 						gtk_tooltips_set_tip (tooltip, widgets->named_guake_tab,GUAKE_INDICATOR_DBUS_GTKLABEL_MISSING_ERRMSG, NULL);
-						gtk_tooltips_set_tip (tooltip, widgets->existing_guake_tab_named, GUAKE_INDICATOR_DBUS_GTKLABEL_MISSING_ERRMSG, NULL);
+						gtk_tooltips_set_tip (tooltip, widgets->existing_guake_tab_named, GUAKE_INDICATOR_DBUS_GTKLABEL_MISSING_ERRMSG, NULL);*/
 					}
 					else
 						g_free(name);
@@ -745,10 +745,10 @@ static void add_host ( GtkWidget *widget, gpointer user_data)
 	{
 		gtk_widget_set_sensitive(dialog->existing_guake_tab_named,FALSE);
 		gtk_widget_set_sensitive(dialog->named_guake_tab,FALSE);
-		GtkTooltips *tooltip;
+		/*GtkTooltips *tooltip;
 		tooltip = gtk_tooltips_new ();
 		gtk_tooltips_set_tip (tooltip, dialog->named_guake_tab,GUAKE_INDICATOR_DBUS_GTKLABEL_MISSING_ERRMSG, NULL);
-		gtk_tooltips_set_tip (tooltip, dialog->existing_guake_tab_named, GUAKE_INDICATOR_DBUS_GTKLABEL_MISSING_ERRMSG, NULL);
+		gtk_tooltips_set_tip (tooltip, dialog->existing_guake_tab_named, GUAKE_INDICATOR_DBUS_GTKLABEL_MISSING_ERRMSG, NULL);*/
 	}
 	else
 		g_free(name);
@@ -808,8 +808,6 @@ static void export ( GtkWidget *widget, gpointer user_data)
 	dialog = gtk_file_chooser_dialog_new ("Save File",
 						GTK_WINDOW(widgets->window),
 						GTK_FILE_CHOOSER_ACTION_SAVE,
-						GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-						GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
 						NULL);
 	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
@@ -1237,7 +1235,8 @@ void reload_model_view(EditMenuDialog *dialog)
 	gtk_tree_view_set_model (GTK_TREE_VIEW (dialog->tree_view), GTK_TREE_MODEL (dialog->tree_store));
 	
 	/* Tell the theme engine we would like differentiated row colour */
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(dialog->tree_view),TRUE);
+	//gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(dialog->tree_view),TRUE);
+	//dialog->tree_view->set_rules_hint(TRUE);
 	
 	// TODO expand and select row
 	if (dialog->selected_path !=NULL)
@@ -1707,12 +1706,12 @@ gboolean on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data
 	
 	switch (event->keyval)
 	{
-		case GDK_Right:	path = gtk_tree_path_new_from_string (dialog->selected_path);
+		case GDK_KEY_Right:	path = gtk_tree_path_new_from_string (dialog->selected_path);
 						gtk_tree_view_expand_row (GTK_TREE_VIEW(dialog->tree_view),path,FALSE);
 						gtk_tree_path_free (path);
 						break;
 						
-		case GDK_Left:	path = gtk_tree_path_new_from_string (dialog->selected_path);
+		case GDK_KEY_Left:	path = gtk_tree_path_new_from_string (dialog->selected_path);
 						gtk_tree_view_collapse_row (GTK_TREE_VIEW(dialog->tree_view),path);
 						gtk_tree_path_free (path);
 						break;
@@ -1724,8 +1723,9 @@ gboolean manage_ctrl_s (GtkWidget *widget, GdkEventKey *event, gpointer user_dat
 {
 	switch (event->keyval)
 	{
-		case GDK_S:
-		case GDK_s:		if (event->state & GDK_CONTROL_MASK)
+		case GDK_KEY_S:
+		case GDK_KEY_s:		
+						if (event->state & GDK_CONTROL_MASK)
 						{
 							save_edit_menu ( NULL,user_data);
 						}
@@ -1830,7 +1830,13 @@ void view_popup_menu (GtkWidget *treeview, GdkEventButton *event, gpointer userd
 
 	gtk_widget_show_all(menu);
  
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,(event != NULL) ? event->button : 0,event->time);
+	//gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,(event != NULL) ? event->button : 0,event->time);
+	gtk_menu_popup_at_widget (GTK_MENU (menu),
+                            menu,
+                            GDK_GRAVITY_SOUTH_WEST,
+                            GDK_GRAVITY_NORTH_WEST,
+                            (GdkEvent *)event);
+
 }
 
 // Callback function of copy operations

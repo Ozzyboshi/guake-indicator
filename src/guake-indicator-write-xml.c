@@ -79,7 +79,10 @@ int write_xml_cfg_file_from_file(GArray* grouphostlist,char* file)
 			if (ptr->label==FALSE)
 			{
 				xmlNewTextChild(node2, NULL, BAD_CAST "tab_name", BAD_CAST ptr->tab_name);
-				gchar* guakecmd=get_guake_cmd(ptr);
+				
+				// va rimesso gchar* guakecmd=get_guake_cmd(ptr);
+				gchar* guakecmd=NULL; // va rimosso
+
 				xmlNewTextChild(node2, NULL, BAD_CAST "command_after_login",BAD_CAST guakecmd);
 				g_free(guakecmd);
 				xmlNewTextChild(node2, NULL, BAD_CAST "dont_show_guake", BAD_CAST ptr->dont_show_guake&&!strcmp((char*)ptr->dont_show_guake,"yes")?"yes":"no");

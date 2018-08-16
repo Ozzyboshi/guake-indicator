@@ -1,4 +1,4 @@
-AC_INIT([guake-indicator], [1.3.3], [gun101@email.it])
+AC_INIT([guake-indicator], [1.4], [gun101@email.it])
 
 # safety check , make sure that config is not run from outer space
 AC_CONFIG_SRCDIR([src/guake-indicator.c])
@@ -25,6 +25,19 @@ AC_CHECK_LIB([appindicator], [app_indicator_new], [APPINDICATORLIB=-lindicator],
 AC_SUBST([APPINDICATORLIB])
 AC_CHECK_LIB([gtk-x11-2.0], [gtk_action_group_new], [GTKLIB=-lgtk-x11-2.0], [AC_MSG_ERROR([This package needs gtk2.0.])])
 AC_SUBST([GTKLIB])
+
+###########################
+# Ayatana dependencies
+###########################
+GTK3_REQUIRED_VERSION=2.91
+GLIB_REQUIRED_VERSION=2.35.4
+INDICATOR_REQUIRED_VERSION=0.6.0
+GIO_REQUIRED_VERSION=2.26
+DBUSMENUGTK_REQUIRED_VERSION=0.5.90
+
+
+PKG_CHECK_MODULES(LIBRARY,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
+                            ayatana-indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION)  
 
 # Checks for header files.
 AC_CHECK_HEADER([gtk/gtk.h])

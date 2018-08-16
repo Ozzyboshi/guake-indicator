@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2013-2015 Alessio Garzi <gun101@email.it>
-Copyright (C) 2013-2015 Francesco Minà <mina.francesco@gmail.com>
+Copyright (C) 2013-2019 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2019 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -165,7 +165,7 @@ typedef struct edit_menu_dialog_type
 	
 } EditMenuDialog;
 
-void print_edit_menu_form(GtkAction*,gpointer);
+//void print_edit_menu_form(GtkAction*,gpointer);
 void print_custom_form(GtkAction*, gpointer);
 void print_select_custom_form(GtkAction*, gpointer);
 GArray* get_custom_glade_files();
