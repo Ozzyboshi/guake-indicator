@@ -20,7 +20,6 @@ Boston, MA 02111-1307, USA.
 
 #include <string.h>
 #include <gtk/gtk.h>
-//#include <libappindicator/app-indicator.h>
 #include "guake-indicator.h"
 #include "guake-indicator-read-json.h"
 #include "guake-indicator-write-json.h"
@@ -30,8 +29,6 @@ Boston, MA 02111-1307, USA.
 #include "guake-indicator-notify.h"
 
 
-
-guint merge_id=0;
 int GUAKE3;
 
 // Open a group of tabs
@@ -350,114 +347,6 @@ static void close_guake ( GtkWidget *widget, gpointer user_data)
 	return ;
 }
 
-/*int main (int argc, char **argv)
-{
-	GtkWidget *indicator_menu;
-	GtkActionGroup *action_group;
-	GtkUIManager *uim;
-	GError *error = NULL;
-	GUAKE3=1;
-	
-	// Start guake/guake3 if not running
-	if (!findguakepid()) 
-		if (system("guake &")==-1)
-			return -1;
-
-			
-	gtk_init (&argc, &argv);
-		
-	GArray* grouphostlist;
-
-	if (argc>1 && strlen(argv[1])>0 && !strcasecmp(argv[1],"-guake3"))
-	{
-		GUAKE3=1;
-		if (argc>2)
-			grouphostlist=read_xml_cfg_file_from_file(argv[2]);
-		else
-			if (check_xml_cfg_file_presence())
-				grouphostlist = read_xml_cfg_file();
-			else
-				grouphostlist = read_json_cfg_file(NULL);			
-	}
-	else if (argc>1 && strlen(argv[1])>0 && !strcasecmp(argv[1],"-guake0"))
-	{
-		GUAKE3=0;
-		if (argc>2)
-			grouphostlist=read_xml_cfg_file_from_file(argv[2]);
-		else
-			if (check_xml_cfg_file_presence())
-				grouphostlist = read_xml_cfg_file();
-			else
-				grouphostlist = read_json_cfg_file(NULL);			
-	}
-	else if (argc>1 && strlen(argv[1])>0)
-		grouphostlist=read_xml_cfg_file_from_file(argv[1]);
-	else if (check_xml_cfg_file_presence())
-		grouphostlist = read_xml_cfg_file();
-	else
-		grouphostlist = read_json_cfg_file(NULL);
-		
-	if (grouphostlist==NULL)
-		error_modal_box("Couldn't retrieve host from your guake indicator configuration file");
-	
-	// Create action group for refresh quit and about menuitems
-	action_group = gtk_action_group_new ("AppActions");
-		
-	uim = gtk_ui_manager_new ();
-	
-	// I create a new actionlist for each grouphostlist
-	gchar* menuitems=create_actionlists(grouphostlist,uim,action_group);
-		
-	// Add reload_action
-	GtkInfo gtkinfo;
-	gtkinfo.action_group = action_group;
-	gtkinfo.uim = uim;
-	gtkinfo.grouphostlist=grouphostlist;
-		
-	// Create default actions
-	create_default_actions(action_group,&gtkinfo);
-		
-	gtk_ui_manager_insert_action_group (uim, action_group, 0);
-		
-	gchar* ui_full_info=g_strjoin (NULL,
-	ui_start,
-	popup_start,
-	menuitems,
-	separator,
-	default_menuitems,
-	popup_end,
-	ui_end,
-	NULL
-	);
-				
-	merge_id=gtk_ui_manager_add_ui_from_string (uim, ui_full_info, -1, &error);
-	if (!merge_id)
-	{
-		g_message ("Failed to build menus: %s\n", error->message);
-		g_error_free (error);
-		error = NULL;
-	}
-	g_free(ui_full_info);
-	g_free(menuitems);
-		
-	/* Indicator */
-	/*indicator = app_indicator_new ("guake-indicator",
-	"guake-indicator",
-	APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
-	
-	indicator_menu = gtk_ui_manager_get_widget (uim, "/ui/IndicatorPopup");
-		
-	app_indicator_set_status (indicator, APP_INDICATOR_STATUS_ACTIVE);
-		
-	app_indicator_set_menu (indicator, GTK_MENU (indicator_menu));
-		
-	guake_notify("Guake indicator","Guake indicator is running");
-		
-	gtk_main ();
-		
-	return 0;
-}*/
-
 int main (int argc, char **argv)
 {
         GArray* grouphostlist;
@@ -479,12 +368,6 @@ int main (int argc, char **argv)
 
         build_menu_ayatana(argc,argv,&gtkinfo);
         return 0;
-}
-
-void create_default_actions(GtkActionGroup* action_group,GtkInfo* gtkinfo)
-{
-	// Add Edit menu
-	
 }
 
 int findguakepid()

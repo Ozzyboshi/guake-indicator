@@ -10,10 +10,6 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AM_PATH_PYTHON(2.5.0)
 
-#AC_CHECK_PROGS([GUAKE], [guake guake-prefs], [:])
-#if test "$GUAKE" = :; then
-#AC_MSG_ERROR([This package needs guake.])
-#fi
 
 # Checks for libraries.
 AC_CHECK_FUNCS([bzero]) 
@@ -21,63 +17,26 @@ AC_CHECK_FUNCS([mkdir])
 AC_CHECK_FUNCS([strdup])
 AC_CHECK_FUNCS([strerror])
 
-AC_CHECK_LIB([appindicator], [app_indicator_new], [APPINDICATORLIB=-lindicator], [AC_MSG_ERROR([This package needs libappindicator.])])
+AC_CHECK_LIB([ayatana-appindicator3], [app_indicator_new], [APPINDICATORLIB=-layatana-appindicator3], [AC_MSG_ERROR([This package needs Ayatana appindicator libraries.])])
 AC_SUBST([APPINDICATORLIB])
-AC_CHECK_LIB([gtk-x11-2.0], [gtk_action_group_new], [GTKLIB=-lgtk-x11-2.0], [AC_MSG_ERROR([This package needs gtk2.0.])])
-AC_SUBST([GTKLIB])
 
 ###########################
 # Ayatana dependencies
 ###########################
 GTK3_REQUIRED_VERSION=2.91
-GLIB_REQUIRED_VERSION=2.35.4
-INDICATOR_REQUIRED_VERSION=0.6.0
-GIO_REQUIRED_VERSION=2.26
-DBUSMENUGTK_REQUIRED_VERSION=0.5.90
+LIBXML_REQUIRED=2.6.27
 
-
-PKG_CHECK_MODULES(LIBRARY,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
-                            ayatana-indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION)  
+PKG_CHECK_MODULES(LIBRARY,  [gtk+-3.0 >= $GTK3_REQUIRED_VERSION,libxml-2.0 >= $LIBXML_REQUIRED])  
 
 # Checks for header files.
+my_CPPFLAGS=-I/usr/include/libxml2
+AC_SUBST([my_CPPFLAGS])
+
 AC_CHECK_HEADER([gtk/gtk.h])
-AC_CHECK_HEADER([libappindicator/app-indicator.h])
+AC_CHECK_HEADER([libayatana-appindicator/app-indicator.h])
 AC_CHECK_HEADER([json-c/json.h],[],[AC_MSG_ERROR([libjson-c-dev not installed)])])
 AC_CHECK_HEADER([glib.h])
 AC_CHECK_HEADER([dbus/dbus-glib.h])
-
-# python checks
-AC_MSG_CHECKING([for the python-urllib package])
-ac_urllib2_result=`$PYTHON -c 'try:
-    import urllib2
-except Exception, e:
-    print str(e)' 2> /dev/null`
-
-if test -z "$ac_urllib2_result"; then
-    AC_MSG_RESULT([yes])
-else
-    AC_MSG_RESULT([no])
-    AC_MSG_ERROR([cannot import Python module "urllib2".
-    Please check if you have python-urllib2 installed. The error was:
-    $ac_urllib2_results])
-fi
-
-AC_MSG_CHECKING([for the python-BeautifulSoup package])
-ac_BeautifulSoup_result=`$PYTHON -c 'try:
-    import BeautifulSoup
-except Exception, e:
-    print str(e)' 2> /dev/null`
-
-if test -z "$ac_BeautifulSoup_result"; then
-    AC_MSG_RESULT([yes])
-else
-    AC_MSG_RESULT([no])
-    AC_MSG_ERROR([cannot import Python module "BeautifulSoup".
-    Please check if you have python-beautifulsoup installed. The error was:
-    $ac_BeautifulSoup_result])
-fi
-
-AC_MSG_CHECKING([for the python-BeautifulSoup package])
 
 # Checks for typedefs, structures, and compiler characteristics.
 # Checks for library functions.

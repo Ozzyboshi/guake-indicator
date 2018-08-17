@@ -48,6 +48,7 @@ static void label_toggle_cb (GtkWidget * , gpointer );
 static void apply_css();
 
 static void close_guake_gtk (GtkAction *,gpointer);
+static void gtk3_about (GtkAction*,gpointer );
 
 
 
@@ -70,5 +71,5 @@ static GUAKE_INDICATOR_DEFAULT_ACTION GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY_GT
         {GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[0],print_edit_menu_form},
         {GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[1],reload},
         {GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[2],close_guake_gtk},
-        {GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[3],NULL}
+        {GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[3],gtk3_about}
 };

@@ -92,7 +92,6 @@ static void update_json(gpointer);
 
 gchar* add_host_to_menu(Host*,GtkActionGroup *);
 gchar* add_lable_to_menu(HostGroup*,GtkActionGroup *);
-void create_default_actions(GtkActionGroup*,GtkInfo*);
 gchar* create_actionlists(GArray*,GtkUIManager*,GtkActionGroup*);
 void grouphostlist_free(GArray*);
 void host_free(Host*);
