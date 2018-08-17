@@ -27,27 +27,22 @@ Boston, MA 02111-1307, USA.
 
 static void scroll_event_cb (AppIndicator * , gint , guint , gpointer );
 
-static gboolean percent_change (gpointer );
 
 static void item_clicked_cb (GtkWidget *, gpointer );
 
 static void toggle_sensitivity_cb (GtkWidget *, gpointer );
 
 static void append_submenu (GtkWidget *,Host*);
-static void append_submenu2 (GtkWidget *);
-
-
-static void image_clicked_cb (GtkWidget *, gpointer );
 
 static void activate_clicked_cb (GtkWidget *, gpointer );
-
-static void local_icon_toggle_cb (GtkWidget *, gpointer );
 
 static void label_toggle_cb (GtkWidget * , gpointer );
 
 static void apply_css();
+static void gtk3_build_menu(GtkInfo*);
 
-static void close_guake_gtk (GtkAction *,gpointer);
+static void gtk3_close_guake_indicator (GtkAction *,gpointer);
+static void gtk3_reload (GtkAction*,gpointer);
 static void gtk3_about (GtkAction*,gpointer );
 
 
@@ -55,21 +50,20 @@ static void gtk3_about (GtkAction*,gpointer );
 
 static GMainLoop * mainloop = NULL;
 static gboolean active = TRUE;
-static gboolean can_haz_label = TRUE;
 
 static const gchar CSS[] =
  ".titlebar { "
- " border-radius: 0px 0px 0px 0px; "
- " background-color: gray;"
- " border: 0px; "
- " padding: 0px; "
- " margin: 3px; "
+	 " border-radius: 0px 0px 0px 0px; "
+	 " background-color: gray;"
+	 " border: 0px; "
+	 " padding: 0px; "
+	 " margin: 0px; "
  "}";
 
 static GUAKE_INDICATOR_DEFAULT_ACTION GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY_GTK3[]=
 {
         {GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[0],print_edit_menu_form},
-        {GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[1],reload},
-        {GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[2],close_guake_gtk},
+        {GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[1],gtk3_reload},
+        {GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[2],gtk3_close_guake_indicator},
         {GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[3],gtk3_about}
 };

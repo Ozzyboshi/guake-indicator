@@ -906,7 +906,7 @@ static void save_edit_menu ( GtkWidget *widget, gpointer user_data)
 				UPDATE_ENTRY(dialog->selected_host->lfcr,gtk_toggle_button_get_active((GtkToggleButton*)GET_ENTRY_LFCR(dialog))?"yes":"no")
 				UPDATE_ENTRY(dialog->selected_host->guakeindicatorscript,gtk_toggle_button_get_active((GtkToggleButton*)GET_ENTRY_GUAKEINDICATORSCRIPT(dialog))?"yes":"no")
 				
-				write_and_reload(dialog,"Host saved successfully");
+				write_and_reload(dialog,"Entry saved successfully");
 				
 				// if the "open in nth guake tab" option is selected i check if the dbus call to the tab counter succeed, if not i warn the user
 				check_guake_get_tab_count(dialog);
@@ -1260,6 +1260,80 @@ void reload_model_view(EditMenuDialog *dialog)
 	set_new_widget_sensitivity(dialog,TRUE);
 }
 
+void reload_model_view2(EditMenuDialog *dialog)
+{
+	GtkTreeIter iter;
+	GtkTreeIter iter2;
+	
+	gtk_tree_store_clear(GTK_TREE_STORE(dialog->tree_store));
+	int j=0;
+
+	for (j=0;dialog->grouphostlist!=NULL && j<dialog->grouphostlist->len;j++)
+	{
+		HostGroup* hostgroup = g_array_index (dialog->grouphostlist, HostGroup* , j);
+
+		gtk_tree_store_append(dialog->tree_store, &iter, NULL);
+		GdkPixbuf* icon;
+		if (hostgroup->label)
+			icon=dialog->labelicon;
+		else
+			icon=dialog->hostgroupicon;
+		
+		gtk_tree_store_set (dialog->tree_store, &iter,
+			ID_COLUMN,(gpointer*)hostgroup,
+			COL_ICON, icon,
+			NAME_COLUMN, hostgroup->title!=NULL?hostgroup->title:"Root node",
+			-1);
+
+		Host* ptr=NULL;
+		for (ptr=hostgroup->hostarray;ptr;ptr=ptr->next)
+		{
+			if (ptr->open_all==TRUE) continue;
+			gtk_tree_store_append(dialog->tree_store, &iter2, &iter);
+			
+			if (ptr->label)
+				icon=dialog->labelicon;
+			else
+				icon=dialog->hosticon;
+			
+			gtk_tree_store_set (dialog->tree_store, &iter2,
+				ID_COLUMN,(gpointer*)ptr,
+				COL_ICON, icon,
+				NAME_COLUMN,ptr->menu_name,
+				-1);
+		}
+	}
+	
+	gtk_tree_view_set_model (GTK_TREE_VIEW (dialog->tree_view), GTK_TREE_MODEL (dialog->tree_store));
+
+	
+	/* Tell the theme engine we would like differentiated row colour */
+	//gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(dialog->tree_view),TRUE);
+	//dialog->tree_view->set_rules_hint(TRUE);
+	
+	// TODO expand and select row
+	if (dialog->selected_path !=NULL)
+	{
+		GtkTreeSelection *sel;
+		GtkTreePath *path;
+
+		sel = gtk_tree_view_get_selection(GTK_TREE_VIEW (dialog->tree_view));
+		path = gtk_tree_path_new_from_string(dialog->selected_path);
+	
+		if (gtk_tree_path_get_depth(path)>1)
+		{
+			// expand
+			gtk_tree_view_expand_to_path (GTK_TREE_VIEW (dialog->tree_view), path);
+		}
+		gtk_tree_selection_select_path(sel, path);
+		gtk_tree_path_free(path);
+	}
+
+	unselect_treeview(dialog);
+	set_widget_sensitivity(dialog,FALSE);
+	set_new_widget_sensitivity(dialog,TRUE);
+}
+
 void move_down(GtkWidget *widget, gpointer user_data)
 {
 	EditMenuDialog* dialog = (EditMenuDialog*) user_data;
@@ -1436,10 +1510,10 @@ void write_and_reload(EditMenuDialog* dialog,const char* msg)
 	write_cfg_file(dialog->grouphostlist);
 	write_xml_cfg_file(dialog->grouphostlist);
 	error_modal_box (msg);
-	reload(dialog->action, dialog->user_data);
+	reload(dialog->user_data);
 	grouphostlist_free(dialog->grouphostlist);
 	dialog->grouphostlist=read_xml_cfg_file();
-	reload_model_view(dialog);
+	reload_model_view2(dialog);
 }
 
 // Get all the plugin files into ~/.guake-indicator/plugins

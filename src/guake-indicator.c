@@ -210,60 +210,26 @@ void guake_open(GtkAction* action,gpointer user_data)
 }
 
 // Reload hosts reading them from the configuration file
-void reload(GtkAction* action,gpointer user_data)
+//void reload(GtkAction* action,gpointer user_data)
+void reload(GtkInfo* gtkinfo)
 {
+	if (gtkinfo->grouphostlist) grouphostlist_free(gtkinfo->grouphostlist);
+	if (check_xml_cfg_file_presence())
+		gtkinfo->grouphostlist = read_xml_cfg_file();
+	else
+		gtkinfo->grouphostlist = read_json_cfg_file(NULL);
+	if (gtkinfo->grouphostlist==NULL)
+	{
+		error_modal_box("Couldn't retrieve host from your guake indicator configuration file");
+		return ;
+	}
+
+
 	
-	
-	guake_notify("Guake indicator","Reload completed");
+	//guake_notify("Guake indicator","Reload completed");
 	return ;
 }
 
-// About page
-static void about (GtkAction* action)
-{
-	GError *error = NULL;
-	const gchar *authors[] = {
-		"Alessio Garzi <gun101@email.it>",
-		"Francesco Minà <mina.francesco@gmail.com>",
-		NULL
-	};
-	const gchar* license ="Guake indicator is free software; you can redistribute it and/or\n"
-					" modify it under the terms of the GNU General Public License\n"
-					" as published by the Free Software Foundation; either version 2\n"
-					" of the License, or (at your option) any later version.\n\n"
-
-					"This program is distributed in the hope that it will be useful,\n"
-					"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-					" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-					" GNU General Public License for more details.\n\n"
-
-					"You should have received a copy of the GNU General Public License\n"
-					"along with this program; if not, write to the Free Software\n"
-					"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.";
-	
-	GdkPixbuf *logo = gdk_pixbuf_new_from_file (DATADIR"/"GUAKE_INDICATOR_ICON_DIR"/guake-indicator.png", &error);	
-	if (error != NULL)
-	{
-		if (error->domain == GDK_PIXBUF_ERROR)
-			g_print ("GdkPixbufError: %s\n", error->message);
-		else if (error->domain == G_FILE_ERROR)
-			g_print ("GFileError: %s\n", error->message);
-		else
-			g_print ("An error in the domain: %d has occurred!\n", error->domain);
-		g_error_free (error);
-	}
-
-	gtk_show_about_dialog(NULL,
-							"program-name", "Guake indicator",
-							"authors", authors,
-							"comments", "A simple indicator that lets you send custom commands to Guake/Guake3.",
-							"copyright", "(C) 2013-2018 Alessio Garzi\n(C) 2013-2018 Francesco Mina\n\nDedicated to my daughters\n Ludovica and Mariavittoria",
-							"logo", logo,
-							"version", GUAKE_INDICATOR_VERSION, 
-							"website", "http://guake-indicator.ozzyboshi.com",
-							"license",license,
-							NULL);
-}
 
 void error_modal_box (const char* alerttext)
 {

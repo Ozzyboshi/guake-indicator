@@ -35,7 +35,7 @@ static const gchar GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[GUAKE_INDICATOR_DEFAU
         "Edit Menu",
         "Reload",
         "Quit",
-        "Aboutt"
+        "About"
 };
 
 typedef struct GUAKE_INDICATOR_DEFAULT_ACTION
@@ -81,12 +81,12 @@ typedef struct GtkInfo {
 	GArray* grouphostlist;
 } GtkInfo;
 
-void reload(GtkAction*,gpointer);
+//void reload(GtkAction*,gpointer);
+void reload(GtkInfo* gtkinfo);
 static void activate_action (GtkAction* );
 void guake_open(GtkAction*,gpointer);
 static void guake_open_with_show(GtkAction*,gpointer);
 static void group_guake_open(GtkAction*,gpointer);
-static void about(GtkAction*);
 static void close_guake ( GtkWidget *, gpointer);
 static void update_json(gpointer);
 
