@@ -1,15 +1,21 @@
 AC_INIT([guake-indicator], [1.4], [gun101@email.it])
 
-# safety check , make sure that config is not run from outer space
-AC_CONFIG_SRCDIR([src/guake-indicator.c])
-AC_CONFIG_SRCDIR([src/guake-indicator-read-json.c])
 AM_INIT_AUTOMAKE([-Wall -Werror])
+
+# safety check , make sure that config is not run from outer space
+AC_CONFIG_SRCDIR([src])
+AC_CONFIG_MACRO_DIR([m4])
+
+AM_MAINTAINER_MODE([enable])
+
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Checks for programs.
 AC_PROG_CC
 AM_PROG_CC_C_O
-AM_PATH_PYTHON(2.5.0)
+AC_STDC_HEADERS
 
+AM_PATH_PYTHON(2.5.0)
 
 # Checks for libraries.
 AC_CHECK_FUNCS([bzero]) 
@@ -17,35 +23,51 @@ AC_CHECK_FUNCS([mkdir])
 AC_CHECK_FUNCS([strdup])
 AC_CHECK_FUNCS([strerror])
 
-AC_CHECK_LIB([ayatana-appindicator3], [app_indicator_new], [APPINDICATORLIB=-layatana-appindicator3], [AC_MSG_ERROR([This package needs Ayatana appindicator libraries.])])
-AC_SUBST([APPINDICATORLIB])
+PKG_PROG_PKG_CONFIG
 
-###########################
-# Ayatana dependencies
-###########################
-GTK3_REQUIRED_VERSION=2.91
-LIBXML_REQUIRED=2.6.27
+GLIB_REQUIRED=2.50.0
+GTK_REQUIRED=3.22.0
+APPINDICATOR_REQUIRED=0.0.13
 
-PKG_CHECK_MODULES(LIBRARY,  [gtk+-3.0 >= $GTK3_REQUIRED_VERSION,libxml-2.0 >= $LIBXML_REQUIRED])  
+# Glib
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= $GLIB_REQUIRED gio-2.0 >= $GLIB_REQUIRED)
 
-# Checks for header files.
-my_CPPFLAGS=-I/usr/include/libxml2
-AC_SUBST([my_CPPFLAGS])
+# Gtk-3
+PKG_CHECK_MODULES(GTK, gtk+-3.0 >= $GTK_REQUIRED)
+AC_SUBST(GTK_CFLAGS)
+AC_SUBST(GTK_LIBS)
 
-AC_CHECK_HEADER([gtk/gtk.h])
-AC_CHECK_HEADER([libayatana-appindicator/app-indicator.h])
-AC_CHECK_HEADER([json-c/json.h],[],[AC_MSG_ERROR([libjson-c-dev not installed)])])
-AC_CHECK_HEADER([glib.h])
-AC_CHECK_HEADER([dbus/dbus-glib.h])
+# Ayatana Application Indicator
+AYATANA_APPINDICATOR_PKG=ayatana-appindicator3-0.1
+PKG_CHECK_MODULES(AYATANA_APPINDICATOR, $AYATANA_APPINDICATOR_PKG >= $APPINDICATOR_REQUIRED)
+AC_SUBST(AYATANA_APPINDICATOR_CFLAGS)
+AC_SUBST(AYATANA_APPINDICATOR_LIBS)
 
-# Checks for typedefs, structures, and compiler characteristics.
-# Checks for library functions.
-# Output files.
+# libjson-c
+PKG_CHECK_MODULES(JSONC, json-c)
+AC_SUBST(JSONC_CFLAGS)
+AC_SUBST(JSONC_LIBS)
 
-# needed to install gconf schema
+# libxml-2.0
+PKG_CHECK_MODULES(XML2, libxml-2.0)
+AC_SUBST(XML2_CFLAGS)
+AC_SUBST(XML2_LIBS)
+
+# Dbus-Glib
+PKG_CHECK_MODULES(DBUSGLIB, dbus-glib-1)
+AC_SUBST(DBUSGLIB_CFLAGS)
+AC_SUBST(DBUSGLIB_LIBS)
+
+# needed to install gsettings schema
 GLIB_GSETTINGS
 
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile src/Makefile data/Makefile plugins/Makefile data/icons/Makefile])
+AC_CONFIG_FILES([
+Makefile
+src/Makefile
+data/Makefile
+plugins/Makefile
+data/icons/Makefile
+])
 
 AC_OUTPUT
