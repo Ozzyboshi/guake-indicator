@@ -80,8 +80,7 @@ int write_xml_cfg_file_from_file(GArray* grouphostlist,char* file)
 			{
 				xmlNewTextChild(node2, NULL, BAD_CAST "tab_name", BAD_CAST ptr->tab_name);
 				
-				// va rimesso gchar* guakecmd=get_guake_cmd(ptr);
-				gchar* guakecmd=NULL; // va rimosso
+				gchar* guakecmd=get_guake_cmd(ptr);
 
 				xmlNewTextChild(node2, NULL, BAD_CAST "command_after_login",BAD_CAST guakecmd);
 				g_free(guakecmd);

@@ -164,7 +164,6 @@ typedef struct edit_menu_dialog_type
 	
 } EditMenuDialog;
 
-void print_custom_form(GtkAction*, gpointer);
 GArray* get_custom_glade_files();
 static void build_cmd ( GtkWidget *, gpointer);
 static void close_dialog ( GtkWidget *, gpointer );

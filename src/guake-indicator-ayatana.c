@@ -25,19 +25,9 @@ Boston, MA 02111-1307, USA.
 #include <stdlib.h>
 
 AppIndicator *ci = NULL;
-//GtkWidget *menu = NULL;
 
 void build_menu_ayatana(int argc, char **argv,GtkInfo* gtkinfo)
 {
-    //GtkWidget *menu = NULL;
-	GtkStyleContext *menu_context;
-	GtkBorder padding,border;
-	//GtkWidget *submenu = NULL;
-	//int i=0;
-	//GtkWidget *item;
-	//Host* ptr;
-
-	gtk_init (&argc, &argv);
 
 	apply_css();
 
@@ -52,8 +42,8 @@ void build_menu_ayatana(int argc, char **argv,GtkInfo* gtkinfo)
     //g_signal_connect (ci, "scroll-event",G_CALLBACK (scroll_event_cb), NULL);
 
     
-    gtk_style_context_get_padding (menu_context, gtk_style_context_get_state (menu_context), &padding);
-    gtk_style_context_get_border (menu_context, gtk_style_context_get_state (menu_context), &border);
+    //gtk_style_context_get_padding (menu_context, gtk_style_context_get_state (menu_context), &padding);
+    //gtk_style_context_get_border (menu_context, gtk_style_context_get_state (menu_context), &border);
 
     //printf("\n\n%d %d %d %d %d %d\n",padding.left,border.left,padding.top,border.top,padding.bottom,border.bottom);
 
@@ -163,11 +153,6 @@ static void append_submenu (GtkWidget *menu,Host* ptr)
 }
 
 
-guint percentage = 0;
-
-
-
-
 // Function to close the indicator
 static void gtk3_close_guake_indicator ( GtkAction *action, gpointer user_data)
 {
@@ -177,6 +162,11 @@ static void gtk3_close_guake_indicator ( GtkAction *action, gpointer user_data)
         //gtk_widget_destroy((GtkWidget *)menu);
         gtk_main_quit();
         return ;
+}
+
+void refresh_indicator_ayatana(gpointer user_data)
+{
+    gtk3_reload (NULL,user_data);
 }
 
 static void gtk3_build_menu(GtkInfo* gtkinfo)

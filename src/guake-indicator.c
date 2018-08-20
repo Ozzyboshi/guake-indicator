@@ -224,10 +224,12 @@ void reload(GtkInfo* gtkinfo)
 		return ;
 	}
 
-
-	
-	//guake_notify("Guake indicator","Reload completed");
 	return ;
+}
+
+void refresh_indicator(gpointer user_data)
+{
+	refresh_indicator_ayatana(user_data);
 }
 
 
@@ -243,24 +245,6 @@ void error_modal_box (const char* alerttext)
 
 	g_signal_connect (dialog, "response",G_CALLBACK (gtk_widget_destroy), NULL);
 	gtk_widget_show (dialog);
-}
-
-// Add a lable to an action group
-gchar* add_lable_to_menu(HostGroup* hostgroup,GtkActionGroup *action_group)
-{
-	
-}
-
-// Add a host to an action group
-gchar* add_host_to_menu(Host* head,GtkActionGroup *action_group)
-{
-	
-}
-
-// Create actionslist according to the result of a json file
-gchar* create_actionlists(GArray* grouphostlist,GtkUIManager* uim,GtkActionGroup* action_group)
-{
-	
 }
 
 // Free a grouphostlist
@@ -318,6 +302,8 @@ int main (int argc, char **argv)
         GArray* grouphostlist;
         GtkInfo gtkinfo;
 
+        gtk_init (&argc, &argv);
+
         guake_notify("Guake indicator","Guake indicator is running");
 
         if (argc>1 && strlen(argv[1])>0)
@@ -328,7 +314,7 @@ int main (int argc, char **argv)
                 grouphostlist = read_json_cfg_file(NULL);
 
         if (grouphostlist==NULL)
-                error_modal_box("Couldn't retrieve host from your guake indicator configuration file");
+                error_modal_box("Couldn't retrieve list of entries from your guake indicator configuration file");
 
         gtkinfo.grouphostlist=grouphostlist;
 

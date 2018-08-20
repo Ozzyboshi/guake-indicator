@@ -90,16 +90,12 @@ static void group_guake_open(GtkAction*,gpointer);
 static void close_guake ( GtkWidget *, gpointer);
 static void update_json(gpointer);
 
-gchar* add_host_to_menu(Host*,GtkActionGroup *);
-gchar* add_lable_to_menu(HostGroup*,GtkActionGroup *);
-gchar* create_actionlists(GArray*,GtkUIManager*,GtkActionGroup*);
 void grouphostlist_free(GArray*);
 void host_free(Host*);
 void hostgroup_free(HostGroup*);
 int findguakepid();
-
 void error_modal_box (const char*);
-
 void build_menu_ayatana(int , char **,GtkInfo* );
+void refresh_indicator_ayatana(gpointer);
 void print_edit_menu_form(GtkAction*,gpointer);
-
+void refresh_indicator(gpointer);

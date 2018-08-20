@@ -251,68 +251,6 @@ void view_onRowActivated (GtkTreeView* treeview,GtkTreePath* path,GtkTreeViewCol
 		gtk_tree_view_collapse_row (treeview,path);
 }
 
-// Function to print edit menu form window
-void print_custom_form(GtkAction* action, gpointer user_data)
-{
-	GError *err = NULL; 
-	static EditMenuDialog widgets;
-	GtkBuilder* builder;
-	char* path;
-	
-	builder = gtk_builder_new ();
-	
-	path=checkandcreatedefaultdir();
-	gchar* fulldirpath=g_strjoin(NULL,path,"/",GUAKE_INDICATOR_PLUGIN_DIR,"/",((EditMenuDialog*)user_data)->selected_glade_file,NULL);
-	free(path);
-	if(0 == gtk_builder_add_from_file (builder,fulldirpath, &err))
-	{
-		fprintf(stderr, "[print_custom_form]: Error adding build from file. Error: %s\n", err->message);
-		g_free(fulldirpath);
-		return ;
-	}
-	g_free(fulldirpath);
-	widgets.window = GTK_WIDGET (gtk_builder_get_object (builder, "edit_menu_window"));
-	
-	// save button
-	widgets.btn_edit_menu_save = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_save"));
-	g_signal_connect (G_OBJECT (widgets.btn_edit_menu_save), "clicked",G_CALLBACK (build_cmd),&widgets);
-	
-	// cancel button
-	widgets.btn_edit_menu_close_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_close_dialog"));
-	widgets.reset_flag=NULL;
-	g_signal_connect (G_OBJECT (widgets.btn_edit_menu_close_dialog), "clicked",G_CALLBACK (close_dialog),&widgets);
-	
-	// command field
-	widgets.entry_command=((EditMenuDialog*) user_data)->entry_command;
-	
-	//dont' have a selection path, a tree store and a group host lists
-	widgets.selected_path=NULL;
-	widgets.tree_store=NULL;
-	widgets.grouphostlist=NULL;
-	
-	guint index=0;
-	GtkWidget* hbox;
-	widgets.hbox=g_array_new (TRUE, FALSE, sizeof (GtkWidget*));
-	do
-	{
-		gchar* widget_name=NULL;
-		gchar *indexstr = g_strdup_printf("%i", index);
-		widget_name=g_strjoin(NULL,"hbox",indexstr,NULL);
-		hbox = GTK_WIDGET (gtk_builder_get_object (builder, widget_name));
-		if (hbox)
-		{
-			g_array_append_val (widgets.hbox, hbox);
-		}
-		index++;
-		g_free(indexstr);
-		g_free(widget_name);
-	}while(hbox);
-
-	g_object_unref (G_OBJECT (builder));
-	gtk_widget_show(GTK_WIDGET(widgets.window));
-	gtk_widget_show_all( widgets.window );
-}
-
 static void build_cmd ( GtkWidget *widget, gpointer user_data)
 {
 	EditMenuDialog* dialog = (EditMenuDialog*) user_data;
@@ -728,12 +666,24 @@ static void export ( GtkWidget *widget, gpointer user_data)
 	EditMenuDialog* widgets = (EditMenuDialog*) user_data;
 	GtkWidget *dialog;
 
+	GtkFileChooser *chooser;
+	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+	gint res;
+
 	dialog = gtk_file_chooser_dialog_new ("Save File",
-						GTK_WINDOW(widgets->window),
-						GTK_FILE_CHOOSER_ACTION_SAVE,
-						NULL);
-	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
-	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+                                      GTK_WINDOW(widgets->window),
+                                      action,
+                                      ("_Cancel"),
+                                      GTK_RESPONSE_CANCEL,
+                                      ("_Save"),
+                                      GTK_RESPONSE_ACCEPT,
+                                      NULL);
+	chooser = GTK_FILE_CHOOSER (dialog);
+
+	gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
+	gtk_file_chooser_set_current_name (chooser,("Untitled document"));
+	res = gtk_dialog_run (GTK_DIALOG (dialog));
+	if (res == GTK_RESPONSE_ACCEPT)
 	{
 		char *filename;
 		Host* head;
@@ -766,9 +716,8 @@ static void export ( GtkWidget *widget, gpointer user_data)
 			free(msg);
 		}
 		g_free (filename);
-       }
-     
-     gtk_widget_destroy (dialog);
+	}
+	gtk_widget_destroy (dialog);
 }
 
 // Function to handle the edit button
@@ -1115,6 +1064,7 @@ void reload_model_view(EditMenuDialog *dialog)
 	GtkTreeIter iter;
 	GtkTreeIter iter2;
 
+	dialog->tree_store = gtk_tree_store_new(N_COLUMNS, G_TYPE_POINTER,GDK_TYPE_PIXBUF,G_TYPE_STRING);
 	gtk_tree_store_clear(GTK_TREE_STORE(dialog->tree_store));
 	int j=0;
 
@@ -1177,80 +1127,6 @@ void reload_model_view(EditMenuDialog *dialog)
 		gtk_tree_selection_select_path(sel, path);
 		gtk_tree_path_free(path);
 	}
-	unselect_treeview(dialog);
-	set_widget_sensitivity(dialog,FALSE);
-	set_new_widget_sensitivity(dialog,TRUE);
-}
-
-void reload_model_view2(EditMenuDialog *dialog)
-{
-	GtkTreeIter iter;
-	GtkTreeIter iter2;
-	
-	gtk_tree_store_clear(GTK_TREE_STORE(dialog->tree_store));
-	int j=0;
-
-	for (j=0;dialog->grouphostlist!=NULL && j<dialog->grouphostlist->len;j++)
-	{
-		HostGroup* hostgroup = g_array_index (dialog->grouphostlist, HostGroup* , j);
-
-		gtk_tree_store_append(dialog->tree_store, &iter, NULL);
-		GdkPixbuf* icon;
-		if (hostgroup->label)
-			icon=dialog->labelicon;
-		else
-			icon=dialog->hostgroupicon;
-		
-		gtk_tree_store_set (dialog->tree_store, &iter,
-			ID_COLUMN,(gpointer*)hostgroup,
-			COL_ICON, icon,
-			NAME_COLUMN, hostgroup->title!=NULL?hostgroup->title:"Root node",
-			-1);
-
-		Host* ptr=NULL;
-		for (ptr=hostgroup->hostarray;ptr;ptr=ptr->next)
-		{
-			if (ptr->open_all==TRUE) continue;
-			gtk_tree_store_append(dialog->tree_store, &iter2, &iter);
-			
-			if (ptr->label)
-				icon=dialog->labelicon;
-			else
-				icon=dialog->hosticon;
-			
-			gtk_tree_store_set (dialog->tree_store, &iter2,
-				ID_COLUMN,(gpointer*)ptr,
-				COL_ICON, icon,
-				NAME_COLUMN,ptr->menu_name,
-				-1);
-		}
-	}
-	
-	gtk_tree_view_set_model (GTK_TREE_VIEW (dialog->tree_view), GTK_TREE_MODEL (dialog->tree_store));
-
-	
-	/* Tell the theme engine we would like differentiated row colour */
-	//gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(dialog->tree_view),TRUE);
-	//dialog->tree_view->set_rules_hint(TRUE);
-	
-	// TODO expand and select row
-	if (dialog->selected_path !=NULL)
-	{
-		GtkTreeSelection *sel;
-		GtkTreePath *path;
-
-		sel = gtk_tree_view_get_selection(GTK_TREE_VIEW (dialog->tree_view));
-		path = gtk_tree_path_new_from_string(dialog->selected_path);
-	
-		if (gtk_tree_path_get_depth(path)>1)
-		{
-			// expand
-			gtk_tree_view_expand_to_path (GTK_TREE_VIEW (dialog->tree_view), path);
-		}
-		gtk_tree_selection_select_path(sel, path);
-		gtk_tree_path_free(path);
-	}
-
 	unselect_treeview(dialog);
 	set_widget_sensitivity(dialog,FALSE);
 	set_new_widget_sensitivity(dialog,TRUE);
@@ -1432,10 +1308,13 @@ void write_and_reload(EditMenuDialog* dialog,const char* msg)
 	write_cfg_file(dialog->grouphostlist);
 	write_xml_cfg_file(dialog->grouphostlist);
 	error_modal_box (msg);
-	reload(dialog->user_data);
+	refresh_indicator(dialog->user_data);
+	/*reload(dialog->user_data);
+	guake_notify("Guake indicator","Reload completed");*/
+
 	grouphostlist_free(dialog->grouphostlist);
 	dialog->grouphostlist=read_xml_cfg_file();
-	reload_model_view2(dialog);
+	reload_model_view(dialog);
 }
 
 // Get all the plugin files into ~/.guake-indicator/plugins
