@@ -487,7 +487,7 @@ static void remove_edit_menu ( GtkWidget *widget, gpointer user_data)
 					host_free(dialog->selected_host);
 				}
 				free(dialog->selected_host);
-				write_and_reload(dialog,"Host removed successfully");
+				write_and_reload(dialog,"Entry removed successfully");
 			}
 			else
 			{
@@ -546,7 +546,7 @@ static void remove_edit_menu ( GtkWidget *widget, gpointer user_data)
 				g_array_remove_index(dialog->grouphostlist,index);
 				free(dialog->selected_hostgroup);
 
-				write_and_reload(dialog,"Hostgroup removed successfully");
+				write_and_reload(dialog,"Entrygroup removed successfully");
 			}
 		case 1: // cancel add group
 		case 2: // cancel add host
@@ -787,11 +787,11 @@ static void save_edit_menu ( GtkWidget *widget, gpointer user_data)
 			else if (dialog->selected_hostgroup)
 			{
 				UPDATE_ENTRY(dialog->selected_hostgroup->title,gtk_entry_get_text(GET_ENTRY_MENUNAME(dialog)))
-				write_and_reload(dialog,"Host saved successfully");
+				write_and_reload(dialog,"Entry saved successfully");
 			}
 			else
 			{
-				error_modal_box("Host or Host group not selected");
+				error_modal_box("Entry or Entry group not selected");
 			}
 			break;
 		}
@@ -1159,7 +1159,7 @@ void move_down(GtkWidget *widget, gpointer user_data)
 			dialog->selected_host->previous->next=nexthost;
 			nexthost->next=dialog->selected_host;
 		}
-		write_and_reload(dialog,"Host moved down successfully");
+		write_and_reload(dialog,"Entry moved down successfully");
 	}
 	// Hostgroup movedown
 	else
@@ -1171,7 +1171,7 @@ void move_down(GtkWidget *widget, gpointer user_data)
 		g_array_insert_val(dialog->grouphostlist,index+2,dialog->selected_hostgroup);
 		g_array_remove_index(dialog->grouphostlist,index);
 		
-		write_and_reload(dialog,"Hostgroup moved down successfully");
+		write_and_reload(dialog,"Entry moved down successfully");
 	}
 }
 
@@ -1201,7 +1201,7 @@ void move_up(GtkWidget *widget, gpointer user_data)
 			dialog->selected_host->next=previoushost;
 		}
 		
-		write_and_reload(dialog,"Host moved up successfully");
+		write_and_reload(dialog,"Entry moved up successfully");
 	}
 	// Hostgroup movedown
 	else
@@ -1212,7 +1212,7 @@ void move_up(GtkWidget *widget, gpointer user_data)
 			return ;
 		g_array_insert_val(dialog->grouphostlist,index-1,dialog->selected_hostgroup);
 		g_array_remove_index(dialog->grouphostlist,index+1);
-		write_and_reload(dialog,"Hostgroup moved up successfully");
+		write_and_reload(dialog,"Entrygroup moved up successfully");
 	}
 }
 
@@ -1243,7 +1243,7 @@ void move_bottom(GtkWidget *widget, gpointer user_data)
 		Host* ptr=lasthost->next;
 		lasthost->next=dialog->selected_host;
 		dialog->selected_host->next=ptr;
-		write_and_reload(dialog,"Host moved bottom successfully");
+		write_and_reload(dialog,"Entry moved bottom successfully");
 	}
 	else
 	{
@@ -1253,7 +1253,7 @@ void move_bottom(GtkWidget *widget, gpointer user_data)
 			return;
 		g_array_insert_val(dialog->grouphostlist,get_grouphost_size(dialog->grouphostlist),dialog->selected_hostgroup);
 		g_array_remove_index(dialog->grouphostlist,index);		
-		write_and_reload(dialog,"Hostgroup moved down successfully");
+		write_and_reload(dialog,"Entrygroup moved down successfully");
 	}
 }
 
@@ -1285,7 +1285,7 @@ void move_top(GtkWidget *widget, gpointer user_data )
 		dialog->selected_host->previous->next=dialog->selected_host->next;
 		dialog->selected_host->next=dialog->selected_host->parent->hostarray;
 		dialog->selected_host->parent->hostarray=dialog->selected_host;
-		write_and_reload(dialog,"Host moved top successfully");
+		write_and_reload(dialog,"Entry moved top successfully");
 	}
 	else
 	{
@@ -1295,7 +1295,7 @@ void move_top(GtkWidget *widget, gpointer user_data )
 			return ;
 		g_array_insert_val(dialog->grouphostlist,0,dialog->selected_hostgroup);
 		g_array_remove_index(dialog->grouphostlist,index+1);
-		write_and_reload(dialog,"Hostgroup moved top successfully");
+		write_and_reload(dialog,"Entrygroup moved top successfully");
 	}
 }
 
@@ -1309,9 +1309,6 @@ void write_and_reload(EditMenuDialog* dialog,const char* msg)
 	write_xml_cfg_file(dialog->grouphostlist);
 	error_modal_box (msg);
 	refresh_indicator(dialog->user_data);
-	/*reload(dialog->user_data);
-	guake_notify("Guake indicator","Reload completed");*/
-
 	grouphostlist_free(dialog->grouphostlist);
 	dialog->grouphostlist=read_xml_cfg_file();
 	reload_model_view(dialog);
@@ -1455,7 +1452,7 @@ static void drag_end_handl (GtkWidget *widget, GdkDragContext *context, gpointer
 			g_array_remove_index(dialog->grouphostlist,indexstart);
 		else
 			g_array_remove_index(dialog->grouphostlist,indexstart+1);
-		write_and_reload(dialog,"Hostgroup moved successfully");
+		write_and_reload(dialog,"Entrygroup moved successfully");
 	}
 	// Move an host after another
 	else if (dialog->starthostdrag!=NULL && dialog->endhostdrag!=NULL && dialog->starthostdrag!=dialog->endhostdrag && dialog->starthostdrag->previous!=dialog->endhostdrag)
@@ -1467,7 +1464,7 @@ static void drag_end_handl (GtkWidget *widget, GdkDragContext *context, gpointer
 			dialog->starthostdrag->previous->next=dialog->starthostdrag->next;
 		dialog->endhostdrag->next=dialog->starthostdrag;
 		dialog->starthostdrag->next=ptr;
-		write_and_reload(dialog,"Host moved successfully");
+		write_and_reload(dialog,"Entry moved successfully");
 	}
 	// Move an host in first position of a hostgroup
 	else if (dialog->starthostdrag!=NULL && dialog->endhostgroupdrag!=NULL && dialog->endhostgroupdrag->label==FALSE)
@@ -1478,7 +1475,7 @@ static void drag_end_handl (GtkWidget *widget, GdkDragContext *context, gpointer
 			dialog->starthostdrag->previous->next=dialog->starthostdrag->next;
 		dialog->starthostdrag->next=dialog->endhostgroupdrag->hostarray;
 		dialog->endhostgroupdrag->hostarray=dialog->starthostdrag;
-		write_and_reload(dialog,"Host moved successfully");
+		write_and_reload(dialog,"Entry moved successfully");
 	}
 }
 
@@ -1698,7 +1695,7 @@ void view_popup_menu_onpaste (GtkWidget *menuitem, gpointer userdata)
 				newhost->group_head=dialog->selected_host_for_operation->group_head;
 				newhost->next=dialog->selected_host_for_operation->next;
 				dialog->selected_host_for_operation->next=newhost;
-				write_and_reload(dialog,"Host copied successfully");
+				write_and_reload(dialog,"Entry copied successfully");
 			}
 			
 			//Host as a first element of a group
@@ -1735,7 +1732,7 @@ void view_popup_menu_onpaste (GtkWidget *menuitem, gpointer userdata)
 					dialog->copied_host->previous->next=dialog->copied_host->next;
 				dialog->selected_host_for_operation->next=dialog->copied_host;
 				dialog->copied_host->next=ptr;
-				write_and_reload(dialog,"Host cut successfully");
+				write_and_reload(dialog,"Entry cut successfully");
 			}
 			//Host as a first element of a group
 			else if (dialog->selected_hostgroup_for_operation)
@@ -1746,7 +1743,7 @@ void view_popup_menu_onpaste (GtkWidget *menuitem, gpointer userdata)
 					dialog->copied_host->previous->next=dialog->copied_host->next;
 				dialog->copied_host->next=dialog->selected_hostgroup_for_operation->hostarray;
 				dialog->selected_hostgroup_for_operation->hostarray=dialog->copied_host;
-				write_and_reload(dialog,"Host moved successfully");
+				write_and_reload(dialog,"Entry moved successfully");
 			}
 			else
 				error_modal_box("Nothing to paste");
