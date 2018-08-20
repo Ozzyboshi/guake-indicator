@@ -1,19 +1,21 @@
 # Guake indicator
-Guake indicator is a compact and convenient Ubuntu Appindicator that lets you send commands to Guake terminal.
+Guake indicator is a compact and convenient Appindicator that lets you send commands to [Guake](http://guake-project.org/)
+ terminal.
 
-Guake-indicator is free software, you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation.
+Guake indicator is free software, you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation.
 
 ![guake indicator img](http://guake-indicator.ozzyboshi.com/images/out.gif)
 ![guake indicator img](http://guake-indicator.ozzyboshi.com/images/ubuntu18.png)
 
 ### Description of the project
-Guake indicator is a compact and convenient Ubuntu Appindicator that lets you send commands and customized tasks to Guake terminal.
+Guake indicator is a compact and convenient Ubuntu Appindicator that lets you send commands and perform customized tasks to [Guake virtual terminal](http://guake-project.org/).You can specify the target tab or to create a new one at the same time.
+Guake indicator comes with a convenient menu editor to create and manage your entries out of the box.
 
-Guake is a free, open source, top-down terminal written in Python by Max Ulidtko,Pierre-Yves Chibon, Aleksandar Krsteski, Lincoln de Sousa, Gabriel Falcão, Gaetan Semet and it's part of the Debian and Ubuntu project.
+Initial versions of Guake indicator was meant for Ubuntu it but later versions are targeting the Debian Operating System with GTK based desktop managers.
 
-Although Guake indicator was meant for Ubuntu it should work on any Debian based Operating System using The Gnome Desktop Environment.
+From version 1.4, Guake indicator relies on Ayatana indicators and GTK3 rather than old libappindicator and GTK2.
 
-Guake-indicator sticks to your "Ubuntu Indicator Area" and displays your customized command retrieved from ~/.guake.indicator/guake-indicator.xml. If this file doesn't exist, Guake Indicator will create a small default one that you can use as a base to build your own configuration file depending on your needs.
+Guake-indicator sticks to your "Indicator Area" and displays your customized command retrieved from ~/.guake.indicator/guake-indicator.xml. If this file doesn't exist, Guake Indicator will create a small default one that you can use as a base to build your own configuration file depending on your needs.
 
 You can customize the configuration file using the Guake indicator built-in GUI under the "Edit Menu" section or, as an alternative, you can do it on your own with your favorite text/xml editor. The guake-indicator.xml fields are quite self-explanatory, however, I'm going to give you a more in-depth description of each one:
 
