@@ -18,3 +18,9 @@ src/.deps
 src/Makefile
 src/guake-indicator
 src/*.o
+compile
+config.h.in
+depcomp
+missing
+py-compile
+stamp-h1
