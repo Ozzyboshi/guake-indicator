@@ -22,5 +22,4 @@ compile
 config.h.in
 depcomp
 missing
-py-compile
 stamp-h1
