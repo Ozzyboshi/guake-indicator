@@ -15,8 +15,6 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_STDC_HEADERS
 
-AM_PATH_PYTHON(2.5.0)
-
 # Checks for libraries.
 AC_CHECK_FUNCS([bzero]) 
 AC_CHECK_FUNCS([mkdir]) 
@@ -66,7 +64,6 @@ AC_CONFIG_FILES([
 Makefile
 src/Makefile
 data/Makefile
-plugins/Makefile
 data/icons/Makefile
 ])
 

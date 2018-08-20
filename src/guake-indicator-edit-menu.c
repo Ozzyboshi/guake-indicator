@@ -75,7 +75,6 @@ void print_edit_menu_form(GtkAction* action, gpointer user_data)
 	widgets.btn_edit_menu_add_host = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_add_host"));
 	widgets.btn_edit_menu_add_host_label = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_add_host_lbl"));
 	widgets.btn_edit_menu_add_group_label = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_add_group_lbl"));
-	widgets.btn_build_cmd = GTK_WIDGET (gtk_builder_get_object (builder, "btn_build_cmd"));
 	widgets.btn_edit_menu_export = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_export"));
 
 	widgets.btn_edit_menu_close_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_close_dialog"));
@@ -140,9 +139,6 @@ void print_edit_menu_form(GtkAction* action, gpointer user_data)
 	widgets.bottomButton = GTK_WIDGET (gtk_builder_get_object(builder,"btn_edit_bottom"));
 	g_signal_connect (G_OBJECT (widgets.bottomButton), "clicked",G_CALLBACK (move_bottom),&widgets);
 	
-	// build cmd button
-	g_signal_connect (G_OBJECT (widgets.btn_build_cmd), "clicked",G_CALLBACK (print_select_custom_form),&widgets);
-
 	// Start of treeview
 	// treestore
 	widgets.tree_store = gtk_tree_store_new(N_COLUMNS, G_TYPE_POINTER,GDK_TYPE_PIXBUF,G_TYPE_STRING);
@@ -253,79 +249,6 @@ void view_onRowActivated (GtkTreeView* treeview,GtkTreePath* path,GtkTreeViewCol
 		gtk_tree_view_expand_row (treeview,path,FALSE);
 	else
 		gtk_tree_view_collapse_row (treeview,path);
-}
-
-// Function to print selected custom glade file
-void print_select_custom_form(GtkAction* action, gpointer user_data)
-{
-	GError *err = NULL; 
-	static EditMenuDialog widgets;
-	GtkBuilder* builder;
-	GtkCellRenderer *cell_name;
-	GtkTreeViewColumn* column_name;
-
-	if (is_print_custom_form_opened) return;
-
-	builder = gtk_builder_new ();
-	if(0 == gtk_builder_add_from_file (builder, DATADIR GUAKE_INDICATOR_DATADIR "/gi_custom_cmd_form.glade", &err))
-	{
-		fprintf(stderr, "[print_select_custom_form]: Error adding build from file. Error: %s\n", err->message);
-		return ;
-	}
-	widgets.window = GTK_WIDGET (gtk_builder_get_object (builder, "edit_menu_window"));
-
-	// save button
-	widgets.btn_edit_menu_save = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_save"));
-	g_signal_connect (G_OBJECT (widgets.btn_edit_menu_save), "clicked",G_CALLBACK (call_print_custom_form),&widgets);
-
-	// refresh button
-	GtkWidget* btn_refresh = GTK_WIDGET (gtk_builder_get_object (builder, "btn_refresh"));
-	g_signal_connect (G_OBJECT (btn_refresh), "clicked",G_CALLBACK (refresh_glade_files),&widgets);
-	g_signal_connect (G_OBJECT (widgets.window), "focus-in-event",G_CALLBACK (refresh_glade_files),&widgets);
-
-	// download button
-	GtkWidget* btn_download = GTK_WIDGET (gtk_builder_get_object (builder, "btn_download"));
-	g_signal_connect (G_OBJECT (btn_download), "clicked",G_CALLBACK (download_glade_files),&widgets);
-
-	// form fields linking
-	widgets.entry_command=((EditMenuDialog*) user_data)->entry_command;
-	widgets.entry_menu_name=((EditMenuDialog*) user_data)->entry_menu_name;
-	widgets.entry_tab_name=((EditMenuDialog*) user_data)->entry_tab_name;
-	widgets.cb_show_guake=((EditMenuDialog*) user_data)->cb_show_guake;
-	widgets.new_guake_tab=((EditMenuDialog*) user_data)->new_guake_tab;
-	widgets.lfcr=((EditMenuDialog*) user_data)->lfcr;
-	widgets.guakeindicatorscript=((EditMenuDialog*) user_data)->guakeindicatorscript;
-
-	// Start of treeview
-	widgets.tree_view = GTK_WIDGET (gtk_builder_get_object(builder,"edit_menu_treeview"));
-	global_tree_view = widgets.tree_store = gtk_tree_store_new(1,G_TYPE_STRING);
-	gtk_tree_view_set_model (GTK_TREE_VIEW (widgets.tree_view), GTK_TREE_MODEL (widgets.tree_store));
-	cell_name = gtk_cell_renderer_text_new();
-	column_name = gtk_tree_view_column_new_with_attributes("Plugins", cell_name, "text", 0, NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(widgets.tree_view), column_name);
-
-	refresh_glade_files(NULL,NULL);
-
-	// store the callback function "gladefile_selection_func" for the selection
-	GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(widgets.tree_view));
-	gtk_tree_selection_set_select_function(selection, gladefile_selection_func, (gpointer)&widgets,NULL);
-
-	// handle the close signal
-	widgets.reset_flag=&is_print_custom_form_opened;
-	g_signal_connect(widgets.window, "destroy",G_CALLBACK(close_dialog), (gpointer)&widgets);
-	
-	// cancel button
-	widgets.btn_edit_menu_close_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_close_dialog"));
-	g_signal_connect (G_OBJECT (widgets.btn_edit_menu_close_dialog), "clicked",G_CALLBACK (close_dialog),&widgets);
-
-	g_object_unref (G_OBJECT (builder));
-	gtk_widget_show_all( widgets.window );
-	is_print_custom_form_opened=TRUE;
-	
-	// move the window on top
-	gtk_window_present(GTK_WINDOW(widgets.window));
-
-	return;
 }
 
 // Function to print edit menu form window
@@ -1074,7 +997,6 @@ static void set_form_widget_sensitivity(EditMenuDialog* dialog,gboolean flag)
 	gtk_widget_set_sensitive(dialog->entry_menu_name,flag);
 	gtk_widget_set_sensitive(dialog->entry_tab_name,flag);
 	gtk_widget_set_sensitive(dialog->entry_command,flag);
-	gtk_widget_set_sensitive(dialog->btn_build_cmd,flag);
 	gtk_widget_set_sensitive(dialog->cb_show_guake,flag);
 	gtk_widget_set_sensitive(dialog->current_guake_tab,flag);
 	gtk_widget_set_sensitive(dialog->new_guake_tab,flag);
@@ -1564,92 +1486,6 @@ gboolean gladefile_selection_func (GtkTreeSelection *selection, GtkTreeModel *mo
 	return TRUE;
 }
 
-// this function runs after the user has selected a plugin
-// if the plugin is a glade file it opens another gui (see print_custom_form function)
-// if the plugin is a xml file it copies data from the plugin file to the guake-indicator gui
-static void call_print_custom_form ( GtkWidget *widget, gpointer user_data)
-{
-	EditMenuDialog* dialog = (EditMenuDialog*) user_data;
-	if (dialog->selected_glade_file==NULL || strlen((char*)dialog->selected_glade_file)==0)
-	{
-		error_modal_box("Select a plugin file");
-		return;
-	}
-	gtk_widget_destroy(dialog->window);
-	if (!strcmp(rindex((char*)dialog->selected_glade_file,'.'),".glade"))
-		print_custom_form(NULL,user_data);
-	else if (!strcmp(rindex((char*)dialog->selected_glade_file,'.'),".xml"))
-	{
-		char* fulldirpath;
-		if (asprintf(&fulldirpath,"%s/%s/%s/%s",getenv("HOME"),GUAKE_INDICATOR_DEFAULT_DIR,GUAKE_INDICATOR_PLUGIN_DIR,(char*)dialog->selected_glade_file)==-1)
-			return;
-		GArray* imported_hostlist = read_xml_cfg_file_from_file(fulldirpath);
-		free(fulldirpath);
-		Host* imported_host=((HostGroup*)g_array_index(imported_hostlist,HostGroup*,0))->hostarray;
-		if (GTK_IS_TEXT_VIEW((GtkTextView*)dialog->entry_command))
-		{
-			TEXTVIEW_SET_TEXT(GET_ENTRY_COMMAND(dialog),imported_host->command_after_login)
-		}
-		if (GTK_IS_ENTRY((GtkEntry*)dialog->entry_tab_name))
-		{
-			ENTRY_SET_TEXT(GET_ENTRY_TABNAME(dialog),imported_host->tab_name);
-		}
-		if (GTK_IS_ENTRY((GtkEntry*)dialog->entry_menu_name))
-		{
-			ENTRY_SET_TEXT(GET_ENTRY_MENUNAME(dialog),imported_host->menu_name);
-		}
-		if (GTK_IS_TOGGLE_BUTTON((GtkToggleButton *)dialog->cb_show_guake))
-		{
-			if ( ((Host*)imported_host)->dont_show_guake && !strcmp(((Host*)imported_host)->dont_show_guake,"yes"))
-				gtk_toggle_button_set_active( (GtkToggleButton *)dialog->cb_show_guake,1);
-			else
-				gtk_toggle_button_set_active( (GtkToggleButton *)dialog->cb_show_guake,0 );
-		}
-		if (GTK_IS_TOGGLE_BUTTON((GtkToggleButton *)dialog->lfcr))
-		{
-			if ( ((Host*)imported_host)->lfcr && !strcmp(((Host*)imported_host)->lfcr,"yes"))
-				gtk_toggle_button_set_active( (GtkToggleButton *)dialog->lfcr,1);
-			else
-				gtk_toggle_button_set_active( (GtkToggleButton *)dialog->lfcr,0 );
-		}
-		if (GTK_IS_TOGGLE_BUTTON((GtkToggleButton *)dialog->guakeindicatorscript))
-		{
-			if ( ((Host*)imported_host)->guakeindicatorscript && !strcmp(((Host*)imported_host)->guakeindicatorscript,"yes"))
-				gtk_toggle_button_set_active( (GtkToggleButton *)dialog->guakeindicatorscript,1);
-			else
-				gtk_toggle_button_set_active( (GtkToggleButton *)dialog->guakeindicatorscript,0 );
-		}
-		gtk_toggle_button_set_active( (GtkToggleButton *)dialog->new_guake_tab,1);
-		grouphostlist_free(imported_hostlist);
-	}
-	return;
-}
-
-static void refresh_glade_files ( GtkWidget *widget, gpointer user_data)
-{
-	GtkTreeIter iter;
-	GArray* filelist = get_custom_glade_files();
-	gtk_tree_store_clear(global_tree_view);
-	guint count=0;
-	char* iterator;
-	while ( iterator = g_array_index (filelist, char*, count))
-	{
-		gtk_tree_store_append(global_tree_view, &iter, NULL);
-		gtk_tree_store_set(global_tree_view, &iter, 0, iterator, -1);
-		count++;
-		free(iterator);
-	}
-	g_array_free(filelist,TRUE);
-}
-static void download_glade_files ( GtkWidget *widget, gpointer user_data)
-{
-	gchar* cmd;
-	cmd=g_strjoin(NULL,"python ",PYTHONDATADIR,GUAKE_INDICATOR_DATADIR,GUAKE_INDICATOR_PLUGIN_MANAGER," ",DATADIR,GUAKE_INDICATOR_DATADIR," &",NULL);
-	
-	if (system(cmd)==-1)
-		error_modal_box("Unable to launch plugin manager");
-	g_free(cmd);
-}
 
 static void drag_begin_handl (GtkWidget *widget, GdkDragContext *context, gpointer user_data)
 {

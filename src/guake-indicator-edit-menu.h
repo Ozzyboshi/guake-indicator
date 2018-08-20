@@ -115,7 +115,6 @@ typedef struct edit_menu_dialog_type
 	GtkWidget *btn_edit_menu_add_host;
 	GtkWidget *btn_edit_menu_add_host_label;
 	GtkWidget *btn_edit_menu_add_group_label;
-	GtkWidget *btn_build_cmd;
 	GtkWidget *btn_edit_menu_export;
 	GtkWidget *topButton;
 	GtkWidget *upButton;
@@ -165,9 +164,7 @@ typedef struct edit_menu_dialog_type
 	
 } EditMenuDialog;
 
-//void print_edit_menu_form(GtkAction*,gpointer);
 void print_custom_form(GtkAction*, gpointer);
-void print_select_custom_form(GtkAction*, gpointer);
 GArray* get_custom_glade_files();
 static void build_cmd ( GtkWidget *, gpointer);
 static void close_dialog ( GtkWidget *, gpointer );
@@ -204,10 +201,6 @@ static void move_down(GtkWidget *, gpointer );
 static void move_bottom(GtkWidget *, gpointer );
 static void expand(GtkWidget *, GdkEvent*,gpointer  );
 static void collapse(GtkWidget *, GdkEvent*,gpointer  );
-
-static void call_print_custom_form ( GtkWidget *, gpointer);
-static void refresh_glade_files ( GtkWidget *, gpointer );
-static void download_glade_files ( GtkWidget *, gpointer );
 
 static gboolean drag_motion_handl (GtkWidget *, GdkDragContext *, gint , gint , guint ,gpointer );
 static void drag_begin_handl(GtkWidget *, GdkDragContext *, gpointer );

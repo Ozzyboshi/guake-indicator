@@ -35,5 +35,4 @@ LIBS =                      					\
 
 AM_CFLAGS =                					\
                            -DDATADIR=\"$(datadir)\"		\
-                           -DPYTHONDATADIR=\"$(pythondir)\"	\
                            $(NULL)
