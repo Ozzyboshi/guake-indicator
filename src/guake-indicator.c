@@ -301,20 +301,43 @@ int main (int argc, char **argv)
 {
         GArray* grouphostlist;
         GtkInfo gtkinfo;
+        GUAKE3=1;			// Guake 3 is the default
 
         gtk_init (&argc, &argv);
 
-        guake_notify("Guake indicator","Guake indicator is running");
-
-        if (argc>1 && strlen(argv[1])>0)
-                grouphostlist=read_xml_cfg_file_from_file(argv[1]);
-        else if (check_xml_cfg_file_presence())
-                grouphostlist = read_xml_cfg_file();
-        else
-                grouphostlist = read_json_cfg_file(NULL);
+        if (argc>1 && strlen(argv[1])>0 && !strcasecmp(argv[1],"-guake3"))
+		{
+			GUAKE3=1;
+			if (argc>2)
+				grouphostlist=read_xml_cfg_file_from_file(argv[2]);
+			else
+				if (check_xml_cfg_file_presence())
+					grouphostlist = read_xml_cfg_file();
+				else
+					grouphostlist = read_json_cfg_file(NULL);			
+		}
+		else if (argc>1 && strlen(argv[1])>0 && !strcasecmp(argv[1],"-guake0"))
+		{
+			GUAKE3=0;
+			if (argc>2)
+				grouphostlist=read_xml_cfg_file_from_file(argv[2]);
+			else
+				if (check_xml_cfg_file_presence())
+					grouphostlist = read_xml_cfg_file();
+				else
+					grouphostlist = read_json_cfg_file(NULL);			
+		}
+		else if (argc>1 && strlen(argv[1])>0)
+			grouphostlist=read_xml_cfg_file_from_file(argv[1]);
+		else if (check_xml_cfg_file_presence())
+			grouphostlist = read_xml_cfg_file();
+		else
+			grouphostlist = read_json_cfg_file(NULL);
 
         if (grouphostlist==NULL)
                 error_modal_box("Couldn't retrieve list of entries from your guake indicator configuration file");
+
+        guake_notify("Guake indicator","Guake indicator is running");
 
         gtkinfo.grouphostlist=grouphostlist;
 
