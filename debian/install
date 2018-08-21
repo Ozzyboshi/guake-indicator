@@ -1,6 +1,5 @@
 guake-indicator.desktop usr/share/applications
 data/gi_edit_menu_dialog.glade usr/share/guake-indicator/
-data/gi_custom_cmd_form.glade usr/share/guake-indicator/
 data/hostgroupicon.png usr/share/guake-indicator/
 data/hosticon.png usr/share/guake-indicator/
 data/labelicon.png usr/share/guake-indicator/
