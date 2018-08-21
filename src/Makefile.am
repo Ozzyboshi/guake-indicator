@@ -11,6 +11,15 @@ guake_indicator_SOURCES =  					\
                            guake-indicator-edit-menu.c		\
                            guake-indicator-write-xml.c		\
                            guake-indicator-read-xml.c		\
+                           guake3.h \
+                           guake-indicator-ayatana.h  \
+                           guake-indicator-dbus.h  \
+                           guake-indicator-edit-menu.h   \
+                           guake-indicator.h \
+                           guake-indicator-notify.h   \
+                           guake-indicator-read-json.h   \
+                           guake-indicator-write-json.h  \
+                           guake-indicator-xml.h   \
                            $(NULL)
 
 guake_indicator_CPPFLAGS = 					\
