@@ -20,17 +20,13 @@ Boston, MA 02111-1307, USA.
 
 #include <libayatana-appindicator/app-indicator.h>
 
-#define DEFAULT_ICON "tray-online"
+#define DEFAULT_ICON "guake-indicator"
 
 
 
 
 static void scroll_event_cb (AppIndicator * , gint , guint , gpointer );
 
-
-static void item_clicked_cb (GtkWidget *, gpointer );
-
-static void toggle_sensitivity_cb (GtkWidget *, gpointer );
 
 static void append_submenu (GtkWidget *,Host*);
 

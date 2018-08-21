@@ -98,22 +98,6 @@ local_icon_toggle_cb (GtkWidget *widget, gpointer data)
 }
 
 static void
-item_clicked_cb (GtkWidget *widget, gpointer data)
-{
-  const gchar *text = (const gchar *)data;
-
-  g_print ("%s clicked!\n", text);
-}
-
-static void
-toggle_sensitivity_cb (GtkWidget *widget, gpointer data)
-{
-  GtkWidget *target = (GtkWidget *)data;
-
-  gtk_widget_set_sensitive (target, !gtk_widget_is_sensitive (target));
-}
-
-static void
 scroll_event_cb (AppIndicator * ci, gint delta, guint direction, gpointer data)
 {
     g_print("Got scroll event! delta: %d, direction: %d\n", delta, direction);
@@ -149,7 +133,6 @@ static void append_submenu (GtkWidget *menu,Host* ptr)
         g_signal_connect (mi, "activate",G_CALLBACK (guake_funct), (gpointer) ptr);
     }
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);
-    g_signal_connect (mi, "activate",G_CALLBACK (item_clicked_cb), "Sub a");
 }
 
 
