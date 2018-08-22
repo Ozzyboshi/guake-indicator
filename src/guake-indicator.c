@@ -299,60 +299,63 @@ static void close_guake ( GtkWidget *widget, gpointer user_data)
 
 int main (int argc, char **argv)
 {
-        GArray* grouphostlist;
-        GtkInfo gtkinfo;
-        GUAKE3=1;			// Guake 3 is the default
-        gint32 numtabs;
+	GArray* grouphostlist;
+	GtkInfo gtkinfo;
+	GUAKE3=1;			// Guake 3 is the default
+	gint32 numtabs;
 
-        gtk_init (&argc, &argv);
+	gtk_init (&argc, &argv);
 
-        if (argc>1 && strlen(argv[1])>0 && !strcasecmp(argv[1],"-guake3"))
-		{
-			GUAKE3=1;
-			if (argc>2)
-				grouphostlist=read_xml_cfg_file_from_file(argv[2]);
-			else
-				if (check_xml_cfg_file_presence())
-					grouphostlist = read_xml_cfg_file();
-				else
-					grouphostlist = read_json_cfg_file(NULL);			
-		}
-		else if (argc>1 && strlen(argv[1])>0 && !strcasecmp(argv[1],"-guake0"))
-		{
-			GUAKE3=0;
-			if (argc>2)
-				grouphostlist=read_xml_cfg_file_from_file(argv[2]);
-			else
-				if (check_xml_cfg_file_presence())
-					grouphostlist = read_xml_cfg_file();
-				else
-					grouphostlist = read_json_cfg_file(NULL);			
-		}
-		else if (argc>1 && strlen(argv[1])>0)
-			grouphostlist=read_xml_cfg_file_from_file(argv[1]);
-		else if (check_xml_cfg_file_presence())
-			grouphostlist = read_xml_cfg_file();
+	if (argc>1 && strlen(argv[1])>0 && !strcasecmp(argv[1],"-guake3"))
+	{
+		GUAKE3=1;
+		if (argc>2)
+			grouphostlist=read_xml_cfg_file_from_file(argv[2]);
 		else
-			grouphostlist = read_json_cfg_file(NULL);
+			if (check_xml_cfg_file_presence())
+				grouphostlist = read_xml_cfg_file();
+			else
+				grouphostlist = read_json_cfg_file(NULL);			
+	}
+	else if (argc>1 && strlen(argv[1])>0 && !strcasecmp(argv[1],"-guake0"))
+	{
+		GUAKE3=0;
+		if (argc>2)
+			grouphostlist=read_xml_cfg_file_from_file(argv[2]);
+		else
+			if (check_xml_cfg_file_presence())
+				grouphostlist = read_xml_cfg_file();
+			else
+				grouphostlist = read_json_cfg_file(NULL);			
+	}
+	else if (argc>1 && strlen(argv[1])>0)
+		grouphostlist=read_xml_cfg_file_from_file(argv[1]);
+	else if (check_xml_cfg_file_presence())
+		grouphostlist = read_xml_cfg_file();
+	else
+		grouphostlist = read_json_cfg_file(NULL);
 
-        if (grouphostlist==NULL)
-                error_modal_box("Couldn't retrieve list of entries from your guake indicator configuration file");
+	if (grouphostlist==NULL)
+		error_modal_box("Couldn't retrieve list of entries from your guake indicator configuration file");
 
-        // Test dbus responsiveness to know if it's running, if it's not i try to start it
-        if (guake_gettabcount(&numtabs)==FALSE)
-        {
-        	if (GUAKE3) 
-        		if (system ("/usr/bin/python3 /usr/bin/guake &")==-1)
-        			guake_notify("Guake indicator","Cannot spawn system call for Guake GTK3 version start");
-        	else 
-        		if (system ("guake &")==-1)
-        			guake_notify("Guake indicator","Cannot spawn system call for Guake GTK2 version start");
+	// Test dbus responsiveness to know if it's running, if it's not i try to start it
+	if (guake_gettabcount(&numtabs)==FALSE)
+	{
+        	if (GUAKE3)
+        { 
+        	if (system ("/usr/bin/python3 /usr/bin/guake &")==-1)
+        		guake_notify("Guake indicator","Cannot spawn system call for Guake GTK3 version start");
         }
+        else 
+        {
+        	if (system ("guake &")==-1)
+        		guake_notify("Guake indicator","Cannot spawn system call for Guake GTK2 version start");
+        }
+	}
 
-        guake_notify("Guake indicator","Guake indicator is running");
+	guake_notify("Guake indicator","Guake indicator is running");
 
-        gtkinfo.grouphostlist=grouphostlist;
-
-        build_menu_ayatana(argc,argv,&gtkinfo);
-        return 0;
+	gtkinfo.grouphostlist=grouphostlist;
+	build_menu_ayatana(argc,argv,&gtkinfo);
+	return 0;
 }
