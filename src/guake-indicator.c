@@ -52,7 +52,7 @@ void group_guake_open(GtkAction* action,gpointer user_data)
 	}
 }
 
-static void guake_open_with_show(GtkAction* action,gpointer user_data)
+void guake_open_with_show(GtkAction* action,gpointer user_data)
 {
 	// open new terminal and execute command
 	guake_open(action,user_data);

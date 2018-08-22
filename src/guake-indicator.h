@@ -85,7 +85,7 @@ typedef struct GtkInfo {
 void reload(GtkInfo* gtkinfo);
 static void activate_action (GtkAction* );
 void guake_open(GtkAction*,gpointer);
-static void guake_open_with_show(GtkAction*,gpointer);
+void guake_open_with_show(GtkAction*,gpointer);
 void group_guake_open(GtkAction*,gpointer);
 static void close_guake ( GtkWidget *, gpointer);
 static void update_json(gpointer);
