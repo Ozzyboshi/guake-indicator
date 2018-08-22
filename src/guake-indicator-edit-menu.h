@@ -86,6 +86,8 @@ enum
 #define UPDATE_ENTRY(var,var2)	g_free(var);\
 								var=g_strdup(var2);
 
+#define DEFAULT_EXPORT_FILENAME "Untitled document.xml"
+
 typedef struct edit_menu_dialog_type
 {
 	// main window
@@ -116,6 +118,7 @@ typedef struct edit_menu_dialog_type
 	GtkWidget *btn_edit_menu_add_host_label;
 	GtkWidget *btn_edit_menu_add_group_label;
 	GtkWidget *btn_edit_menu_export;
+	GtkWidget *btn_edit_menu_import;
 	GtkWidget *topButton;
 	GtkWidget *upButton;
 	GtkWidget *downButton;
@@ -174,6 +177,7 @@ static void add_host ( GtkWidget *, gpointer );
 static void add_host_label ( GtkWidget *, gpointer);
 static void add_group_label ( GtkWidget *, gpointer);
 static void export ( GtkWidget *, gpointer);
+static void import ( GtkWidget *, gpointer);
 
 static void populate_dialog(gpointer);
 static void set_widget_sensitivity(EditMenuDialog*,gboolean);

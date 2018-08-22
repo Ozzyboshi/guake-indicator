@@ -76,6 +76,7 @@ void print_edit_menu_form(GtkAction* action, gpointer user_data)
 	widgets.btn_edit_menu_add_host_label = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_add_host_lbl"));
 	widgets.btn_edit_menu_add_group_label = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_add_group_lbl"));
 	widgets.btn_edit_menu_export = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_export"));
+	widgets.btn_edit_menu_import = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_import"));
 
 	widgets.btn_edit_menu_close_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_close_dialog"));
 
@@ -106,6 +107,9 @@ void print_edit_menu_form(GtkAction* action, gpointer user_data)
 	
 	// add export button
 	g_signal_connect (G_OBJECT (widgets.btn_edit_menu_export), "clicked",G_CALLBACK (export),&widgets);
+
+	// add import button
+	g_signal_connect (G_OBJECT (widgets.btn_edit_menu_import), "clicked",G_CALLBACK (import),&widgets);
 	
 	// set signal for clearing gtkentry
 	g_signal_connect (G_OBJECT (widgets.entry_menu_name), "icon-press",G_CALLBACK (clear_gtkentry),&widgets);
@@ -597,6 +601,7 @@ static void add_host ( GtkWidget *widget, gpointer user_data)
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_remove,TRUE);
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_save,TRUE);
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_export,FALSE);
+	gtk_widget_set_sensitive(dialog->btn_edit_menu_import,FALSE);
 	gtk_button_set_label(GTK_BUTTON(dialog->btn_edit_menu_remove), "Cancel");
 	gtk_toggle_button_set_active( (GtkToggleButton *)dialog->new_guake_tab,1);
 	
@@ -661,6 +666,55 @@ static void add_host_label ( GtkWidget *widget, gpointer user_data)
 	dialog->status = STATUS_ADD_HOST_LABEL;
 }
 
+static void import (GtkWidget *widget, gpointer user_data)
+{
+	EditMenuDialog* widgets = (EditMenuDialog*) user_data;
+	GtkWidget *dialog;
+	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+	gint res;
+
+	dialog = gtk_file_chooser_dialog_new ("Open File",
+                                      GTK_WINDOW(widgets->window),
+                                      action,
+                                      ("_Cancel"),
+                                      GTK_RESPONSE_CANCEL,
+                                      ("_Open"),
+                                      GTK_RESPONSE_ACCEPT,
+                                      NULL);
+
+	res = gtk_dialog_run (GTK_DIALOG (dialog));
+	if (res == GTK_RESPONSE_ACCEPT)
+	{
+		char *filename;
+		GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+		filename = gtk_file_chooser_get_filename (chooser);
+		//open_file (filename);
+		GArray* imported_hostlist = read_xml_cfg_file_from_file(filename);
+		Host* imported_host=((HostGroup*)g_array_index(imported_hostlist,HostGroup*,0))->hostarray;
+		if (GTK_IS_TEXT_VIEW((GtkTextView*)widgets->entry_command))
+			TEXTVIEW_SET_TEXT(GET_ENTRY_COMMAND(widgets),imported_host->command_after_login)
+		if (GTK_IS_ENTRY((GtkEntry*)widgets->entry_tab_name))
+			ENTRY_SET_TEXT(GET_ENTRY_TABNAME(widgets),imported_host->tab_name);
+		if (GTK_IS_ENTRY((GtkEntry*)widgets->entry_menu_name))
+			ENTRY_SET_TEXT(GET_ENTRY_MENUNAME(widgets),imported_host->menu_name);
+		if (GTK_IS_TOGGLE_BUTTON((GtkToggleButton *)widgets->cb_show_guake))
+			if ( ((Host*)imported_host)->dont_show_guake && !strcmp(((Host*)imported_host)->dont_show_guake,"yes"))
+				gtk_toggle_button_set_active( (GtkToggleButton *)widgets->cb_show_guake,1);
+			else
+				gtk_toggle_button_set_active( (GtkToggleButton *)widgets->cb_show_guake,0 );
+		if (GTK_IS_TOGGLE_BUTTON((GtkToggleButton *)widgets->lfcr))
+			if ( ((Host*)imported_host)->guakeindicatorscript && !strcmp(((Host*)imported_host)->guakeindicatorscript,"yes"))
+				gtk_toggle_button_set_active( (GtkToggleButton *)widgets->guakeindicatorscript,1);
+			else
+				gtk_toggle_button_set_active( (GtkToggleButton *)widgets->guakeindicatorscript,0 );
+		gtk_toggle_button_set_active( (GtkToggleButton *)widgets->new_guake_tab,1);
+		grouphostlist_free(imported_hostlist);
+		g_free (filename);
+	}
+	gtk_widget_destroy (dialog);
+	return ;
+}
+
 static void export ( GtkWidget *widget, gpointer user_data)
 {
 	EditMenuDialog* widgets = (EditMenuDialog*) user_data;
@@ -681,7 +735,7 @@ static void export ( GtkWidget *widget, gpointer user_data)
 	chooser = GTK_FILE_CHOOSER (dialog);
 
 	gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
-	gtk_file_chooser_set_current_name (chooser,("Untitled document"));
+	gtk_file_chooser_set_current_name (chooser,(DEFAULT_EXPORT_FILENAME));
 	res = gtk_dialog_run (GTK_DIALOG (dialog));
 	if (res == GTK_RESPONSE_ACCEPT)
 	{
@@ -936,6 +990,7 @@ static void set_widget_sensitivity(EditMenuDialog* dialog,gboolean flag)
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_remove,flag);
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_save,flag);
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_export,flag);
+	gtk_widget_set_sensitive(dialog->btn_edit_menu_import,flag);
 	
 	set_new_widget_sensitivity(dialog,flag);
 	set_move_widget_sensitivity(dialog,flag);
@@ -987,6 +1042,7 @@ static void activate_label_sensitivity(EditMenuDialog* dialog)
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_save,TRUE);
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_remove,TRUE);
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_export,FALSE);
+	gtk_widget_set_sensitive(dialog->btn_edit_menu_import,FALSE);
 }
 
 static void clear_widget(EditMenuDialog* dialog)
