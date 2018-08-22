@@ -65,6 +65,7 @@ Makefile
 src/Makefile
 data/Makefile
 data/icons/Makefile
+man/Makefile
 ])
 
 AC_OUTPUT
