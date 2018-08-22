@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2013-2018 Alessio Garzi <gun101@email.it>
-Copyright (C) 2013-2018 Francesco Minà <mina.francesco@gmail.com>
+Copyright (C) 2013-2019 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2019 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as

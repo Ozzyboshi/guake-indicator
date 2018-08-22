@@ -93,7 +93,6 @@ static void update_json(gpointer);
 void grouphostlist_free(GArray*);
 void host_free(Host*);
 void hostgroup_free(HostGroup*);
-int findguakepid();
 void error_modal_box (const char*);
 void build_menu_ayatana(int , char **,GtkInfo* );
 void refresh_indicator_ayatana(gpointer);

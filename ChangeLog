@@ -12,6 +12,10 @@
 
 	- manpaged moved to upstream
 
+	- guake3 autostart implemented
+
+	- removed build unnecessary files from repo
+
 2018-06-02 Alessio Garzi <gun101@email.it>
 
 	1.3.3 - new release with the following features :
