@@ -32,7 +32,7 @@ Boston, MA 02111-1307, USA.
 int GUAKE3;
 
 // Open a group of tabs
-static void group_guake_open(GtkAction* action,gpointer user_data)
+void group_guake_open(GtkAction* action,gpointer user_data)
 {
 	Host host = *((Host*) user_data);
 	Host* ptr = host.group_head;

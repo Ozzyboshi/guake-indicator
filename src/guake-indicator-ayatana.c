@@ -109,6 +109,7 @@ static void append_submenu (GtkWidget *menu,Host* ptr)
     GtkWidget *mi;
     GtkStyleContext *menu_context;
     gchar* menu_desc;
+    void (*guake_funct)(GtkAction*,gpointer);
 
     //printf("-----------%s %d\n",ptr->menu_name,ptr->open_in_tab==NULL);
     
@@ -129,7 +130,11 @@ static void append_submenu (GtkWidget *menu,Host* ptr)
     if (ptr->label==TRUE) gtk_widget_set_sensitive ((GtkWidget *)mi,FALSE);
     else 
     {
-        void (*guake_funct)(GtkAction*,gpointer)=guake_open;
+        // If open all is clicked then the call back function is group guake open
+        if (ptr->group_head!=NULL)
+            guake_funct=group_guake_open;
+        else
+            guake_funct=guake_open;
         g_signal_connect (mi, "activate",G_CALLBACK (guake_funct), (gpointer) ptr);
     }
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);
