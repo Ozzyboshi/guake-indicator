@@ -341,8 +341,12 @@ int main (int argc, char **argv)
         // Test dbus responsiveness to know if it's running, if it's not i try to start it
         if (guake_gettabcount(&numtabs)==FALSE)
         {
-        	if (GUAKE3) system ("/usr/bin/python3 /usr/bin/guake &");
-        	else system ("guake &");
+        	if (GUAKE3) 
+        		if (system ("/usr/bin/python3 /usr/bin/guake &")==-1)
+        			guake_notify("Guake indicator","Cannot spawn system call for Guake GTK3 version start");
+        	else 
+        		if (system ("guake &")==-1)
+        			guake_notify("Guake indicator","Cannot spawn system call for Guake GTK2 version start");
         }
 
         guake_notify("Guake indicator","Guake indicator is running");
