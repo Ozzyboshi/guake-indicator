@@ -601,7 +601,7 @@ static void add_host ( GtkWidget *widget, gpointer user_data)
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_remove,TRUE);
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_save,TRUE);
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_export,FALSE);
-	gtk_widget_set_sensitive(dialog->btn_edit_menu_import,FALSE);
+	gtk_widget_set_sensitive(dialog->btn_edit_menu_import,TRUE);
 	gtk_button_set_label(GTK_BUTTON(dialog->btn_edit_menu_remove), "Cancel");
 	gtk_toggle_button_set_active( (GtkToggleButton *)dialog->new_guake_tab,1);
 	
