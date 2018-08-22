@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2013-2018 Alessio Garzi <gun101@email.it>
-Copyright (C) 2013-2018 Francesco Minà <mina.francesco@gmail.com>
+Copyright (C) 2013-2019 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2019 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -25,7 +25,25 @@ Boston, MA 02111-1307, USA.
 #define GUAKE_INDICATOR_PLUGIN_DIR "plugins"
 #define GUAKE_INDICATOR_ICON_DIR "icons/hicolor/256x256/apps/"
 #define GUAKE_INDICATOR_DCONF_SCHEMA_ROOT "org.guake-indicator.data"
-#define GUAKE_INDICATOR_VERSION "1.3.3"
+#define GUAKE_INDICATOR_VERSION "1.4"
+
+// Define default actions
+#define GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY_SIZE 4
+#define GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY_MAXLENGTH 20
+static const gchar GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY_SIZE][GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY_MAXLENGTH]=
+{
+        "Edit Menu",
+        "Reload",
+        "Quit",
+        "About"
+};
+
+typedef struct GUAKE_INDICATOR_DEFAULT_ACTION
+{
+        gchar const* label;
+        void(* action_function)(GtkAction *,gpointer);
+}GUAKE_INDICATOR_DEFAULT_ACTION;
+
 
 typedef struct Host {
 	gchar* id;
@@ -63,22 +81,20 @@ typedef struct GtkInfo {
 	GArray* grouphostlist;
 } GtkInfo;
 
-void reload(GtkAction*,gpointer);
+//void reload(GtkAction*,gpointer);
+void reload(GtkInfo* gtkinfo);
 static void activate_action (GtkAction* );
-static void guake_open(GtkAction*,gpointer);
-static void guake_open_with_show(GtkAction*,gpointer);
-static void group_guake_open(GtkAction*,gpointer);
-static void about(GtkAction*);
+void guake_open(GtkAction*,gpointer);
+void guake_open_with_show(GtkAction*,gpointer);
+void group_guake_open(GtkAction*,gpointer);
 static void close_guake ( GtkWidget *, gpointer);
 static void update_json(gpointer);
 
-gchar* add_host_to_menu(Host*,GtkActionGroup *);
-gchar* add_lable_to_menu(HostGroup*,GtkActionGroup *);
-void create_default_actions(GtkActionGroup*,GtkInfo*);
-gchar* create_actionlists(GArray*,GtkUIManager*,GtkActionGroup*);
 void grouphostlist_free(GArray*);
 void host_free(Host*);
 void hostgroup_free(HostGroup*);
-int findguakepid();
-
 void error_modal_box (const char*);
+void build_menu_ayatana(int , char **,GtkInfo* );
+void refresh_indicator_ayatana(gpointer);
+void print_edit_menu_form(GtkAction*,gpointer);
+void refresh_indicator(gpointer);

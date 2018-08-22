@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Guake Indicator
-Comment=Use it to launch guake-indicator and a new icon will show up to the upper right corner of the screen
+Comment=Use it to launch guake-indicator and a new icon will show up on systemtray
 TryExec=guake-indicator
 Exec=guake-indicator
 Icon=guake-indicator

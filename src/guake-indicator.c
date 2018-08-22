@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2013-2018 Alessio Garzi <gun101@email.it>
-Copyright (C) 2013-2018 Francesco Minà <mina.francesco@gmail.com>
+Copyright (C) 2013-2019 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2019 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -20,7 +20,6 @@ Boston, MA 02111-1307, USA.
 
 #include <string.h>
 #include <gtk/gtk.h>
-#include <libappindicator/app-indicator.h>
 #include "guake-indicator.h"
 #include "guake-indicator-read-json.h"
 #include "guake-indicator-write-json.h"
@@ -28,25 +27,12 @@ Boston, MA 02111-1307, USA.
 #include "guake-indicator-xml.h"
 #include "guake-indicator-dbus.h"
 #include "guake-indicator-notify.h"
-// #include "guake3.h"
 
-static const gchar* ui_start = "<ui>";
-static const gchar* ui_end = "</ui>";
-static const gchar* popup_start = "<popup name='IndicatorPopup'>";
-static const gchar* popup_end = "</popup>";
-static const gchar* separator = "<separator/>";
-static const gchar* default_menuitems = "<separator/>"
-										"<menuitem action='Edit Menu'/>"
-										"<menuitem action='Reload' />"
-										"<menuitem action='Quit' />"
-										"<menuitem action='About' />";
 
-AppIndicator *indicator;
-guint merge_id=0;
 int GUAKE3;
 
 // Open a group of tabs
-static void group_guake_open(GtkAction* action,gpointer user_data)
+void group_guake_open(GtkAction* action,gpointer user_data)
 {
 	Host host = *((Host*) user_data);
 	Host* ptr = host.group_head;
@@ -66,7 +52,7 @@ static void group_guake_open(GtkAction* action,gpointer user_data)
 	}
 }
 
-static void guake_open_with_show(GtkAction* action,gpointer user_data)
+void guake_open_with_show(GtkAction* action,gpointer user_data)
 {
 	// open new terminal and execute command
 	guake_open(action,user_data);
@@ -76,7 +62,7 @@ static void guake_open_with_show(GtkAction* action,gpointer user_data)
 }
 
 // Open a new terminal tab on guake
-static void guake_open(GtkAction* action,gpointer user_data)
+void guake_open(GtkAction* action,gpointer user_data)
 {
 	Host host = *((Host*) user_data);
 	gchar* cmd = NULL;
@@ -224,126 +210,28 @@ static void guake_open(GtkAction* action,gpointer user_data)
 }
 
 // Reload hosts reading them from the configuration file
-void reload(GtkAction* action,gpointer user_data)
+//void reload(GtkAction* action,gpointer user_data)
+void reload(GtkInfo* gtkinfo)
 {
-	GArray* oldgrouphostlist = ((GtkInfo*)user_data)->grouphostlist;
-	GtkActionGroup* action_group = ((GtkInfo*)user_data)->action_group;
-	GtkUIManager * uim = ((GtkInfo*)user_data)->uim;
-	GError *error = NULL;
-	GtkWidget *indicator_menu;
-	GArray* grouphostlist =NULL;
-	GList *actions, *iter;
-	
-	// Fetch data from the cfg file
-    if (check_xml_cfg_file_presence())
-		grouphostlist = read_xml_cfg_file();
+	if (gtkinfo->grouphostlist) grouphostlist_free(gtkinfo->grouphostlist);
+	if (check_xml_cfg_file_presence())
+		gtkinfo->grouphostlist = read_xml_cfg_file();
 	else
-		grouphostlist = read_json_cfg_file(NULL);
-		
-	if (grouphostlist==NULL)
+		gtkinfo->grouphostlist = read_json_cfg_file(NULL);
+	if (gtkinfo->grouphostlist==NULL)
 	{
 		error_modal_box("Couldn't retrieve host from your guake indicator configuration file");
 		return ;
 	}
-	
-	// free the old grouphostlist and use the new one
-	grouphostlist_free(oldgrouphostlist);
-	((GtkInfo*)user_data)->grouphostlist=grouphostlist;
-	
-	// Remove old action group and ui
-	gtk_ui_manager_remove_action_group(uim,action_group);
-	actions = gtk_action_group_list_actions (action_group);
-	for (iter = actions; iter; iter = iter->next)
-	{
-		GtkAction *action = iter->data;
-		gtk_action_group_remove_action  (action_group,action);
-	}
-	g_list_free (actions);
-	
-	gtk_ui_manager_remove_ui(uim,merge_id);
-		
-	// I create a new actionlist for each grouphostlist
-	gchar* menuitems=create_actionlists(grouphostlist,uim,action_group);
-	create_default_actions(action_group,(GtkInfo*)user_data);
-		
-	gtk_ui_manager_insert_action_group (uim, action_group, 0);
-		
-	gchar* ui_full_info=g_strjoin (NULL,
-	ui_start,
-	popup_start,
-	menuitems,
-	separator,
-	default_menuitems,
-	popup_end,
-	ui_end,
-	NULL
-	);
-	g_free(menuitems);
-		
-	merge_id=gtk_ui_manager_add_ui_from_string (uim, ui_full_info, -1, &error);
-	if (!merge_id)
-	{
-		g_message ("Failed to build menus: %s\n", error->message);
-		g_error_free (error);
-		g_free(ui_full_info);
-		error = NULL;
-	}
-	g_free(ui_full_info);
 
-	indicator_menu = gtk_ui_manager_get_widget (uim, "/ui/IndicatorPopup");
-	app_indicator_set_menu (indicator, GTK_MENU (indicator_menu));
-	gtk_ui_manager_ensure_update(uim);
-	
-	guake_notify("Guake indicator","Reload completed");
 	return ;
 }
 
-// About page
-static void about (GtkAction* action)
+void refresh_indicator(gpointer user_data)
 {
-	GError *error = NULL;
-	const gchar *authors[] = {
-		"Alessio Garzi <gun101@email.it>",
-		"Francesco Minà <mina.francesco@gmail.com>",
-		NULL
-	};
-	const gchar* license ="Guake indicator is free software; you can redistribute it and/or\n"
-					" modify it under the terms of the GNU General Public License\n"
-					" as published by the Free Software Foundation; either version 2\n"
-					" of the License, or (at your option) any later version.\n\n"
-
-					"This program is distributed in the hope that it will be useful,\n"
-					"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-					" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-					" GNU General Public License for more details.\n\n"
-
-					"You should have received a copy of the GNU General Public License\n"
-					"along with this program; if not, write to the Free Software\n"
-					"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.";
-	
-	GdkPixbuf *logo = gdk_pixbuf_new_from_file (DATADIR"/"GUAKE_INDICATOR_ICON_DIR"/guake-indicator.png", &error);	
-	if (error != NULL)
-	{
-		if (error->domain == GDK_PIXBUF_ERROR)
-			g_print ("GdkPixbufError: %s\n", error->message);
-		else if (error->domain == G_FILE_ERROR)
-			g_print ("GFileError: %s\n", error->message);
-		else
-			g_print ("An error in the domain: %d has occurred!\n", error->domain);
-		g_error_free (error);
-	}
-
-	gtk_show_about_dialog(NULL,
-							"program-name", "Guake indicator",
-							"authors", authors,
-							"comments", "A simple indicator that lets you send custom commands to Guake/Guake3.",
-							"copyright", "(C) 2013-2018 Alessio Garzi\n(C) 2013-2018 Francesco Mina\n\nDedicated to my daughters\n Ludovica and Mariavittoria",
-							"logo", logo,
-							"version", GUAKE_INDICATOR_VERSION, 
-							"website", "http://guake-indicator.ozzyboshi.com",
-							"license",license,
-							NULL);
+	refresh_indicator_ayatana(user_data);
 }
+
 
 void error_modal_box (const char* alerttext)
 {
@@ -357,131 +245,6 @@ void error_modal_box (const char* alerttext)
 
 	g_signal_connect (dialog, "response",G_CALLBACK (gtk_widget_destroy), NULL);
 	gtk_widget_show (dialog);
-}
-
-// Add a lable to an action group
-gchar* add_lable_to_menu(HostGroup* hostgroup,GtkActionGroup *action_group)
-{
-	gchar* title=hostgroup->title;
-	gchar* id=hostgroup->id;
-	gchar* ui_tmp;
-	gchar* ui_full_info=g_strjoin(NULL,"",NULL);
-	GtkAction* action = gtk_action_new(id, title, NULL, NULL);
-	gtk_action_set_sensitive(action,FALSE);
-	gtk_action_group_add_action(action_group, action);
-	ui_tmp=ui_full_info;
-	ui_full_info = g_strconcat(ui_tmp,"<separator/><menuitem action='",id,"' />",NULL);
-	g_free(ui_tmp);
-	return ui_full_info;
-}
-
-// Add a host to an action group
-gchar* add_host_to_menu(Host* head,GtkActionGroup *action_group)
-{
-	GtkAction* action;
-	Host* ptr = head;
-	gchar* ui_tmp;
-	gchar* ui_full_info=g_strjoin(NULL,"",NULL);
-	
-	for (ptr=head;ptr;ptr=ptr->next)
-	{
-		// if the open_all row is clicked
-		if (ptr->group_head!=NULL)
-		{
-			action = gtk_action_new(ptr->id, ptr->menu_name, NULL, NULL);
-			g_signal_connect(G_OBJECT(action), "activate", G_CALLBACK(group_guake_open), (gpointer)ptr);
-		}
-		
-		// Draw a inner label
-		else if (ptr->label==TRUE)
-		{
-			action = gtk_action_new(ptr->id, ptr->menu_name, NULL, NULL);
-			gtk_action_set_sensitive(action,FALSE);
-		}
-		
-		// Regular row is clicked
-		else
-		{
-			void (*funct_ptr)(GtkAction*,gpointer);
-			if (ptr->dont_show_guake==NULL || g_strcmp0(ptr->dont_show_guake,"yes"))
-				funct_ptr=guake_open_with_show;
-			else
-				funct_ptr=guake_open;
-
-			if (ptr->open_in_tab==NULL)
-				action = gtk_action_new(ptr->id, ptr->menu_name, NULL, NULL);
-			else
-			{
-				gchar* menu_desc;
-				if (atol((char*)ptr->open_in_tab)==-1)
-					menu_desc=g_strjoin(NULL,ptr->menu_name," (Current Tab)",NULL);
-				else
-					menu_desc=g_strjoin(NULL,ptr->menu_name," (Tab ",ptr->open_in_tab,")",NULL);
-				action = gtk_action_new(ptr->id, menu_desc, NULL, NULL);
-				g_free(menu_desc);
-			}
-			g_signal_connect(G_OBJECT(action), "activate", G_CALLBACK(funct_ptr), (gpointer)ptr);
-		}
-			
-		gtk_action_group_add_action(action_group, action);
-		ui_tmp=ui_full_info;
-		
-		// for the open all row and labels I set a separator before printing it
-		if (ptr->group_head!=NULL || ptr->label==TRUE)
-			ui_full_info = g_strconcat(ui_tmp,"<separator/><menuitem action='",ptr->id,"' />",NULL);
-		else
-			ui_full_info = g_strconcat(ui_tmp,"<menuitem action='",ptr->id,"' />",NULL);
-		g_free(ui_tmp);
-	}
-	return ui_full_info;
-}
-
-// Create actionslist according to the result of a json file
-gchar* create_actionlists(GArray* grouphostlist,GtkUIManager* uim,GtkActionGroup* action_group)
-{
-	gint i=0;
-	gchar* menuitems=g_strdup("");
-	for (i=0;grouphostlist!=NULL && i<grouphostlist->len;i++)
-	{
-		HostGroup* hostgroup = g_array_index (grouphostlist, HostGroup* , i);
-		if (hostgroup->title==NULL || !strlen((char*)hostgroup->title))
-		{
-			gchar* p = menuitems;
-			gchar* xmlcode=add_host_to_menu(hostgroup->hostarray,action_group);
-			menuitems=g_strconcat(p,xmlcode,NULL);
-			g_free(xmlcode);
-			g_free(p);
-			continue;
-		}
-		gchar* gtk_name=g_strdup_printf("%d",i);
-		
-		// Create a new action group
-		GtkActionGroup* host_action_group = gtk_action_group_new (hostgroup->title);
-		GtkAction *newaction=gtk_action_new(gtk_name, hostgroup->title, NULL, NULL);
-		gtk_action_group_add_action(action_group,newaction);
-		g_object_unref(newaction);
-		gchar* p = menuitems;
-		
-		// Case of a label
-		if (hostgroup->label==TRUE)
-		{
-			gchar* xmlcode=add_lable_to_menu(hostgroup,host_action_group);
-			menuitems=g_strconcat(p,xmlcode,NULL);
-			g_free(xmlcode);
-		}
-		//Case of a Guake link
-		else
-		{
-			gchar* xmlcode=add_host_to_menu(hostgroup->hostarray,host_action_group);
-			menuitems=g_strconcat(p,"<menu action='",gtk_name,"'>",xmlcode,"</menu>",NULL);
-			g_free(xmlcode);
-		}
-		
-		g_free(p);
-		g_free(gtk_name);
-		gtk_ui_manager_insert_action_group (uim, host_action_group , 0);
-	}
-	return menuitems;
 }
 
 // Free a grouphostlist
@@ -536,21 +299,12 @@ static void close_guake ( GtkWidget *widget, gpointer user_data)
 
 int main (int argc, char **argv)
 {
-	GtkWidget *indicator_menu;
-	GtkActionGroup *action_group;
-	GtkUIManager *uim;
-	GError *error = NULL;
-	GUAKE3=1;
-	
-	// Start guake/guake3 if not running
-	if (!findguakepid()) 
-		if (system("guake &")==-1)
-			return -1;
-
-			
-	gtk_init (&argc, &argv);
-		
 	GArray* grouphostlist;
+	GtkInfo gtkinfo;
+	GUAKE3=1;			// Guake 3 is the default
+	gint32 numtabs;
+
+	gtk_init (&argc, &argv);
 
 	if (argc>1 && strlen(argv[1])>0 && !strcasecmp(argv[1],"-guake3"))
 	{
@@ -580,137 +334,28 @@ int main (int argc, char **argv)
 		grouphostlist = read_xml_cfg_file();
 	else
 		grouphostlist = read_json_cfg_file(NULL);
-		
+
 	if (grouphostlist==NULL)
-		error_modal_box("Couldn't retrieve host from your guake indicator configuration file");
-	
-	// Create action group for refresh quit and about menuitems
-	action_group = gtk_action_group_new ("AppActions");
-		
-	uim = gtk_ui_manager_new ();
-	
-	// I create a new actionlist for each grouphostlist
-	gchar* menuitems=create_actionlists(grouphostlist,uim,action_group);
-		
-	// Add reload_action
-	GtkInfo gtkinfo;
-	gtkinfo.action_group = action_group;
-	gtkinfo.uim = uim;
-	gtkinfo.grouphostlist=grouphostlist;
-		
-	// Create default actions
-	create_default_actions(action_group,&gtkinfo);
-		
-	gtk_ui_manager_insert_action_group (uim, action_group, 0);
-		
-	gchar* ui_full_info=g_strjoin (NULL,
-	ui_start,
-	popup_start,
-	menuitems,
-	separator,
-	default_menuitems,
-	popup_end,
-	ui_end,
-	NULL
-	);
-				
-	merge_id=gtk_ui_manager_add_ui_from_string (uim, ui_full_info, -1, &error);
-	if (!merge_id)
+		error_modal_box("Couldn't retrieve list of entries from your guake indicator configuration file");
+
+	// Test dbus responsiveness to know if it's running, if it's not i try to start it
+	if (guake_gettabcount(&numtabs)==FALSE)
 	{
-		g_message ("Failed to build menus: %s\n", error->message);
-		g_error_free (error);
-		error = NULL;
+        	if (GUAKE3)
+        { 
+        	if (system ("/usr/bin/python3 /usr/bin/guake &")==-1)
+        		guake_notify("Guake indicator","Cannot spawn system call for Guake GTK3 version start");
+        }
+        else 
+        {
+        	if (system ("guake &")==-1)
+        		guake_notify("Guake indicator","Cannot spawn system call for Guake GTK2 version start");
+        }
 	}
-	g_free(ui_full_info);
-	g_free(menuitems);
-		
-	/* Indicator */
-	indicator = app_indicator_new ("guake-indicator",
-	"guake-indicator",
-	APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
-	
-	indicator_menu = gtk_ui_manager_get_widget (uim, "/ui/IndicatorPopup");
-		
-	app_indicator_set_status (indicator, APP_INDICATOR_STATUS_ACTIVE);
-		
-	app_indicator_set_menu (indicator, GTK_MENU (indicator_menu));
-		
+
 	guake_notify("Guake indicator","Guake indicator is running");
-		
-	gtk_main ();
-		
-	return 0;
-}
 
-void create_default_actions(GtkActionGroup* action_group,GtkInfo* gtkinfo)
-{
-	// Add Edit menu
-	GtkAction* edit_menu_action = gtk_action_new("Edit Menu", "Edit Menu", NULL, NULL);
-	g_signal_connect(G_OBJECT(edit_menu_action), "activate", G_CALLBACK(print_edit_menu_form), (gpointer) gtkinfo);
-	gtk_action_group_add_action(action_group, edit_menu_action);
-
-	// Add reload_action
-	GtkAction* reload_action = gtk_action_new("Reload", "Reload", NULL, NULL);
-	g_signal_connect(G_OBJECT(reload_action), "activate", G_CALLBACK(reload), (gpointer) gtkinfo);
-	gtk_action_group_add_action(action_group, reload_action);
-		
-	// Add quit_action
-	GtkAction* quit_action = gtk_action_new("Quit", "Quit", NULL, NULL);
-	g_signal_connect(G_OBJECT(quit_action), "activate", G_CALLBACK(close_guake), (gpointer) gtkinfo);
-	gtk_action_group_add_action(action_group, quit_action);
-		
-	// Add about_action
-	GtkAction* about_action = gtk_action_new("About", "About", NULL, NULL);
-	g_signal_connect(G_OBJECT(about_action), "activate", G_CALLBACK(about), NULL);
-	gtk_action_group_add_action(action_group, about_action);
-}
-
-int findguakepid()
-{
-	const char* directory = "/proc";
-	size_t taskNameSize = 1024;
-	char* taskName = calloc(1, taskNameSize);
-	const char* guakestr ="guake";
-
-	DIR* dir = opendir(directory);
-
-	if (dir)
-	{
-		struct dirent* de = 0;
-		while ((de = readdir(dir)) != 0)
-		{
-			if (strcmp(de->d_name, ".") == 0 || strcmp(de->d_name, "..") == 0)
-				continue;
-
-			int pid = -1;
-			int res = sscanf(de->d_name, "%d", &pid);
-
-			if (res == 1)
-			{
-
-				char cmdline_file[1024] = {0};
-				sprintf(cmdline_file, "%s/%d/comm", directory, pid);
-
-				FILE* cmdline = fopen(cmdline_file, "r");
-				if (cmdline==NULL) continue;
-
-				if (getline(&taskName, &taskNameSize, cmdline) > 0)
-				{
-					taskName[strlen((char*)taskName)-1]=0;
-					if (!strcmp(taskName, guakestr) != 0)
-					{
-						fclose(cmdline);
-						closedir(dir);
-						free(taskName);
-						return pid;
-					}
-				}
-
-				fclose(cmdline);
-			}
-		}
-		closedir(dir);
-	}
-	free(taskName);
+	gtkinfo.grouphostlist=grouphostlist;
+	build_menu_ayatana(argc,argv,&gtkinfo);
 	return 0;
 }

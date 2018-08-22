@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2013-2018 Alessio Garzi <gun101@email.it>
-Copyright (C) 2013-2018 Francesco Minà <mina.francesco@gmail.com>
+Copyright (C) 2013-2019 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2019 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -62,8 +62,8 @@ void print_edit_menu_form(GtkAction* action, gpointer user_data)
 	widgets.new_guake_tab = GTK_WIDGET (gtk_builder_get_object (builder, "new_guake_tab"));
 	widgets.existing_guake_tab = GTK_WIDGET (gtk_builder_get_object (builder, "existing_guake_tab"));
 	widgets.nth_guake_tab = GTK_WIDGET (gtk_builder_get_object (builder, "nth_guake_tab"));
-	GtkObject * adj = gtk_adjustment_new( 0,0,99,1,1,0);
-	gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(widgets.nth_guake_tab),GTK_ADJUSTMENT(adj));
+	/*GtkObject * adj = gtk_adjustment_new( 0,0,99,1,1,0);
+	gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(widgets.nth_guake_tab),GTK_ADJUSTMENT(adj));*/
 	widgets.existing_guake_tab_named=GTK_WIDGET (gtk_builder_get_object (builder, "existing_guake_tab_named"));
 	widgets.named_guake_tab = GTK_WIDGET (gtk_builder_get_object (builder, "named_guake_tab"));
 	widgets.lfcr = GTK_WIDGET (gtk_builder_get_object (builder, "lfcr"));
@@ -75,8 +75,8 @@ void print_edit_menu_form(GtkAction* action, gpointer user_data)
 	widgets.btn_edit_menu_add_host = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_add_host"));
 	widgets.btn_edit_menu_add_host_label = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_add_host_lbl"));
 	widgets.btn_edit_menu_add_group_label = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_add_group_lbl"));
-	widgets.btn_build_cmd = GTK_WIDGET (gtk_builder_get_object (builder, "btn_build_cmd"));
 	widgets.btn_edit_menu_export = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_export"));
+	widgets.btn_edit_menu_import = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_import"));
 
 	widgets.btn_edit_menu_close_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_close_dialog"));
 
@@ -107,6 +107,9 @@ void print_edit_menu_form(GtkAction* action, gpointer user_data)
 	
 	// add export button
 	g_signal_connect (G_OBJECT (widgets.btn_edit_menu_export), "clicked",G_CALLBACK (export),&widgets);
+
+	// add import button
+	g_signal_connect (G_OBJECT (widgets.btn_edit_menu_import), "clicked",G_CALLBACK (import),&widgets);
 	
 	// set signal for clearing gtkentry
 	g_signal_connect (G_OBJECT (widgets.entry_menu_name), "icon-press",G_CALLBACK (clear_gtkentry),&widgets);
@@ -140,9 +143,6 @@ void print_edit_menu_form(GtkAction* action, gpointer user_data)
 	widgets.bottomButton = GTK_WIDGET (gtk_builder_get_object(builder,"btn_edit_bottom"));
 	g_signal_connect (G_OBJECT (widgets.bottomButton), "clicked",G_CALLBACK (move_bottom),&widgets);
 	
-	// build cmd button
-	g_signal_connect (G_OBJECT (widgets.btn_build_cmd), "clicked",G_CALLBACK (print_select_custom_form),&widgets);
-
 	// Start of treeview
 	// treestore
 	widgets.tree_store = gtk_tree_store_new(N_COLUMNS, G_TYPE_POINTER,GDK_TYPE_PIXBUF,G_TYPE_STRING);
@@ -253,141 +253,6 @@ void view_onRowActivated (GtkTreeView* treeview,GtkTreePath* path,GtkTreeViewCol
 		gtk_tree_view_expand_row (treeview,path,FALSE);
 	else
 		gtk_tree_view_collapse_row (treeview,path);
-}
-
-// Function to print selected custom glade file
-void print_select_custom_form(GtkAction* action, gpointer user_data)
-{
-	GError *err = NULL; 
-	static EditMenuDialog widgets;
-	GtkBuilder* builder;
-	GtkCellRenderer *cell_name;
-	GtkTreeViewColumn* column_name;
-
-	if (is_print_custom_form_opened) return;
-
-	builder = gtk_builder_new ();
-	if(0 == gtk_builder_add_from_file (builder, DATADIR GUAKE_INDICATOR_DATADIR "/gi_custom_cmd_form.glade", &err))
-	{
-		fprintf(stderr, "[print_select_custom_form]: Error adding build from file. Error: %s\n", err->message);
-		return ;
-	}
-	widgets.window = GTK_WIDGET (gtk_builder_get_object (builder, "edit_menu_window"));
-
-	// save button
-	widgets.btn_edit_menu_save = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_save"));
-	g_signal_connect (G_OBJECT (widgets.btn_edit_menu_save), "clicked",G_CALLBACK (call_print_custom_form),&widgets);
-
-	// refresh button
-	GtkWidget* btn_refresh = GTK_WIDGET (gtk_builder_get_object (builder, "btn_refresh"));
-	g_signal_connect (G_OBJECT (btn_refresh), "clicked",G_CALLBACK (refresh_glade_files),&widgets);
-	g_signal_connect (G_OBJECT (widgets.window), "focus-in-event",G_CALLBACK (refresh_glade_files),&widgets);
-
-	// download button
-	GtkWidget* btn_download = GTK_WIDGET (gtk_builder_get_object (builder, "btn_download"));
-	g_signal_connect (G_OBJECT (btn_download), "clicked",G_CALLBACK (download_glade_files),&widgets);
-
-	// form fields linking
-	widgets.entry_command=((EditMenuDialog*) user_data)->entry_command;
-	widgets.entry_menu_name=((EditMenuDialog*) user_data)->entry_menu_name;
-	widgets.entry_tab_name=((EditMenuDialog*) user_data)->entry_tab_name;
-	widgets.cb_show_guake=((EditMenuDialog*) user_data)->cb_show_guake;
-	widgets.new_guake_tab=((EditMenuDialog*) user_data)->new_guake_tab;
-	widgets.lfcr=((EditMenuDialog*) user_data)->lfcr;
-	widgets.guakeindicatorscript=((EditMenuDialog*) user_data)->guakeindicatorscript;
-
-	// Start of treeview
-	widgets.tree_view = GTK_WIDGET (gtk_builder_get_object(builder,"edit_menu_treeview"));
-	global_tree_view = widgets.tree_store = gtk_tree_store_new(1,G_TYPE_STRING);
-	gtk_tree_view_set_model (GTK_TREE_VIEW (widgets.tree_view), GTK_TREE_MODEL (widgets.tree_store));
-	cell_name = gtk_cell_renderer_text_new();
-	column_name = gtk_tree_view_column_new_with_attributes("Plugins", cell_name, "text", 0, NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(widgets.tree_view), column_name);
-
-	refresh_glade_files(NULL,NULL);
-
-	// store the callback function "gladefile_selection_func" for the selection
-	GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(widgets.tree_view));
-	gtk_tree_selection_set_select_function(selection, gladefile_selection_func, (gpointer)&widgets,NULL);
-
-	// handle the close signal
-	widgets.reset_flag=&is_print_custom_form_opened;
-	g_signal_connect(widgets.window, "destroy",G_CALLBACK(close_dialog), (gpointer)&widgets);
-	
-	// cancel button
-	widgets.btn_edit_menu_close_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_close_dialog"));
-	g_signal_connect (G_OBJECT (widgets.btn_edit_menu_close_dialog), "clicked",G_CALLBACK (close_dialog),&widgets);
-
-	g_object_unref (G_OBJECT (builder));
-	gtk_widget_show_all( widgets.window );
-	is_print_custom_form_opened=TRUE;
-	
-	// move the window on top
-	gtk_window_present(GTK_WINDOW(widgets.window));
-
-	return;
-}
-
-// Function to print edit menu form window
-void print_custom_form(GtkAction* action, gpointer user_data)
-{
-	GError *err = NULL; 
-	static EditMenuDialog widgets;
-	GtkBuilder* builder;
-	char* path;
-	
-	builder = gtk_builder_new ();
-	
-	path=checkandcreatedefaultdir();
-	gchar* fulldirpath=g_strjoin(NULL,path,"/",GUAKE_INDICATOR_PLUGIN_DIR,"/",((EditMenuDialog*)user_data)->selected_glade_file,NULL);
-	free(path);
-	if(0 == gtk_builder_add_from_file (builder,fulldirpath, &err))
-	{
-		fprintf(stderr, "[print_custom_form]: Error adding build from file. Error: %s\n", err->message);
-		g_free(fulldirpath);
-		return ;
-	}
-	g_free(fulldirpath);
-	widgets.window = GTK_WIDGET (gtk_builder_get_object (builder, "edit_menu_window"));
-	
-	// save button
-	widgets.btn_edit_menu_save = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_save"));
-	g_signal_connect (G_OBJECT (widgets.btn_edit_menu_save), "clicked",G_CALLBACK (build_cmd),&widgets);
-	
-	// cancel button
-	widgets.btn_edit_menu_close_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "btn_edit_menu_close_dialog"));
-	widgets.reset_flag=NULL;
-	g_signal_connect (G_OBJECT (widgets.btn_edit_menu_close_dialog), "clicked",G_CALLBACK (close_dialog),&widgets);
-	
-	// command field
-	widgets.entry_command=((EditMenuDialog*) user_data)->entry_command;
-	
-	//dont' have a selection path, a tree store and a group host lists
-	widgets.selected_path=NULL;
-	widgets.tree_store=NULL;
-	widgets.grouphostlist=NULL;
-	
-	guint index=0;
-	GtkWidget* hbox;
-	widgets.hbox=g_array_new (TRUE, FALSE, sizeof (GtkWidget*));
-	do
-	{
-		gchar* widget_name=NULL;
-		gchar *indexstr = g_strdup_printf("%i", index);
-		widget_name=g_strjoin(NULL,"hbox",indexstr,NULL);
-		hbox = GTK_WIDGET (gtk_builder_get_object (builder, widget_name));
-		if (hbox)
-		{
-			g_array_append_val (widgets.hbox, hbox);
-		}
-		index++;
-		g_free(indexstr);
-		g_free(widget_name);
-	}while(hbox);
-
-	g_object_unref (G_OBJECT (builder));
-	gtk_widget_show(GTK_WIDGET(widgets.window));
-	gtk_widget_show_all( widgets.window );
 }
 
 static void build_cmd ( GtkWidget *widget, gpointer user_data)
@@ -549,10 +414,10 @@ gboolean selection_func (GtkTreeSelection *selection, GtkTreeModel *model, GtkTr
 					{
 						gtk_widget_set_sensitive(widgets->existing_guake_tab_named,FALSE);
 						gtk_widget_set_sensitive(widgets->named_guake_tab,FALSE);
-						GtkTooltips *tooltip;
+						/*GtkTooltips *tooltip;
 						tooltip = gtk_tooltips_new ();
 						gtk_tooltips_set_tip (tooltip, widgets->named_guake_tab,GUAKE_INDICATOR_DBUS_GTKLABEL_MISSING_ERRMSG, NULL);
-						gtk_tooltips_set_tip (tooltip, widgets->existing_guake_tab_named, GUAKE_INDICATOR_DBUS_GTKLABEL_MISSING_ERRMSG, NULL);
+						gtk_tooltips_set_tip (tooltip, widgets->existing_guake_tab_named, GUAKE_INDICATOR_DBUS_GTKLABEL_MISSING_ERRMSG, NULL);*/
 					}
 					else
 						g_free(name);
@@ -626,7 +491,7 @@ static void remove_edit_menu ( GtkWidget *widget, gpointer user_data)
 					host_free(dialog->selected_host);
 				}
 				free(dialog->selected_host);
-				write_and_reload(dialog,"Host removed successfully");
+				write_and_reload(dialog,"Entry removed successfully");
 			}
 			else
 			{
@@ -685,7 +550,7 @@ static void remove_edit_menu ( GtkWidget *widget, gpointer user_data)
 				g_array_remove_index(dialog->grouphostlist,index);
 				free(dialog->selected_hostgroup);
 
-				write_and_reload(dialog,"Hostgroup removed successfully");
+				write_and_reload(dialog,"Entrygroup removed successfully");
 			}
 		case 1: // cancel add group
 		case 2: // cancel add host
@@ -736,6 +601,7 @@ static void add_host ( GtkWidget *widget, gpointer user_data)
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_remove,TRUE);
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_save,TRUE);
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_export,FALSE);
+	gtk_widget_set_sensitive(dialog->btn_edit_menu_import,TRUE);
 	gtk_button_set_label(GTK_BUTTON(dialog->btn_edit_menu_remove), "Cancel");
 	gtk_toggle_button_set_active( (GtkToggleButton *)dialog->new_guake_tab,1);
 	
@@ -745,10 +611,10 @@ static void add_host ( GtkWidget *widget, gpointer user_data)
 	{
 		gtk_widget_set_sensitive(dialog->existing_guake_tab_named,FALSE);
 		gtk_widget_set_sensitive(dialog->named_guake_tab,FALSE);
-		GtkTooltips *tooltip;
+		/*GtkTooltips *tooltip;
 		tooltip = gtk_tooltips_new ();
 		gtk_tooltips_set_tip (tooltip, dialog->named_guake_tab,GUAKE_INDICATOR_DBUS_GTKLABEL_MISSING_ERRMSG, NULL);
-		gtk_tooltips_set_tip (tooltip, dialog->existing_guake_tab_named, GUAKE_INDICATOR_DBUS_GTKLABEL_MISSING_ERRMSG, NULL);
+		gtk_tooltips_set_tip (tooltip, dialog->existing_guake_tab_named, GUAKE_INDICATOR_DBUS_GTKLABEL_MISSING_ERRMSG, NULL);*/
 	}
 	else
 		g_free(name);
@@ -800,19 +666,78 @@ static void add_host_label ( GtkWidget *widget, gpointer user_data)
 	dialog->status = STATUS_ADD_HOST_LABEL;
 }
 
+static void import (GtkWidget *widget, gpointer user_data)
+{
+	EditMenuDialog* widgets = (EditMenuDialog*) user_data;
+	GtkWidget *dialog;
+	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+	gint res;
+
+	dialog = gtk_file_chooser_dialog_new ("Open File",
+                                      GTK_WINDOW(widgets->window),
+                                      action,
+                                      ("_Cancel"),
+                                      GTK_RESPONSE_CANCEL,
+                                      ("_Open"),
+                                      GTK_RESPONSE_ACCEPT,
+                                      NULL);
+
+	res = gtk_dialog_run (GTK_DIALOG (dialog));
+	if (res == GTK_RESPONSE_ACCEPT)
+	{
+		char *filename;
+		GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+		filename = gtk_file_chooser_get_filename (chooser);
+		//open_file (filename);
+		GArray* imported_hostlist = read_xml_cfg_file_from_file(filename);
+		Host* imported_host=((HostGroup*)g_array_index(imported_hostlist,HostGroup*,0))->hostarray;
+		if (GTK_IS_TEXT_VIEW((GtkTextView*)widgets->entry_command))
+			TEXTVIEW_SET_TEXT(GET_ENTRY_COMMAND(widgets),imported_host->command_after_login)
+		if (GTK_IS_ENTRY((GtkEntry*)widgets->entry_tab_name))
+			ENTRY_SET_TEXT(GET_ENTRY_TABNAME(widgets),imported_host->tab_name);
+		if (GTK_IS_ENTRY((GtkEntry*)widgets->entry_menu_name))
+			ENTRY_SET_TEXT(GET_ENTRY_MENUNAME(widgets),imported_host->menu_name);
+		if (GTK_IS_TOGGLE_BUTTON((GtkToggleButton *)widgets->cb_show_guake))
+			if ( ((Host*)imported_host)->dont_show_guake && !strcmp(((Host*)imported_host)->dont_show_guake,"yes"))
+				gtk_toggle_button_set_active( (GtkToggleButton *)widgets->cb_show_guake,1);
+			else
+				gtk_toggle_button_set_active( (GtkToggleButton *)widgets->cb_show_guake,0 );
+		if (GTK_IS_TOGGLE_BUTTON((GtkToggleButton *)widgets->lfcr))
+			if ( ((Host*)imported_host)->guakeindicatorscript && !strcmp(((Host*)imported_host)->guakeindicatorscript,"yes"))
+				gtk_toggle_button_set_active( (GtkToggleButton *)widgets->guakeindicatorscript,1);
+			else
+				gtk_toggle_button_set_active( (GtkToggleButton *)widgets->guakeindicatorscript,0 );
+		gtk_toggle_button_set_active( (GtkToggleButton *)widgets->new_guake_tab,1);
+		grouphostlist_free(imported_hostlist);
+		g_free (filename);
+	}
+	gtk_widget_destroy (dialog);
+	return ;
+}
+
 static void export ( GtkWidget *widget, gpointer user_data)
 {
 	EditMenuDialog* widgets = (EditMenuDialog*) user_data;
 	GtkWidget *dialog;
 
+	GtkFileChooser *chooser;
+	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+	gint res;
+
 	dialog = gtk_file_chooser_dialog_new ("Save File",
-						GTK_WINDOW(widgets->window),
-						GTK_FILE_CHOOSER_ACTION_SAVE,
-						GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-						GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-						NULL);
-	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
-	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+                                      GTK_WINDOW(widgets->window),
+                                      action,
+                                      ("_Cancel"),
+                                      GTK_RESPONSE_CANCEL,
+                                      ("_Save"),
+                                      GTK_RESPONSE_ACCEPT,
+                                      NULL);
+	chooser = GTK_FILE_CHOOSER (dialog);
+
+	gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
+	gtk_file_chooser_set_current_name (chooser,(DEFAULT_EXPORT_FILENAME));
+	res = gtk_dialog_run (GTK_DIALOG (dialog));
+	if (res == GTK_RESPONSE_ACCEPT)
 	{
 		char *filename;
 		Host* head;
@@ -845,9 +770,8 @@ static void export ( GtkWidget *widget, gpointer user_data)
 			free(msg);
 		}
 		g_free (filename);
-       }
-     
-     gtk_widget_destroy (dialog);
+	}
+	gtk_widget_destroy (dialog);
 }
 
 // Function to handle the edit button
@@ -908,7 +832,7 @@ static void save_edit_menu ( GtkWidget *widget, gpointer user_data)
 				UPDATE_ENTRY(dialog->selected_host->lfcr,gtk_toggle_button_get_active((GtkToggleButton*)GET_ENTRY_LFCR(dialog))?"yes":"no")
 				UPDATE_ENTRY(dialog->selected_host->guakeindicatorscript,gtk_toggle_button_get_active((GtkToggleButton*)GET_ENTRY_GUAKEINDICATORSCRIPT(dialog))?"yes":"no")
 				
-				write_and_reload(dialog,"Host saved successfully");
+				write_and_reload(dialog,"Entry saved successfully");
 				
 				// if the "open in nth guake tab" option is selected i check if the dbus call to the tab counter succeed, if not i warn the user
 				check_guake_get_tab_count(dialog);
@@ -917,11 +841,11 @@ static void save_edit_menu ( GtkWidget *widget, gpointer user_data)
 			else if (dialog->selected_hostgroup)
 			{
 				UPDATE_ENTRY(dialog->selected_hostgroup->title,gtk_entry_get_text(GET_ENTRY_MENUNAME(dialog)))
-				write_and_reload(dialog,"Host saved successfully");
+				write_and_reload(dialog,"Entry saved successfully");
 			}
 			else
 			{
-				error_modal_box("Host or Host group not selected");
+				error_modal_box("Entry or Entry group not selected");
 			}
 			break;
 		}
@@ -1066,6 +990,7 @@ static void set_widget_sensitivity(EditMenuDialog* dialog,gboolean flag)
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_remove,flag);
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_save,flag);
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_export,flag);
+	gtk_widget_set_sensitive(dialog->btn_edit_menu_import,flag);
 	
 	set_new_widget_sensitivity(dialog,flag);
 	set_move_widget_sensitivity(dialog,flag);
@@ -1076,7 +1001,6 @@ static void set_form_widget_sensitivity(EditMenuDialog* dialog,gboolean flag)
 	gtk_widget_set_sensitive(dialog->entry_menu_name,flag);
 	gtk_widget_set_sensitive(dialog->entry_tab_name,flag);
 	gtk_widget_set_sensitive(dialog->entry_command,flag);
-	gtk_widget_set_sensitive(dialog->btn_build_cmd,flag);
 	gtk_widget_set_sensitive(dialog->cb_show_guake,flag);
 	gtk_widget_set_sensitive(dialog->current_guake_tab,flag);
 	gtk_widget_set_sensitive(dialog->new_guake_tab,flag);
@@ -1118,6 +1042,7 @@ static void activate_label_sensitivity(EditMenuDialog* dialog)
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_save,TRUE);
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_remove,TRUE);
 	gtk_widget_set_sensitive(dialog->btn_edit_menu_export,FALSE);
+	gtk_widget_set_sensitive(dialog->btn_edit_menu_import,FALSE);
 }
 
 static void clear_widget(EditMenuDialog* dialog)
@@ -1195,6 +1120,7 @@ void reload_model_view(EditMenuDialog *dialog)
 	GtkTreeIter iter;
 	GtkTreeIter iter2;
 
+	dialog->tree_store = gtk_tree_store_new(N_COLUMNS, G_TYPE_POINTER,GDK_TYPE_PIXBUF,G_TYPE_STRING);
 	gtk_tree_store_clear(GTK_TREE_STORE(dialog->tree_store));
 	int j=0;
 
@@ -1237,7 +1163,8 @@ void reload_model_view(EditMenuDialog *dialog)
 	gtk_tree_view_set_model (GTK_TREE_VIEW (dialog->tree_view), GTK_TREE_MODEL (dialog->tree_store));
 	
 	/* Tell the theme engine we would like differentiated row colour */
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(dialog->tree_view),TRUE);
+	//gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(dialog->tree_view),TRUE);
+	//dialog->tree_view->set_rules_hint(TRUE);
 	
 	// TODO expand and select row
 	if (dialog->selected_path !=NULL)
@@ -1288,7 +1215,7 @@ void move_down(GtkWidget *widget, gpointer user_data)
 			dialog->selected_host->previous->next=nexthost;
 			nexthost->next=dialog->selected_host;
 		}
-		write_and_reload(dialog,"Host moved down successfully");
+		write_and_reload(dialog,"Entry moved down successfully");
 	}
 	// Hostgroup movedown
 	else
@@ -1300,7 +1227,7 @@ void move_down(GtkWidget *widget, gpointer user_data)
 		g_array_insert_val(dialog->grouphostlist,index+2,dialog->selected_hostgroup);
 		g_array_remove_index(dialog->grouphostlist,index);
 		
-		write_and_reload(dialog,"Hostgroup moved down successfully");
+		write_and_reload(dialog,"Entry moved down successfully");
 	}
 }
 
@@ -1330,7 +1257,7 @@ void move_up(GtkWidget *widget, gpointer user_data)
 			dialog->selected_host->next=previoushost;
 		}
 		
-		write_and_reload(dialog,"Host moved up successfully");
+		write_and_reload(dialog,"Entry moved up successfully");
 	}
 	// Hostgroup movedown
 	else
@@ -1341,7 +1268,7 @@ void move_up(GtkWidget *widget, gpointer user_data)
 			return ;
 		g_array_insert_val(dialog->grouphostlist,index-1,dialog->selected_hostgroup);
 		g_array_remove_index(dialog->grouphostlist,index+1);
-		write_and_reload(dialog,"Hostgroup moved up successfully");
+		write_and_reload(dialog,"Entrygroup moved up successfully");
 	}
 }
 
@@ -1372,7 +1299,7 @@ void move_bottom(GtkWidget *widget, gpointer user_data)
 		Host* ptr=lasthost->next;
 		lasthost->next=dialog->selected_host;
 		dialog->selected_host->next=ptr;
-		write_and_reload(dialog,"Host moved bottom successfully");
+		write_and_reload(dialog,"Entry moved bottom successfully");
 	}
 	else
 	{
@@ -1382,7 +1309,7 @@ void move_bottom(GtkWidget *widget, gpointer user_data)
 			return;
 		g_array_insert_val(dialog->grouphostlist,get_grouphost_size(dialog->grouphostlist),dialog->selected_hostgroup);
 		g_array_remove_index(dialog->grouphostlist,index);		
-		write_and_reload(dialog,"Hostgroup moved down successfully");
+		write_and_reload(dialog,"Entrygroup moved down successfully");
 	}
 }
 
@@ -1414,7 +1341,7 @@ void move_top(GtkWidget *widget, gpointer user_data )
 		dialog->selected_host->previous->next=dialog->selected_host->next;
 		dialog->selected_host->next=dialog->selected_host->parent->hostarray;
 		dialog->selected_host->parent->hostarray=dialog->selected_host;
-		write_and_reload(dialog,"Host moved top successfully");
+		write_and_reload(dialog,"Entry moved top successfully");
 	}
 	else
 	{
@@ -1424,7 +1351,7 @@ void move_top(GtkWidget *widget, gpointer user_data )
 			return ;
 		g_array_insert_val(dialog->grouphostlist,0,dialog->selected_hostgroup);
 		g_array_remove_index(dialog->grouphostlist,index+1);
-		write_and_reload(dialog,"Hostgroup moved top successfully");
+		write_and_reload(dialog,"Entrygroup moved top successfully");
 	}
 }
 
@@ -1437,7 +1364,7 @@ void write_and_reload(EditMenuDialog* dialog,const char* msg)
 	write_cfg_file(dialog->grouphostlist);
 	write_xml_cfg_file(dialog->grouphostlist);
 	error_modal_box (msg);
-	reload(dialog->action, dialog->user_data);
+	refresh_indicator(dialog->user_data);
 	grouphostlist_free(dialog->grouphostlist);
 	dialog->grouphostlist=read_xml_cfg_file();
 	reload_model_view(dialog);
@@ -1491,92 +1418,6 @@ gboolean gladefile_selection_func (GtkTreeSelection *selection, GtkTreeModel *mo
 	return TRUE;
 }
 
-// this function runs after the user has selected a plugin
-// if the plugin is a glade file it opens another gui (see print_custom_form function)
-// if the plugin is a xml file it copies data from the plugin file to the guake-indicator gui
-static void call_print_custom_form ( GtkWidget *widget, gpointer user_data)
-{
-	EditMenuDialog* dialog = (EditMenuDialog*) user_data;
-	if (dialog->selected_glade_file==NULL || strlen((char*)dialog->selected_glade_file)==0)
-	{
-		error_modal_box("Select a plugin file");
-		return;
-	}
-	gtk_widget_destroy(dialog->window);
-	if (!strcmp(rindex((char*)dialog->selected_glade_file,'.'),".glade"))
-		print_custom_form(NULL,user_data);
-	else if (!strcmp(rindex((char*)dialog->selected_glade_file,'.'),".xml"))
-	{
-		char* fulldirpath;
-		if (asprintf(&fulldirpath,"%s/%s/%s/%s",getenv("HOME"),GUAKE_INDICATOR_DEFAULT_DIR,GUAKE_INDICATOR_PLUGIN_DIR,(char*)dialog->selected_glade_file)==-1)
-			return;
-		GArray* imported_hostlist = read_xml_cfg_file_from_file(fulldirpath);
-		free(fulldirpath);
-		Host* imported_host=((HostGroup*)g_array_index(imported_hostlist,HostGroup*,0))->hostarray;
-		if (GTK_IS_TEXT_VIEW((GtkTextView*)dialog->entry_command))
-		{
-			TEXTVIEW_SET_TEXT(GET_ENTRY_COMMAND(dialog),imported_host->command_after_login)
-		}
-		if (GTK_IS_ENTRY((GtkEntry*)dialog->entry_tab_name))
-		{
-			ENTRY_SET_TEXT(GET_ENTRY_TABNAME(dialog),imported_host->tab_name);
-		}
-		if (GTK_IS_ENTRY((GtkEntry*)dialog->entry_menu_name))
-		{
-			ENTRY_SET_TEXT(GET_ENTRY_MENUNAME(dialog),imported_host->menu_name);
-		}
-		if (GTK_IS_TOGGLE_BUTTON((GtkToggleButton *)dialog->cb_show_guake))
-		{
-			if ( ((Host*)imported_host)->dont_show_guake && !strcmp(((Host*)imported_host)->dont_show_guake,"yes"))
-				gtk_toggle_button_set_active( (GtkToggleButton *)dialog->cb_show_guake,1);
-			else
-				gtk_toggle_button_set_active( (GtkToggleButton *)dialog->cb_show_guake,0 );
-		}
-		if (GTK_IS_TOGGLE_BUTTON((GtkToggleButton *)dialog->lfcr))
-		{
-			if ( ((Host*)imported_host)->lfcr && !strcmp(((Host*)imported_host)->lfcr,"yes"))
-				gtk_toggle_button_set_active( (GtkToggleButton *)dialog->lfcr,1);
-			else
-				gtk_toggle_button_set_active( (GtkToggleButton *)dialog->lfcr,0 );
-		}
-		if (GTK_IS_TOGGLE_BUTTON((GtkToggleButton *)dialog->guakeindicatorscript))
-		{
-			if ( ((Host*)imported_host)->guakeindicatorscript && !strcmp(((Host*)imported_host)->guakeindicatorscript,"yes"))
-				gtk_toggle_button_set_active( (GtkToggleButton *)dialog->guakeindicatorscript,1);
-			else
-				gtk_toggle_button_set_active( (GtkToggleButton *)dialog->guakeindicatorscript,0 );
-		}
-		gtk_toggle_button_set_active( (GtkToggleButton *)dialog->new_guake_tab,1);
-		grouphostlist_free(imported_hostlist);
-	}
-	return;
-}
-
-static void refresh_glade_files ( GtkWidget *widget, gpointer user_data)
-{
-	GtkTreeIter iter;
-	GArray* filelist = get_custom_glade_files();
-	gtk_tree_store_clear(global_tree_view);
-	guint count=0;
-	char* iterator;
-	while ( iterator = g_array_index (filelist, char*, count))
-	{
-		gtk_tree_store_append(global_tree_view, &iter, NULL);
-		gtk_tree_store_set(global_tree_view, &iter, 0, iterator, -1);
-		count++;
-		free(iterator);
-	}
-	g_array_free(filelist,TRUE);
-}
-static void download_glade_files ( GtkWidget *widget, gpointer user_data)
-{
-	gchar* cmd;
-	cmd=g_strjoin(NULL,"python ",PYTHONDATADIR,GUAKE_INDICATOR_DATADIR,GUAKE_INDICATOR_PLUGIN_MANAGER," ",DATADIR,GUAKE_INDICATOR_DATADIR," &",NULL);
-	
-	if (system(cmd)==-1)
-		error_modal_box("Unable to launch plugin manager");
-	g_free(cmd);
-}
 
 static void drag_begin_handl (GtkWidget *widget, GdkDragContext *context, gpointer user_data)
 {
@@ -1667,7 +1508,7 @@ static void drag_end_handl (GtkWidget *widget, GdkDragContext *context, gpointer
 			g_array_remove_index(dialog->grouphostlist,indexstart);
 		else
 			g_array_remove_index(dialog->grouphostlist,indexstart+1);
-		write_and_reload(dialog,"Hostgroup moved successfully");
+		write_and_reload(dialog,"Entrygroup moved successfully");
 	}
 	// Move an host after another
 	else if (dialog->starthostdrag!=NULL && dialog->endhostdrag!=NULL && dialog->starthostdrag!=dialog->endhostdrag && dialog->starthostdrag->previous!=dialog->endhostdrag)
@@ -1679,7 +1520,7 @@ static void drag_end_handl (GtkWidget *widget, GdkDragContext *context, gpointer
 			dialog->starthostdrag->previous->next=dialog->starthostdrag->next;
 		dialog->endhostdrag->next=dialog->starthostdrag;
 		dialog->starthostdrag->next=ptr;
-		write_and_reload(dialog,"Host moved successfully");
+		write_and_reload(dialog,"Entry moved successfully");
 	}
 	// Move an host in first position of a hostgroup
 	else if (dialog->starthostdrag!=NULL && dialog->endhostgroupdrag!=NULL && dialog->endhostgroupdrag->label==FALSE)
@@ -1690,7 +1531,7 @@ static void drag_end_handl (GtkWidget *widget, GdkDragContext *context, gpointer
 			dialog->starthostdrag->previous->next=dialog->starthostdrag->next;
 		dialog->starthostdrag->next=dialog->endhostgroupdrag->hostarray;
 		dialog->endhostgroupdrag->hostarray=dialog->starthostdrag;
-		write_and_reload(dialog,"Host moved successfully");
+		write_and_reload(dialog,"Entry moved successfully");
 	}
 }
 
@@ -1707,12 +1548,12 @@ gboolean on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data
 	
 	switch (event->keyval)
 	{
-		case GDK_Right:	path = gtk_tree_path_new_from_string (dialog->selected_path);
+		case GDK_KEY_Right:	path = gtk_tree_path_new_from_string (dialog->selected_path);
 						gtk_tree_view_expand_row (GTK_TREE_VIEW(dialog->tree_view),path,FALSE);
 						gtk_tree_path_free (path);
 						break;
 						
-		case GDK_Left:	path = gtk_tree_path_new_from_string (dialog->selected_path);
+		case GDK_KEY_Left:	path = gtk_tree_path_new_from_string (dialog->selected_path);
 						gtk_tree_view_collapse_row (GTK_TREE_VIEW(dialog->tree_view),path);
 						gtk_tree_path_free (path);
 						break;
@@ -1724,8 +1565,9 @@ gboolean manage_ctrl_s (GtkWidget *widget, GdkEventKey *event, gpointer user_dat
 {
 	switch (event->keyval)
 	{
-		case GDK_S:
-		case GDK_s:		if (event->state & GDK_CONTROL_MASK)
+		case GDK_KEY_S:
+		case GDK_KEY_s:		
+						if (event->state & GDK_CONTROL_MASK)
 						{
 							save_edit_menu ( NULL,user_data);
 						}
@@ -1830,7 +1672,13 @@ void view_popup_menu (GtkWidget *treeview, GdkEventButton *event, gpointer userd
 
 	gtk_widget_show_all(menu);
  
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,(event != NULL) ? event->button : 0,event->time);
+	//gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,(event != NULL) ? event->button : 0,event->time);
+	gtk_menu_popup_at_widget (GTK_MENU (menu),
+                            menu,
+                            GDK_GRAVITY_SOUTH_WEST,
+                            GDK_GRAVITY_NORTH_WEST,
+                            (GdkEvent *)event);
+
 }
 
 // Callback function of copy operations
@@ -1903,7 +1751,7 @@ void view_popup_menu_onpaste (GtkWidget *menuitem, gpointer userdata)
 				newhost->group_head=dialog->selected_host_for_operation->group_head;
 				newhost->next=dialog->selected_host_for_operation->next;
 				dialog->selected_host_for_operation->next=newhost;
-				write_and_reload(dialog,"Host copied successfully");
+				write_and_reload(dialog,"Entry copied successfully");
 			}
 			
 			//Host as a first element of a group
@@ -1940,7 +1788,7 @@ void view_popup_menu_onpaste (GtkWidget *menuitem, gpointer userdata)
 					dialog->copied_host->previous->next=dialog->copied_host->next;
 				dialog->selected_host_for_operation->next=dialog->copied_host;
 				dialog->copied_host->next=ptr;
-				write_and_reload(dialog,"Host cut successfully");
+				write_and_reload(dialog,"Entry cut successfully");
 			}
 			//Host as a first element of a group
 			else if (dialog->selected_hostgroup_for_operation)
@@ -1951,7 +1799,7 @@ void view_popup_menu_onpaste (GtkWidget *menuitem, gpointer userdata)
 					dialog->copied_host->previous->next=dialog->copied_host->next;
 				dialog->copied_host->next=dialog->selected_hostgroup_for_operation->hostarray;
 				dialog->selected_hostgroup_for_operation->hostarray=dialog->copied_host;
-				write_and_reload(dialog,"Host moved successfully");
+				write_and_reload(dialog,"Entry moved successfully");
 			}
 			else
 				error_modal_box("Nothing to paste");

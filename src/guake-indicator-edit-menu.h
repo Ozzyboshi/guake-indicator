@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2013-2015 Alessio Garzi <gun101@email.it>
-Copyright (C) 2013-2015 Francesco Minà <mina.francesco@gmail.com>
+Copyright (C) 2013-2019 Alessio Garzi <gun101@email.it>
+Copyright (C) 2013-2019 Francesco Minà <mina.francesco@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
@@ -86,6 +86,8 @@ enum
 #define UPDATE_ENTRY(var,var2)	g_free(var);\
 								var=g_strdup(var2);
 
+#define DEFAULT_EXPORT_FILENAME "Untitled document.xml"
+
 typedef struct edit_menu_dialog_type
 {
 	// main window
@@ -115,8 +117,8 @@ typedef struct edit_menu_dialog_type
 	GtkWidget *btn_edit_menu_add_host;
 	GtkWidget *btn_edit_menu_add_host_label;
 	GtkWidget *btn_edit_menu_add_group_label;
-	GtkWidget *btn_build_cmd;
 	GtkWidget *btn_edit_menu_export;
+	GtkWidget *btn_edit_menu_import;
 	GtkWidget *topButton;
 	GtkWidget *upButton;
 	GtkWidget *downButton;
@@ -165,9 +167,6 @@ typedef struct edit_menu_dialog_type
 	
 } EditMenuDialog;
 
-void print_edit_menu_form(GtkAction*,gpointer);
-void print_custom_form(GtkAction*, gpointer);
-void print_select_custom_form(GtkAction*, gpointer);
 GArray* get_custom_glade_files();
 static void build_cmd ( GtkWidget *, gpointer);
 static void close_dialog ( GtkWidget *, gpointer );
@@ -178,6 +177,7 @@ static void add_host ( GtkWidget *, gpointer );
 static void add_host_label ( GtkWidget *, gpointer);
 static void add_group_label ( GtkWidget *, gpointer);
 static void export ( GtkWidget *, gpointer);
+static void import ( GtkWidget *, gpointer);
 
 static void populate_dialog(gpointer);
 static void set_widget_sensitivity(EditMenuDialog*,gboolean);
@@ -204,10 +204,6 @@ static void move_down(GtkWidget *, gpointer );
 static void move_bottom(GtkWidget *, gpointer );
 static void expand(GtkWidget *, GdkEvent*,gpointer  );
 static void collapse(GtkWidget *, GdkEvent*,gpointer  );
-
-static void call_print_custom_form ( GtkWidget *, gpointer);
-static void refresh_glade_files ( GtkWidget *, gpointer );
-static void download_glade_files ( GtkWidget *, gpointer );
 
 static gboolean drag_motion_handl (GtkWidget *, GdkDragContext *, gint , gint , guint ,gpointer );
 static void drag_begin_handl(GtkWidget *, GdkDragContext *, gpointer );
