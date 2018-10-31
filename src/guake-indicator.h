@@ -66,6 +66,11 @@ typedef struct Host {
 	struct Host* previous;
 	struct Host* group_head;
 	struct HostGroup* parent;
+
+	gboolean force_current_tab;
+	gboolean vertical_split_current_tab;
+	gboolean horizontal_split_current_tab;
+	void (*right_click_funct_ptr)(GtkAction*,gpointer);
 } Host;
 
 typedef struct HostGroup {

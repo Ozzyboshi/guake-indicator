@@ -138,9 +138,66 @@ static void append_submenu (GtkWidget *menu,Host* ptr)
                 funct_ptr=guake_open_with_show;
             else
                 funct_ptr=guake_open;
+
+        ptr->right_click_funct_ptr=funct_ptr;
+        g_signal_connect(mi,"button-press-event",G_CALLBACK(gtk3_detect_clickbutton),(gpointer) ptr);
         g_signal_connect (mi, "activate",G_CALLBACK (funct_ptr), (gpointer) ptr);
     }
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);
+}
+
+// Detect click button
+gboolean gtk3_detect_clickbutton(GtkWidget *btn, GdkEventButton *event, gpointer userdata)
+{
+    if (event->type == GDK_BUTTON_PRESS  &&  event->button == 3)
+    {
+    	GtkWindow *main_app_window; // Window the dialog should show up on
+		GtkWidget *dialog;
+		//GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
+		GtkDialogFlags flags = GTK_DIALOG_MODAL ;
+		dialog = gtk_dialog_new_with_buttons ("My dialog",
+                                      main_app_window,
+                                      flags,
+                                      ("Open in new vertical split on current tab"),
+                                      0,
+                                      ("Open in new horizontal split on current tab"),
+                                      1,
+                                      NULL);
+
+		gtk_widget_show_all(dialog);
+		//g_signal_connect(dialog, "destroy", G_CALLBACK(guake_open), userdata);
+		//g_signal_connect(dialog, "destroy", G_CALLBACK(guake_open), userdata);
+		switch (gtk_dialog_run(GTK_DIALOG(dialog)))
+		{
+			case 0:
+				((Host*)userdata)->force_current_tab=TRUE;
+				((Host*)userdata)->vertical_split_current_tab=TRUE;
+				((Host*)userdata)->horizontal_split_current_tab=FALSE;
+				gtk_widget_destroy (dialog);
+				//guake_open(NULL,userdata);
+                ((Host*)userdata)->right_click_funct_ptr(NULL,userdata);
+				return TRUE;
+			case 1:
+				((Host*)userdata)->force_current_tab=TRUE;
+				((Host*)userdata)->vertical_split_current_tab=FALSE;
+				((Host*)userdata)->horizontal_split_current_tab=TRUE;
+				gtk_widget_destroy (dialog);
+				//guake_open(NULL,userdata);
+                ((Host*)userdata)->right_click_funct_ptr(NULL,userdata);
+				return TRUE;
+			default:
+				gtk_widget_destroy (dialog);
+				return TRUE;
+		}
+    }
+    if (event->type == GDK_BUTTON_PRESS  &&  event->button == 1)
+    {
+    	((Host*)userdata)->force_current_tab=FALSE;
+    	((Host*)userdata)->vertical_split_current_tab=FALSE;
+		((Host*)userdata)->horizontal_split_current_tab=FALSE;
+        return 0;
+    }
+    return 0;
 }
 
 
@@ -226,6 +283,9 @@ static void gtk3_build_menu(GtkInfo* gtkinfo)
                         funct_ptr=guake_open_with_show;
                     else
                         funct_ptr=guake_open;
+                    
+                    ptr->right_click_funct_ptr=funct_ptr;
+                    g_signal_connect(item,"button-press-event",G_CALLBACK(gtk3_detect_clickbutton),(gpointer) ptr);
                     g_signal_connect (item, "activate",G_CALLBACK (funct_ptr), (gpointer) ptr);
                 }
                 

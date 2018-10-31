@@ -47,5 +47,9 @@ gboolean guake_selecttab(const gchar*);
 gboolean guake_renamecurrenttab(const gchar*);
 gboolean guake_executecommand(const char*);
 gboolean guake_executecommand_by_uuid(gchar*,const char*);
+gboolean guake_vsplit_current_tab();
+gboolean guake_hsplit_current_tab();
+gboolean guake_execute_command_current_termbox(const char*);
+
 
 

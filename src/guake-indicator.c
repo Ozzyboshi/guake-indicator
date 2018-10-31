@@ -46,6 +46,22 @@ void group_guake_open(GtkAction* action,gpointer user_data)
 			guake_funct=guake_open_with_show;
 		else
 			guake_funct=guake_open;
+
+		// Group Right click management
+		if (((Host*)user_data)->force_current_tab==TRUE && ((Host*)user_data)->vertical_split_current_tab==TRUE)
+		{
+			ptr->force_current_tab=TRUE;
+			ptr->vertical_split_current_tab=TRUE;
+			ptr->horizontal_split_current_tab=FALSE;
+		}
+		if (((Host*)user_data)->force_current_tab==TRUE && ((Host*)user_data)->horizontal_split_current_tab==TRUE)
+		{
+			ptr->force_current_tab=TRUE;
+			ptr->vertical_split_current_tab=FALSE;
+			ptr->horizontal_split_current_tab=TRUE;	
+		}
+		// End of group right click management
+
 		if (ptr->group_head==NULL && ptr->label==FALSE)
 			guake_funct(action,(gpointer)ptr);
 		ptr=ptr->next;
@@ -70,12 +86,14 @@ void guake_open(GtkAction* action,gpointer user_data)
 	gchar* uuid = NULL;
 	
 	// open a new Guake tab
-	if (guake_gettabcount(&numtabs)==FALSE)
+	if (guake_gettabcount(&numtabs)==FALSE && ((Host*)user_data)->force_current_tab==FALSE)
 		guake_newtab(NULL);
 	// if current guake tab is selected i skip this part
-	else if (host.open_in_tab && atol((char*)host.open_in_tab)==-1)
+	else if (((Host*)user_data)->force_current_tab==TRUE || (host.open_in_tab && atol((char*)host.open_in_tab))==-1)
 	{
 		if (guake_getcurrenttab_uuid(&uuid)==FALSE) uuid=NULL;
+		if (((Host*)user_data)->force_current_tab==TRUE && ((Host*)user_data)->vertical_split_current_tab==TRUE) guake_vsplit_current_tab();
+		if (((Host*)user_data)->force_current_tab==TRUE && ((Host*)user_data)->horizontal_split_current_tab==TRUE) guake_hsplit_current_tab();
 	}
 	else if (host.open_in_tab==NULL || !strlen(host.open_in_tab) || ((long)numtabs<=atol((char*)host.open_in_tab) && host.open_in_tab_named==FALSE))
 	{
@@ -191,7 +209,8 @@ void guake_open(GtkAction* action,gpointer user_data)
 		{
 			// Add a cr to the end line will be lfcr
 			if (host.lfcr && !g_strcmp0(host.lfcr,"yes")) g_string_append_c (newstring,13);
-			if (uuid) guake_executecommand_by_uuid(uuid,newstring->str);
+			if (((Host*)user_data)->force_current_tab==TRUE) guake_execute_command_current_termbox(newstring->str);
+			else if (uuid) guake_executecommand_by_uuid(uuid,newstring->str);
 			else guake_executecommand(newstring->str);
 			g_string_free (newstring,TRUE);
 			newstring = g_string_new (NULL);
@@ -199,7 +218,8 @@ void guake_open(GtkAction* action,gpointer user_data)
 	}
 	if (newstring->len>0)
 	{
-		if (uuid) guake_executecommand_by_uuid(uuid,newstring->str);
+		if (((Host*)user_data)->force_current_tab==TRUE) guake_execute_command_current_termbox(newstring->str);
+		else if (uuid) guake_executecommand_by_uuid(uuid,newstring->str);
 		else guake_executecommand(newstring->str);
 	}
 	g_string_free (newstring,TRUE);

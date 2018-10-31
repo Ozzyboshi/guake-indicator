@@ -41,7 +41,7 @@ static void gtk3_close_guake_indicator (GtkAction *,gpointer);
 static void gtk3_reload (GtkAction*,gpointer);
 static void gtk3_about (GtkAction*,gpointer );
 
-
+gboolean gtk3_detect_clickbutton(GtkWidget *, GdkEventButton *, gpointer );
 
 
 static GMainLoop * mainloop = NULL;

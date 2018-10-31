@@ -148,6 +148,18 @@ gboolean guake_dbus_send_noparam(const gchar* funcname)
 	return guake_dbus_send(funcname,NULL);
 }
 
+// Perform vertical split on current tab
+gboolean guake_vsplit_current_tab()
+{
+	return guake_dbus_send_noparam("v_split_current_terminal");
+}
+
+// Perform horizontal split on current tab
+gboolean guake_hsplit_current_tab()
+{
+	return guake_dbus_send_noparam("h_split_current_terminal");
+}
+
 // It shows Guake
 gboolean guake_show()
 {
@@ -192,6 +204,12 @@ gboolean guake_renamecurrenttab(const gchar* param)
 gboolean guake_executecommand(const char* command)
 {
 	return guake_dbus_send("execute_command",command);
+}
+
+// Execute a command on a Guake terminalbox shell
+gboolean guake_execute_command_current_termbox(const char* command)
+{
+	return guake_dbus_send("execute_command_current_termbox",command);
 }
 
 // Execute a command on a Guake shell by uuid
