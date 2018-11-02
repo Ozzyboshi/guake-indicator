@@ -1,5 +1,14 @@
 2018-08-22 Alessio Garzi <gun101@email.it>
 
+	1.4.1 - new release with the following features :
+
+	- add support for vertical and horizontal split terminal (new feature from Guake 3.4.1)
+
+	- right click management on each entry
+
+
+2018-08-22 Alessio Garzi <gun101@email.it>
+
 	1.4 - new release with the following features :
 
 	- dropped gtk2 dependency, replaced with gtk3
