@@ -155,13 +155,15 @@ gboolean gtk3_detect_clickbutton(GtkWidget *btn, GdkEventButton *event, gpointer
 		GtkWidget *dialog;
 		//GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
 		GtkDialogFlags flags = GTK_DIALOG_MODAL ;
-		dialog = gtk_dialog_new_with_buttons ("My dialog",
+		dialog = gtk_dialog_new_with_buttons ("Chose open method",
                                       main_app_window,
                                       flags,
                                       ("Open in new vertical split on current tab"),
                                       0,
                                       ("Open in new horizontal split on current tab"),
                                       1,
+									  ("Execute on all terminals on current tab"),
+                                      2,
                                       NULL);
 
 		gtk_widget_show_all(dialog);
@@ -174,7 +176,6 @@ gboolean gtk3_detect_clickbutton(GtkWidget *btn, GdkEventButton *event, gpointer
 				((Host*)userdata)->vertical_split_current_tab=TRUE;
 				((Host*)userdata)->horizontal_split_current_tab=FALSE;
 				gtk_widget_destroy (dialog);
-				//guake_open(NULL,userdata);
                 ((Host*)userdata)->right_click_funct_ptr(NULL,userdata);
 				return TRUE;
 			case 1:
@@ -182,9 +183,14 @@ gboolean gtk3_detect_clickbutton(GtkWidget *btn, GdkEventButton *event, gpointer
 				((Host*)userdata)->vertical_split_current_tab=FALSE;
 				((Host*)userdata)->horizontal_split_current_tab=TRUE;
 				gtk_widget_destroy (dialog);
-				//guake_open(NULL,userdata);
                 ((Host*)userdata)->right_click_funct_ptr(NULL,userdata);
 				return TRUE;
+			case 2:
+				((Host*)userdata)->force_current_tab=TRUE;
+				((Host*)userdata)->vertical_split_current_tab=FALSE;
+				((Host*)userdata)->horizontal_split_current_tab=FALSE;
+				gtk_widget_destroy (dialog);
+                ((Host*)userdata)->right_click_funct_ptr(NULL,userdata);
 			default:
 				gtk_widget_destroy (dialog);
 				return TRUE;
