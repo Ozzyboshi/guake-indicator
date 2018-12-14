@@ -89,7 +89,7 @@ void guake_open(GtkAction* action,gpointer user_data)
 	if (guake_gettabcount(&numtabs)==FALSE && ((Host*)user_data)->force_current_tab==FALSE)
 		guake_newtab(NULL);
 	// if current guake tab is selected i skip this part
-	else if (((Host*)user_data)->force_current_tab==TRUE || (host.open_in_tab && atol((char*)host.open_in_tab))==-1)
+	else if (((Host*)user_data)->force_current_tab==TRUE || (host.open_in_tab && atol((char*)host.open_in_tab)==-1))
 	{
 		if (guake_getcurrenttab_uuid(&uuid)==FALSE) uuid=NULL;
 		if (((Host*)user_data)->force_current_tab==TRUE && ((Host*)user_data)->vertical_split_current_tab==TRUE) guake_vsplit_current_tab();
