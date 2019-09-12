@@ -210,7 +210,7 @@ void guake_open(GtkAction* action,gpointer user_data)
 			// Add a cr to the end line will be lfcr
 			if (host.lfcr && !g_strcmp0(host.lfcr,"yes")) g_string_append_c (newstring,13);
 			if ( ((Host*)user_data)->force_current_tab==TRUE && ((Host*)user_data)->force_current_split==TRUE) guake_execute_command_current_termbox(newstring->str); // Execute on split on current tab
-			else if ( ((Host*)user_data)->force_current_tab==TRUE && ((Host*)user_data)->force_current_split==FALSE) guake_executecommand_by_uuid(uuid,newstring->str); // Execute on all splits on current tab from right click menu
+			else if ( ((Host*)user_data)->force_current_tab==TRUE && ((Host*)user_data)->force_current_split==FALSE && ((Host*)user_data)->horizontal_split_current_tab==FALSE && ((Host*)user_data)->vertical_split_current_tab==FALSE) guake_executecommand_by_uuid(uuid,newstring->str); // Execute on all splits on current tab from right click menu
 			else if (((Host*)user_data)->force_current_tab==TRUE && (((Host*)user_data)->horizontal_split_current_tab==TRUE || ((Host*)user_data)->vertical_split_current_tab==TRUE) ) guake_execute_command_current_termbox(newstring->str);
 			//else if (uuid) guake_executecommand_by_uuid(uuid,newstring->str);
 			else guake_execute_command_current_termbox(newstring->str); // default behaviour with left click, execute only on one split on current tab
@@ -221,7 +221,7 @@ void guake_open(GtkAction* action,gpointer user_data)
 	if (newstring->len>0)
 	{
 		if ( ((Host*)user_data)->force_current_tab==TRUE && ((Host*)user_data)->force_current_split==TRUE) guake_execute_command_current_termbox(newstring->str); // Execute on split on current tab
-		else if ( ((Host*)user_data)->force_current_tab==TRUE && ((Host*)user_data)->force_current_split==FALSE) guake_executecommand_by_uuid(uuid,newstring->str); // Execute on all splits on current tab from right click menu
+		else if ( ((Host*)user_data)->force_current_tab==TRUE && ((Host*)user_data)->force_current_split==FALSE && ((Host*)user_data)->horizontal_split_current_tab==FALSE && ((Host*)user_data)->vertical_split_current_tab==FALSE) guake_executecommand_by_uuid(uuid,newstring->str); // Execute on all splits on current tab from right click menu
 		else if (((Host*)user_data)->force_current_tab==TRUE && (((Host*)user_data)->horizontal_split_current_tab==TRUE || ((Host*)user_data)->vertical_split_current_tab==TRUE) ) guake_execute_command_current_termbox(newstring->str);
 		//else if (uuid) guake_executecommand_by_uuid(uuid,newstring->str);
 		else guake_execute_command_current_termbox(newstring->str); // default behaviour with left click, execute only on one split on current tab
