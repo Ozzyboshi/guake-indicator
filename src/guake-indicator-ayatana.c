@@ -140,6 +140,7 @@ static void append_submenu (GtkWidget *menu,Host* ptr)
                 funct_ptr=guake_open;
 
         ptr->right_click_funct_ptr=funct_ptr;
+
         g_signal_connect(mi,"button-press-event",G_CALLBACK(gtk3_detect_clickbutton),(gpointer) ptr);
         g_signal_connect (mi, "activate",G_CALLBACK (funct_ptr), (gpointer) ptr);
     }
@@ -164,6 +165,8 @@ gboolean gtk3_detect_clickbutton(GtkWidget *btn, GdkEventButton *event, gpointer
                                       1,
 									  ("Execute on all terminals on current tab"),
                                       2,
+                                      ("Execute only on focused terminal on current tab"),
+                                      3,
                                       NULL);
 
 		gtk_widget_show_all(dialog);
@@ -175,6 +178,7 @@ gboolean gtk3_detect_clickbutton(GtkWidget *btn, GdkEventButton *event, gpointer
 				((Host*)userdata)->force_current_tab=TRUE;
 				((Host*)userdata)->vertical_split_current_tab=TRUE;
 				((Host*)userdata)->horizontal_split_current_tab=FALSE;
+                ((Host*)userdata)->force_current_split=FALSE;
 				gtk_widget_destroy (dialog);
                 ((Host*)userdata)->right_click_funct_ptr(NULL,userdata);
 				return TRUE;
@@ -182,6 +186,7 @@ gboolean gtk3_detect_clickbutton(GtkWidget *btn, GdkEventButton *event, gpointer
 				((Host*)userdata)->force_current_tab=TRUE;
 				((Host*)userdata)->vertical_split_current_tab=FALSE;
 				((Host*)userdata)->horizontal_split_current_tab=TRUE;
+                ((Host*)userdata)->force_current_split=FALSE;
 				gtk_widget_destroy (dialog);
                 ((Host*)userdata)->right_click_funct_ptr(NULL,userdata);
 				return TRUE;
@@ -189,8 +194,18 @@ gboolean gtk3_detect_clickbutton(GtkWidget *btn, GdkEventButton *event, gpointer
 				((Host*)userdata)->force_current_tab=TRUE;
 				((Host*)userdata)->vertical_split_current_tab=FALSE;
 				((Host*)userdata)->horizontal_split_current_tab=FALSE;
+				((Host*)userdata)->force_current_split=FALSE;
 				gtk_widget_destroy (dialog);
                 ((Host*)userdata)->right_click_funct_ptr(NULL,userdata);
+                 return TRUE;
+            case 3:
+				((Host*)userdata)->force_current_tab=TRUE;
+				((Host*)userdata)->vertical_split_current_tab=FALSE;
+				((Host*)userdata)->horizontal_split_current_tab=FALSE;
+				((Host*)userdata)->force_current_split=TRUE;
+				gtk_widget_destroy (dialog);
+                ((Host*)userdata)->right_click_funct_ptr(NULL,userdata);
+                return TRUE;
 			default:
 				gtk_widget_destroy (dialog);
 				return TRUE;
@@ -201,6 +216,7 @@ gboolean gtk3_detect_clickbutton(GtkWidget *btn, GdkEventButton *event, gpointer
     	((Host*)userdata)->force_current_tab=FALSE;
     	((Host*)userdata)->vertical_split_current_tab=FALSE;
 		((Host*)userdata)->horizontal_split_current_tab=FALSE;
+        ((Host*)userdata)->force_current_split=FALSE;
         return 0;
     }
     return 0;
