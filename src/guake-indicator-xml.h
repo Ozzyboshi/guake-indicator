@@ -18,9 +18,12 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 */
 
+#ifndef _GUAKE_INDICATOR_XML_H
+#define _GUAKE_INDICATOR_XML_H
+
 #include <libxml/parser.h>
 #include <libxml/xpath.h>
- #include <strings.h>
+#include <strings.h>
 
 #define GUAKE_INDICATOR_DEFAULT_FILEXML "guake-indicator.xml"
 #define ENCODING "UTF-8"
@@ -31,3 +34,5 @@ int write_xml_cfg_file(GArray*);
 int write_xml_cfg_file_from_file(GArray*,char*);
 GArray* read_xml_cfg_file();
 GArray* read_xml_cfg_file_from_file(char* );
+
+#endif //_GUAKE_INDICATOR_XML_H

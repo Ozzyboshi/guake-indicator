@@ -18,6 +18,9 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 * */
 
+#ifndef _GUAKE_INDICATOR_DBUS_H
+#define _GUAKE_INDICATOR_DBUS_H
+
 #include <glib.h>
 #include <dbus/dbus-glib.h>
 #include <glib/gprintf.h>
@@ -51,5 +54,4 @@ gboolean guake_vsplit_current_tab();
 gboolean guake_hsplit_current_tab();
 gboolean guake_execute_command_current_termbox(const char*);
 
-
-
+#endif //_GUAKE_INDICATOR_DBUS_H

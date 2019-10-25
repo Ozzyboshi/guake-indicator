@@ -18,4 +18,9 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 * */
 
+#ifndef _GUAKE3_H
+#define _GUAKE3_H
+
 extern int GUAKE3;
+
+#endif //_GUAKE3_H

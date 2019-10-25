@@ -18,6 +18,9 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 */
 
+#ifndef _GUAKE_INDICATOR_NOTIFY_H
+#define _GUAKE_INDICATOR_NOTIFY_H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <dlfcn.h>
@@ -26,3 +29,5 @@ Boston, MA 02111-1307, USA.
 #define LIBNOTIFY_SHARED_OBJECT "libnotify.so.4"
 
 int guake_notify(gchar*,gchar*);
+
+#endif //_GUAKE_INDICATOR_NOTIFY_H

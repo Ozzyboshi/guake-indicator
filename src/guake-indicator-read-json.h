@@ -18,6 +18,9 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 */
 
+#ifndef _GUAKE_INDICATOR_READ_JSON_H
+#define _GUAKE_INDICATOR_READ_JSON_H
+
 #include "json.h"
 #define GUAKE_INDICATOR_DEFAULT_FILEJSON "guake-indicator.json"
 
@@ -29,3 +32,5 @@ Host* create_host_linkedlist(struct json_object*,int);
 void sethostcounterid(Host*);
 void sethostgroupcounterid(HostGroup*);
 int createdefaultfilecfg(const char*);
+
+#endif //_GUAKE_INDICATORREAD_JSON_H

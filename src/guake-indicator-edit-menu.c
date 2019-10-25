@@ -1768,10 +1768,10 @@ void view_popup_menu_onpaste (GtkWidget *menuitem, gpointer userdata)
 		}
 		
 		// Manage the hostgroup copy (not implemented because probably useless)
-		else
+		/*else
 		{
 			
-		}
+		}*/
 	}
 	// Manage the cut and paste
 	else

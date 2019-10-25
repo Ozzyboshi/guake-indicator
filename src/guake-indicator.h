@@ -18,6 +18,9 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 * */
 
+#ifndef _GUAKE_INDICATOR_H
+#define _GUAKE_INDICATOR_H
+
 #include <glib.h>
 #include <gtk/gtk.h>
 
@@ -25,7 +28,7 @@ Boston, MA 02111-1307, USA.
 #define GUAKE_INDICATOR_PLUGIN_DIR "plugins"
 #define GUAKE_INDICATOR_ICON_DIR "icons/hicolor/256x256/apps/"
 #define GUAKE_INDICATOR_DCONF_SCHEMA_ROOT "org.guake-indicator.data"
-#define GUAKE_INDICATOR_VERSION "1.4.2"
+#define GUAKE_INDICATOR_VERSION "1.4.3"
 
 // Define default actions
 #define GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY_SIZE 4
@@ -104,3 +107,5 @@ void build_menu_ayatana(int , char **,GtkInfo* );
 void refresh_indicator_ayatana(gpointer);
 void print_edit_menu_form(GtkAction*,gpointer);
 void refresh_indicator(gpointer);
+
+#endif //_GUAKE_INDICATOR_H

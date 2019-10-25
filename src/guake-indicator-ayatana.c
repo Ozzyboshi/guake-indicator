@@ -24,21 +24,21 @@ Boston, MA 02111-1307, USA.
 #include <string.h>
 #include <stdlib.h>
 
-AppIndicator *ci = NULL;
+AppIndicator *GLOBAL_CI = NULL;
 
 void build_menu_ayatana(int argc, char **argv,GtkInfo* gtkinfo)
 {
 
 	apply_css();
 
-	ci = app_indicator_new ("guake-indicator",DEFAULT_ICON,APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+	GLOBAL_CI = app_indicator_new ("guake-indicator",DEFAULT_ICON,APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 
-    g_assert (IS_APP_INDICATOR (ci));
-	g_assert (G_IS_OBJECT (ci));
+    g_assert (IS_APP_INDICATOR (GLOBAL_CI));
+	g_assert (G_IS_OBJECT (GLOBAL_CI));
 
-    app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
-    app_indicator_set_icon_full(ci,"guake-indicator","guake-indicator");
-	app_indicator_set_title (ci, "Guake indicator");
+    app_indicator_set_status (GLOBAL_CI, APP_INDICATOR_STATUS_ACTIVE);
+    app_indicator_set_icon_full(GLOBAL_CI,"guake-indicator","guake-indicator");
+	app_indicator_set_title (GLOBAL_CI, "Guake indicator");
     //g_signal_connect (ci, "scroll-event",G_CALLBACK (scroll_event_cb), NULL);
 
     
@@ -332,7 +332,7 @@ static void gtk3_build_menu(GtkInfo* gtkinfo)
         gtk_widget_show (item);
     }
 
-    app_indicator_set_menu (ci, GTK_MENU (menu));
+    app_indicator_set_menu (GLOBAL_CI, GTK_MENU (menu));
 }
 
 static void gtk3_reload (GtkAction* action,gpointer user_data)

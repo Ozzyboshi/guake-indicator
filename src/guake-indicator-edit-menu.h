@@ -18,19 +18,10 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 */
 
+#ifndef _GUAKE_INDICATOR_EDIT_MENU_H
+#define	_GUAKE_INDICATOR_EDIT_MENU_H
+
 #define DND_DISABLED TRUE
-/*#ifndef GUAKE_INDICATOR_EDIT_MENU_H
-#define	GUAKE_INDICATOR_EDIT_MENU_H
-
-/*#ifdef	__cplusplus
-extern "C" {
-#endif
-
-#ifdef	__cplusplus
-}
-#endif
-
-#endif	/* GUAKE_INDICATOR_EDIT_MENU_H */
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -221,3 +212,5 @@ gboolean on_key_press (GtkWidget *, GdkEventKey *, gpointer );
 gboolean manage_ctrl_s (GtkWidget *, GdkEventKey *, gpointer );
 void set_selected_path(EditMenuDialog*,gchar*);
 void check_guake_get_tab_count(EditMenuDialog*);
+
+#endif	/* _GUAKE_INDICATOR_EDIT_MENU_H */

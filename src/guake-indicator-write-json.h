@@ -18,9 +18,14 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 */
 
+#ifndef _GUAKE_INDICATOR_WRITE_JSON_H
+#define	_GUAKE_INDICATOR_WRITE_JSON_H
+
 #include "json.h"
 
 const char* write_json_cfg_file_to_str(GArray*);
 json_object * build_json_data_obj(Host*);
 json_object * build_json_label_obj(Host*);
 int write_cfg_file(GArray*);
+
+#endif // _GUAKE_INDICATOR_WRITE_JSON_H

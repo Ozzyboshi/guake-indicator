@@ -18,12 +18,12 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 */
 
+#ifndef _GUAKE_INDICATOR_AYATANA_H_
+#define _GUAKE_INDICATOR_AYATANA_H_
+
 #include <libayatana-appindicator/app-indicator.h>
 
 #define DEFAULT_ICON "guake-indicator"
-
-
-
 
 static void scroll_event_cb (AppIndicator * , gint , guint , gpointer );
 
@@ -63,3 +63,5 @@ static GUAKE_INDICATOR_DEFAULT_ACTION GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY_GT
         {GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[2],gtk3_close_guake_indicator},
         {GUAKE_INDICATOR_DEFAULT_MENUITEMS_ARRAY[3],gtk3_about}
 };
+
+#endif //_GUAKE_INDICATOR_AYATANA_H_
