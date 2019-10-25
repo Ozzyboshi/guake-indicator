@@ -1,3 +1,6 @@
+
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/Ozzyboshi/guake-indicator.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Ozzyboshi/guake-indicator/alerts/)
+
 # Guake indicator
 Guake indicator is a compact and convenient Appindicator that lets you send commands to [Guake](http://guake-project.org/)
  terminal.
