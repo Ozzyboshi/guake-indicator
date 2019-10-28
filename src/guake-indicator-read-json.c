@@ -74,7 +74,7 @@ GArray* read_json_cfg_file(char * customfilecfg)
 	raw_data=(char*)malloc(s.st_size+1);
 	bzero((void*)raw_data,s.st_size+1);
 	numbytes=fread((void*)raw_data,1,s.st_size,fd);
-	if (numbytes<0)
+	if (numbytes==0)
 	{
 		free((void*)raw_data);
 		fclose(fd);
