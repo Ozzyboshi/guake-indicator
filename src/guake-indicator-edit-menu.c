@@ -504,7 +504,7 @@ static void remove_edit_menu ( GtkWidget *widget, gpointer user_data)
 
 				// Get the root grouphost
 				guint count = 0;
-				guint root_index=-1;
+				gint root_index=-1;
 				HostGroup* iterator;
 				while ( iterator = g_array_index (dialog->grouphostlist, HostGroup*, count))
 				{
@@ -529,7 +529,7 @@ static void remove_edit_menu ( GtkWidget *widget, gpointer user_data)
 						}
 					}
 						
-					HostGroup* root = (HostGroup*)g_array_index (dialog->grouphostlist, HostGroup*, root_index);
+					HostGroup* root = (HostGroup*)g_array_index (dialog->grouphostlist, HostGroup*, (guint)root_index);
 
 					if (root->hostarray==NULL) root->hostarray=dialog->selected_hostgroup->hostarray;
 					else
