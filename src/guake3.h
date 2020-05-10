@@ -22,5 +22,6 @@ Boston, MA 02111-1307, USA.
 #define _GUAKE3_H
 
 extern int GUAKE3;
+extern char* customConfFile;
 
 #endif //_GUAKE3_H

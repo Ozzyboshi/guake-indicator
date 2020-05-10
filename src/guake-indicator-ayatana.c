@@ -381,7 +381,7 @@ static void gtk3_about (GtkAction* action,gpointer data)
                             "program-name", "Guake indicator",
                             "authors", authors,
                             "comments", "A simple indicator that lets you send custom commands to Guake/Guake3.",
-                            "copyright", "(C) 2013-2019 Alessio Garzi\n(C) 2013-2019 Francesco Mina\n\nDedicated to my daughters\n Ludovica and Mariavittoria",
+                            "copyright", "(C) 2013-2020 Alessio Garzi\n(C) 2013-2020 Francesco Mina\n\nDedicated to my daughters\n Ludovica and Mariavittoria",
                             "logo", logo,
                             "version", GUAKE_INDICATOR_VERSION, 
                             "website", "http://guake-indicator.ozzyboshi.com",

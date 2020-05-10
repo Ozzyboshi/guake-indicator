@@ -30,6 +30,7 @@ Boston, MA 02111-1307, USA.
 
 
 int GUAKE3;
+char* customConfFile;
 
 // Open a group of tabs
 void group_guake_open(GtkAction* action,gpointer user_data)
@@ -240,20 +241,24 @@ void guake_open(GtkAction* action,gpointer user_data)
 }
 
 // Reload hosts reading them from the configuration file
-//void reload(GtkAction* action,gpointer user_data)
 void reload(GtkInfo* gtkinfo)
 {
 	if (gtkinfo->grouphostlist) grouphostlist_free(gtkinfo->grouphostlist);
-	if (check_xml_cfg_file_presence())
-		gtkinfo->grouphostlist = read_xml_cfg_file();
+	
+	if (customConfFile)
+		gtkinfo->grouphostlist=read_xml_cfg_file_from_file(customConfFile);
 	else
-		gtkinfo->grouphostlist = read_json_cfg_file(NULL);
-	if (gtkinfo->grouphostlist==NULL)
 	{
-		error_modal_box("Couldn't retrieve host from your guake indicator configuration file");
-		return ;
+		if (check_xml_cfg_file_presence())
+			gtkinfo->grouphostlist = read_xml_cfg_file();
+		else
+			gtkinfo->grouphostlist = read_json_cfg_file(NULL);
+		if (gtkinfo->grouphostlist==NULL)
+		{
+			error_modal_box("Couldn't retrieve host from your guake indicator configuration file");
+			return ;
+		}
 	}
-
 	return ;
 }
 
@@ -332,6 +337,7 @@ int main (int argc, char **argv)
 	GArray* grouphostlist;
 	GtkInfo gtkinfo;
 	GUAKE3=1;			// Guake 3 is the default
+	customConfFile = NULL;
 	gint32 numtabs;
 
 	gtk_init (&argc, &argv);
@@ -340,7 +346,10 @@ int main (int argc, char **argv)
 	{
 		GUAKE3=1;
 		if (argc>2)
-			grouphostlist=read_xml_cfg_file_from_file(argv[2]);
+		{
+			customConfFile = argv[2];
+			grouphostlist=read_xml_cfg_file_from_file(customConfFile);
+		}
 		else
 			if (check_xml_cfg_file_presence())
 				grouphostlist = read_xml_cfg_file();
@@ -351,7 +360,10 @@ int main (int argc, char **argv)
 	{
 		GUAKE3=0;
 		if (argc>2)
-			grouphostlist=read_xml_cfg_file_from_file(argv[2]);
+		{
+			customConfFile = argv[2];
+			grouphostlist=read_xml_cfg_file_from_file(customConfFile);
+		}
 		else
 			if (check_xml_cfg_file_presence())
 				grouphostlist = read_xml_cfg_file();
@@ -359,7 +371,10 @@ int main (int argc, char **argv)
 				grouphostlist = read_json_cfg_file(NULL);			
 	}
 	else if (argc>1 && strlen(argv[1])>0)
-		grouphostlist=read_xml_cfg_file_from_file(argv[1]);
+	{
+		customConfFile = argv[1];
+		grouphostlist=read_xml_cfg_file_from_file(customConfFile);
+	}
 	else if (check_xml_cfg_file_presence())
 		grouphostlist = read_xml_cfg_file();
 	else

@@ -29,6 +29,7 @@ Boston, MA 02111-1307, USA.
 GtkTreeStore* global_tree_view;
 gboolean is_print_edit_menu_form_opened=FALSE;
 gboolean is_print_custom_form_opened=FALSE;
+char* customConfFile;
 
 // Function to print edit menu form window
 void print_edit_menu_form(GtkAction* action, gpointer user_data)
@@ -214,10 +215,17 @@ void print_edit_menu_form(GtkAction* action, gpointer user_data)
 	gtk_tree_view_append_column(GTK_TREE_VIEW (widgets.tree_view), column_name);
 
 	// Fetch data from the cfg file
-	if (check_xml_cfg_file_presence())
-		widgets.grouphostlist = read_xml_cfg_file();
+	if (customConfFile)
+	{
+		widgets.grouphostlist = read_xml_cfg_file_from_file(customConfFile);
+	}
 	else
-		widgets.grouphostlist = read_json_cfg_file(NULL);
+	{
+		if (check_xml_cfg_file_presence())
+			widgets.grouphostlist = read_xml_cfg_file();
+		else
+			widgets.grouphostlist = read_json_cfg_file(NULL);
+	}
 
 	reload_model_view(&widgets);
 
@@ -1366,7 +1374,8 @@ void write_and_reload(EditMenuDialog* dialog,const char* msg)
 	error_modal_box (msg);
 	refresh_indicator(dialog->user_data);
 	grouphostlist_free(dialog->grouphostlist);
-	dialog->grouphostlist=read_xml_cfg_file();
+	if (customConfFile) dialog->grouphostlist=read_xml_cfg_file_from_file(customConfFile);
+	else dialog->grouphostlist=read_xml_cfg_file();
 	reload_model_view(dialog);
 }
 

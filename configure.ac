@@ -1,4 +1,4 @@
-AC_INIT([guake-indicator], [1.4.3], [gun101@email.it])
+AC_INIT([guake-indicator], [1.4.4], [gun101@email.it])
 
 AM_INIT_AUTOMAKE([-Wall -Werror])
 
