@@ -46,7 +46,7 @@ For proper compilation and functionality of Guake indicator, the following packa
 ### Credits
 Guake indicator was conceived and initially created by Alessio Garzi <gun101@email.it>
 
-Guake indicator was developed By Alessio Garzi <gun101@email.it> and Francesco Minà <mina.francesco@gmail.com>
+Guake indicator was developed By Alessio Garzi <gun101@email.it> and Francesco Minà <girardengo@gmail.com>
 
 Guake indicator debian package is mantained by Alessio Garzi <gun101@email.it>.
 
