@@ -25,11 +25,11 @@ Boston, MA 02111-1307, USA.
 #include "guake-indicator-dbus.h"
 #include "guake-indicator-notify.h"
 #include "guake-indicator-write-json.h"
+#include "guake3.h"
 
 GtkTreeStore* global_tree_view;
 gboolean is_print_edit_menu_form_opened=FALSE;
 gboolean is_print_custom_form_opened=FALSE;
-char* customConfFile;
 
 // Function to print edit menu form window
 void print_edit_menu_form(GtkAction* action, gpointer user_data)

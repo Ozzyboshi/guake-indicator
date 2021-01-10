@@ -23,8 +23,7 @@ Boston, MA 02111-1307, USA.
 #include <guake-indicator-read-json.h>
 #include <guake-indicator-xml.h>
 #include "guake-indicator-edit-menu.h"
-
-char* customConfFile;
+#include <guake3.h>
 
 int write_xml_cfg_file(GArray* grouphostlist)
 {

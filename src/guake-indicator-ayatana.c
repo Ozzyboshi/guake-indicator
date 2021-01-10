@@ -307,6 +307,7 @@ static void gtk3_build_menu(GtkInfo* gtkinfo)
                         funct_ptr=guake_open;
                     
                     ptr->right_click_funct_ptr=funct_ptr;
+                    gtk_widget_add_events(item, GDK_BUTTON_PRESS_MASK);
                     g_signal_connect(item,"button-press-event",G_CALLBACK(gtk3_detect_clickbutton),(gpointer) ptr);
                     g_signal_connect (item, "activate",G_CALLBACK (funct_ptr), (gpointer) ptr);
                 }
